@@ -1,0 +1,54 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="footer-container">
+    <p>© {year} Your Name. All rights reserved.</p>
+    <div class="footer-links">
+      <a href="https://github.com/yourusername" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://twitter.com/yourusername" target="_blank" rel="noopener">Twitter</a>
+      <a href="mailto:you@example.com">Email</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--border);
+    margin-top: 4rem;
+  }
+
+  .footer-container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .footer-container p {
+    font-size: 0.875rem;
+    color: var(--text-light);
+    margin: 0;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .footer-links a {
+    font-size: 0.875rem;
+    color: var(--text-light);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .footer-links a:hover {
+    color: var(--text);
+  }
+</style>

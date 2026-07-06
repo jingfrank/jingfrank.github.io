@@ -1,0 +1,68 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="联系 - Your Name">
+  <h1>联系我</h1>
+  <p>想聊聊？随时可以通过以下方式找到我：</p>
+
+  <div class="contact-list">
+    <a href="mailto:you@example.com" class="contact-item">
+      <span class="contact-icon">✉️</span>
+      <div>
+        <h3>Email</h3>
+        <p>you@example.com</p>
+      </div>
+    </a>
+    <a href="https://github.com/yourusername" target="_blank" rel="noopener" class="contact-item">
+      <span class="contact-icon">💻</span>
+      <div>
+        <h3>GitHub</h3>
+        <p>@yourusername</p>
+      </div>
+    </a>
+    <a href="https://twitter.com/yourusername" target="_blank" rel="noopener" class="contact-item">
+      <span class="contact-icon">🐦</span>
+      <div>
+        <h3>Twitter</h3>
+        <p>@yourusername</p>
+      </div>
+    </a>
+  </div>
+</Base>
+
+<style>
+  .contact-list {
+    margin-top: 2rem;
+    display: grid;
+    gap: 1rem;
+  }
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .contact-item:hover {
+    border-color: var(--accent);
+    box-shadow: 0 2px 8px rgba(0, 112, 243, 0.1);
+    text-decoration: none;
+  }
+  .contact-icon {
+    font-size: 1.5rem;
+  }
+  .contact-item h3 {
+    margin: 0;
+    font-size: 1rem;
+  }
+  .contact-item p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--text-light);
+  }
+</style>

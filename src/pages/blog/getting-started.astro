@@ -1,0 +1,47 @@
+---
+import BlogPost from '../../layouts/BlogPost.astro';
+
+const title = '用 Astro 搭建个人网站';
+const date = '2026-06-30';
+---
+
+<BlogPost title={title} date={date}>
+  这篇文章记录我用 Astro 搭建这个网站的过程。
+
+  ## 为什么选 Astro
+
+  之前考虑过几个方案：
+
+  | 方案 | 优点 | 缺点 |
+  |------|------|------|
+  | 纯 HTML/CSS | 最简单 | 难维护 |
+  | React/Next.js | 功能强大 | 偏重 |
+  | Hugo | 快 | 模板系统学习成本高 |
+  | **Astro** | **轻量、内容优先** | **较新** |
+
+  Astro 非常适合做内容型网站，默认零 JavaScript，加载飞快。
+
+  ## 关键特性
+
+  - **Markdown 写作**：直接用 Markdown 写文章，不用管 HTML
+  - **组件化**：页面用 `.astro` 组件拼装，复用方便
+  - **零 JS 默认**：只在需要交互时才加载 JavaScript
+
+  ## 代码示例
+
+  一个简单的 Astro 组件长这样：
+
+  ```astro
+  ---
+  const name = 'World';
+  ---
+
+  <h1>Hello, &#123;name&#125;!</h1>
+  ```
+
+  ## 部署
+
+  网站可以部署到 GitHub Pages 或 Cloudflare Pages，完全免费。
+
+  就这样，一个干净的个人网站就搭好了。🎉
+</BlogPost>

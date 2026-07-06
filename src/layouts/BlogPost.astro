@@ -1,0 +1,38 @@
+---
+import Base from './Base.astro';
+
+const { title, date } = Astro.props;
+---
+
+<Base title={title}>
+  <article class="blog-post">
+    <header>
+      <h1>{title}</h1>
+      <p class="post-date">{date}</p>
+    </header>
+    <div class="content">
+      <slot />
+    </div>
+    <hr />
+    <a href="/blog">← 返回博客</a>
+  </article>
+</Base>
+
+<style>
+  .blog-post header {
+    margin-bottom: 2rem;
+  }
+  .blog-post h1 {
+    margin-bottom: 0.5rem;
+  }
+  .post-date {
+    font-size: 0.85rem;
+    color: var(--text-light);
+  }
+  .content {
+    line-height: 1.8;
+  }
+  .content :global(h2) {
+    margin-top: 2.5rem;
+  }
+</style>

@@ -1,0 +1,62 @@
+---
+import Base from '../../layouts/Base.astro';
+
+// 博客文章列表（后续可用 content collections 管理）
+const posts = [
+  {
+    slug: 'welcome',
+    title: '欢迎来到我的博客',
+    date: '2026-06-30',
+    description: '这是我博客的第一篇文章，简单介绍一下为什么开始写博客。',
+  },
+  {
+    slug: 'getting-started',
+    title: '用 Astro 搭建个人网站',
+    date: '2026-06-30',
+    description: '从零开始用 Astro 搭建一个干净、快速的个人网站和博客。',
+  },
+];
+---
+
+<Base title="博客 - Your Name">
+  <h1>博客</h1>
+  <p>记录我的想法、技术笔记和学习心得。</p>
+
+  <div class="posts">
+    {posts.map((post) => (
+      <article class="post-card">
+        <a href={`/blog/${post.slug}`}>
+          <h2>{post.title}</h2>
+        </a>
+        <p class="post-meta">{post.date}</p>
+        <p>{post.description}</p>
+      </article>
+    ))}
+  </div>
+</Base>
+
+<style>
+  .posts {
+    margin-top: 2rem;
+  }
+  .post-card {
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .post-card h2 {
+    margin: 0 0 0.25rem;
+    font-size: 1.15rem;
+  }
+  .post-card h2 a {
+    color: var(--text);
+    text-decoration: none;
+  }
+  .post-card h2 a:hover {
+    color: var(--accent);
+  }
+  .post-meta {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+  }
+</style>

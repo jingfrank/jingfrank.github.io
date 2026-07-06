@@ -1,0 +1,72 @@
+---
+import Base from '../layouts/Base.astro';
+
+const projects = [
+  {
+    name: '个人网站',
+    description: '用 Astro 搭建的个人网站和博客，部署在 GitHub Pages / Cloudflare Pages。',
+    tags: ['Astro', 'TypeScript', 'CSS'],
+    link: '#',
+  },
+  {
+    name: '示例项目 B',
+    description: '这是一个示例项目，展示项目卡片的样子。替换成你自己的项目。',
+    tags: ['React', 'Node.js'],
+    link: '#',
+  },
+  {
+    name: '示例项目 C',
+    description: '另一个示例项目。可以是开源工具、网站、App 等任何东西。',
+    tags: ['Python', 'CLI'],
+    link: '#',
+  },
+];
+---
+
+<Base title="项目 - Your Name">
+  <h1>项目</h1>
+  <p>我做过的一些东西。</p>
+
+  <div class="projects">
+    {projects.map((project) => (
+      <article class="project-card">
+        <h2>
+          <a href={project.link} target="_blank" rel="noopener">{project.name}</a>
+        </h2>
+        <p>{project.description}</p>
+        <div class="tags">
+          {project.tags.map((tag) => (
+            <span class="tag">{tag}</span>
+          ))}
+        </div>
+      </article>
+    ))}
+  </div>
+</Base>
+
+<style>
+  .projects {
+    margin-top: 2rem;
+  }
+  .project-card {
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .project-card h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.15rem;
+  }
+  .tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+  }
+  .tag {
+    font-size: 0.75rem;
+    padding: 0.15rem 0.6rem;
+    background: var(--bg-hover);
+    border-radius: 999px;
+    color: var(--text-light);
+  }
+</style>

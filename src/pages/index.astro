@@ -1,0 +1,55 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Your Name - 个人主页">
+  <h1>你好，我是 Your Name 👋</h1>
+  <p>
+    我是一名 <a href="/about">开发者</a>，喜欢写代码、折腾新技术、分享所学。
+    目前在探索 Web 开发和 AI 的交汇领域。
+  </p>
+  <p>
+    这里是我的个人空间，记录想法、技术笔记和生活。你可以
+    <a href="/blog">读我的文章</a>，了解
+    <a href="/projects">我在做什么</a>，或者
+    <a href="/contact">跟我联系</a>。
+  </p>
+
+  <h2>最新文章</h2>
+  <ul class="post-list">
+    <li>
+      <a href="/blog/welcome">欢迎来到我的博客</a>
+      <span class="post-date">2026-06-30</span>
+    </li>
+    <li>
+      <a href="/blog/getting-started">用 Astro 搭建个人网站</a>
+      <span class="post-date">2026-06-30</span>
+    </li>
+  </ul>
+
+  <h2>精选项目</h2>
+  <ul class="project-list">
+    <li>
+      <a href="/projects">个人网站</a>
+      <span class="post-date">用 Astro 构建</span>
+    </li>
+  </ul>
+</Base>
+
+<style>
+  .post-list, .project-list {
+    list-style: none;
+    margin-left: 0;
+  }
+  .post-list li, .project-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .post-date {
+    font-size: 0.8rem;
+    color: var(--text-light);
+  }
+</style>

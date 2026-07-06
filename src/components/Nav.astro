@@ -1,0 +1,86 @@
+---
+const navItems = [
+  { label: '首页', href: '/' },
+  { label: '关于', href: '/about' },
+  { label: '博客', href: '/blog' },
+  { label: '项目', href: '/projects' },
+  { label: '联系', href: '/contact' },
+];
+
+const { pathname } = Astro.url;
+---
+
+<header class="nav">
+  <div class="nav-container">
+    <a href="/" class="nav-logo">Your Name</a>
+    <nav class="nav-links">
+      {navItems.map((item) => (
+        <a
+          href={item.href}
+          class:list={['nav-link', { active: pathname === item.href }]}
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+  </div>
+</header>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-logo {
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+    color: var(--text);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  .nav-link {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    color: var(--text-light);
+    text-decoration: none;
+    border-radius: 6px;
+    transition: color 0.15s, background 0.15s;
+  }
+
+  .nav-link:hover {
+    color: var(--text);
+    background: var(--bg-hover);
+  }
+
+  .nav-link.active {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  @media (max-width: 480px) {
+    .nav-link {
+      padding: 0.375rem 0.5rem;
+      font-size: 0.8rem;
+    }
+  }
+</style>

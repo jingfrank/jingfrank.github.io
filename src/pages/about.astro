@@ -1,0 +1,58 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="关于我 - Your Name">
+  <h1>关于我</h1>
+  <p>
+    嗨，我是 <strong>Your Name</strong>，一名软件开发者。
+  </p>
+  <p>
+    我喜欢用技术解决问题，热衷于把想法变成可以运行的代码。
+    平时也会看一些书、听播客、爬山。
+  </p>
+
+  <h2>技能</h2>
+  <ul>
+    <li>前端：JavaScript / TypeScript / React / Vue</li>
+    <li>后端：Node.js / Python / Go</li>
+    <li>工具：Git / Docker / Linux</li>
+  </ul>
+
+  <h2>经历</h2>
+  <div class="timeline">
+    <div class="timeline-item">
+      <h3>公司 A — 前端工程师</h3>
+      <p class="timeline-date">2023 — 至今</p>
+      <p>负责公司核心产品的前端开发，推动技术栈升级和性能优化。</p>
+    </div>
+    <div class="timeline-item">
+      <h3>公司 B — 全栈开发</h3>
+      <p class="timeline-date">2021 — 2023</p>
+      <p>从零搭建多个内部系统，涉及前端、后端和运维。</p>
+    </div>
+  </div>
+
+  <h2>联系方式</h2>
+  <ul>
+    <li>Email: you@example.com</li>
+    <li>GitHub: <a href="https://github.com/yourusername">@yourusername</a></li>
+    <li>Twitter: <a href="https://twitter.com/yourusername">@yourusername</a></li>
+  </ul>
+</Base>
+
+<style>
+  .timeline-item {
+    margin-bottom: 1.5rem;
+    padding-left: 1rem;
+    border-left: 3px solid var(--border);
+  }
+  .timeline-date {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-top: -0.5rem;
+  }
+  .timeline-item h3 {
+    margin-top: 0;
+  }
+</style>
