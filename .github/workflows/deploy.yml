@@ -25,11 +25,11 @@ jobs:
         with:
           node-version: 20
       - name: Install dependencies
-        run: npm ci
+        run: |
+          npm install
+          ls node_modules/.bin/astro && echo "astro binary found" || echo "astro binary NOT found"
       - name: Build with Astro
-        run: npm run build
-        env:
-          SITE: https://jingfrank.github.io
+        run: ./node_modules/.bin/astro build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
