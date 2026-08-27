@@ -1,41 +1,61 @@
 ---
 import Base from '../../layouts/Base.astro';
 
-// 博客文章列表（后续可用 content collections 管理）
+// 博客文章列表
 const posts = [
   {
-    slug: 'jetson-orin-qwenvl-deployment-deepdive',
-    title: 'Jetson Orin 部署 Qwen-VL 踩坑实录',
+    slug: 'vllm-inference-acceleration-benchmark',
+    title: '【系列三】从 5.5s 到 1.06s：基于 vLLM 与推测并发的高性能推理优化实战',
     date: '2026-08-27',
-    description: '在 Jetson Orin AGX 边缘端部署 Qwen-VL 视觉大模型的真实排错记录：六个致命报错的根因与解法、JetPack 5/6 生态代沟、三条落地路线，以及动静分离双引擎架构。',
+    tag: '推理加速 / vLLM',
+    description: '深入复盘如何利用 Docker 容器化微服务、vLLM PagedAttention、连续批处理与推测多线程并发架构，将端到端滑动窗口诊断时延从 5,500ms 压缩至 1,068ms（提速近 4 倍），并解决 C/C++ 堆损坏排错全过程。',
+  },
+  {
+    slug: 'pantograph-vlm-twostage-algorithm',
+    title: '【系列二】动静分离两阶段 VLM 架构与跨窗口时序一致性滤波实战',
+    date: '2026-08-27',
+    tag: '多模态算法 / 抗虚警',
+    description: '深度解析受电弓开集未知异物检测难题、动静分离两阶段架构设计（Stage 1 4帧时序分类 + Stage 2 原图高精点定位）、强负样本 Prompt 工程与过滤 95%+ 瞬态误报的时序一致性追踪器。',
+  },
+  {
+    slug: 'jetson-orin-qwenvl-deployment-deepdive',
+    title: '【系列一】Jetson Orin 部署 Qwen-VL 踩坑实录与生态代沟剖析',
+    date: '2026-08-27',
+    tag: '边缘计算 / 避坑实录',
+    description: '在 Jetson Orin AGX 边缘端部署 Qwen-VL 视觉大模型的真实排错记录：六个致命报错的根因与解法、JetPack 5/6 生态代沟、三条落地路线与边缘硬件选型。',
   },
   {
     slug: 'welcome',
     title: '欢迎来到我的博客',
     date: '2026-06-30',
+    tag: '随笔',
     description: '这是我博客的第一篇文章，简单介绍一下为什么开始写博客。',
   },
   {
     slug: 'getting-started',
     title: '用 Astro 搭建个人网站',
     date: '2026-06-30',
+    tag: 'Web 开发',
     description: '从零开始用 Astro 搭建一个干净、快速的个人网站和博客。',
   },
 ];
 ---
 
-<Base title="博客 - Your Name">
+<Base title="博客 - Frank Jing">
   <h1>博客</h1>
-  <p>记录我的想法、技术笔记和学习心得。</p>
+  <p>记录大模型多模态落地、高性能推理加速与边缘计算实战心得。</p>
 
   <div class="posts">
     {posts.map((post) => (
       <article class="post-card">
-        <a href={`/blog/${post.slug}`}>
-          <h2>{post.title}</h2>
-        </a>
+        <div class="post-header">
+          <a href={`/blog/${post.slug}`}>
+            <h2>{post.title}</h2>
+          </a>
+          {post.tag && <span class="post-tag">{post.tag}</span>}
+        </div>
         <p class="post-meta">{post.date}</p>
-        <p>{post.description}</p>
+        <p class="post-desc">{post.description}</p>
       </article>
     ))}
   </div>
@@ -46,12 +66,19 @@ const posts = [
     margin-top: 2rem;
   }
   .post-card {
-    padding: 1.25rem 0;
+    padding: 1.5rem 0;
     border-bottom: 1px solid var(--border);
   }
+  .post-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
   .post-card h2 {
-    margin: 0 0 0.25rem;
-    font-size: 1.15rem;
+    margin: 0;
+    font-size: 1.2rem;
   }
   .post-card h2 a {
     color: var(--text);
@@ -60,9 +87,24 @@ const posts = [
   .post-card h2 a:hover {
     color: var(--accent);
   }
+  .post-tag {
+    font-size: 0.75rem;
+    background: rgba(var(--accent-rgb, 59, 130, 246), 0.1);
+    color: var(--accent);
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+    border: 1px solid rgba(var(--accent-rgb, 59, 130, 246), 0.2);
+  }
   .post-meta {
     font-size: 0.8rem;
     color: var(--text-light);
-    margin-bottom: 0.5rem;
+    margin: 0.35rem 0 0.5rem;
+  }
+  .post-desc {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text);
+    margin: 0;
   }
 </style>
+
