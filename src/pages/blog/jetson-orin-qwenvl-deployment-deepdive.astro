@@ -19,8 +19,8 @@ const date = '2026-08-27';
 - [三、硬核实战：六大经典致命报错与破局技法](#三硬核实战六大经典致命报错与破局技法)
   - [坑点 1：CRLF 跨平台换行符导致脚本崩溃](#坑点-1crlf-跨平台换行符导致脚本崩溃)
   - [坑点 2：Python 3.8 对 PEP 585 类型注解的解析死锁](#坑点-2python-38-对-pep-585-类型注解的解析死锁)
-  - [坑点 3：54GB eMMC 空间耗尽与 `/dev/shm` 31GB 内存盘黑科技](#坑点-354gb-emmc-空间耗尽与-devshm-31gb-内存盘黑科技)
-  - [坑点 4：PyTorch `2.1.0a0` 假版本与 Alpha 算子缺失陷阱](#坑点-4pytorch-210a0-假版本与-alpha-算子缺失陷阱)
+  - [坑点 3：54GB eMMC 空间耗尽与 /dev/shm 31GB 内存盘黑科技](#坑点-354gb-emmc-空间耗尽与-devshm-31gb-内存盘黑科技)
+  - [坑点 4：PyTorch 2.1.0a0 假版本与 Alpha 算子缺失陷阱](#坑点-4pytorch-210a0-假版本与-alpha-算子缺失陷阱)
   - [坑点 5：PyPI 自动依赖解析的 manylinux 毒轮子](#坑点-5pypi-自动依赖解析的-manylinux-毒轮子)
   - [坑点 6：Transformers 与 Qwen 系列的代际版本锁](#坑点-6transformers-与-qwen-系列的代际版本锁)
 - [四、Qwen 全家桶在 Jetson 上的支持度矩阵](#四qwen-全家桶在-jetson-上的支持度矩阵)
@@ -47,14 +47,14 @@ const date = '2026-08-27';
 
 在开始排错之前，必须先理清 NVIDIA Jetson 平台的特殊软硬件架构：
 
-```
+```text
 ┌──────────────────────────────────────────────────────────┐
 │                   Docker 容器应用层                      │
 │     (Python 解释器、PyTorch 框架、Transformers 库)       │
 ├────────────────────────────┬─────────────────────────────┤
 │   CUDA Runtime (容器内)   │   Tegra 统一内存分配接口     │
 ├────────────────────────────┴─────────────────────────────┤
-│  宿主机 L4T BSP 内核驱动 (Linux 5.10 / 5.15 Kernel Driver)│ ⬅️ 决定生死的底座
+│  宿主机 L4T BSP 内核驱动 (Linux 5.10 / 5.15 Kernel Driver)│
 ├──────────────────────────────────────────────────────────┤
 │    Jetson Orin AGX 硬件 (Ampere GPU 275 TOPS + 64GB 统一显存)  │
 └──────────────────────────────────────────────────────────┘
@@ -97,7 +97,7 @@ find . -type f -exec sed -i 's/\r$//' {} +
 #### 现象
 运行官方工具脚本时，抛出如下 Python 语法解析异常：
 ```text
-File "/home/hirain/Desktop/jetson-containers/jetson_containers/l4t_version.py", line 465, in <module>
+File "/home/hirain/Desktop/jetson-containers/jetson_containers/l4t_version.py", line 465, in [module]
     def _parse_python_ver_and_nogil(s) -> tuple[Version, bool]:
 TypeError: 'type' object is not subscriptable
 ```
@@ -157,7 +157,7 @@ UserWarning: Disabling PyTorch because PyTorch >= 2.1 is required but found 2.1.
 ```
 
 #### 根因
-1. **PEP 440 版本规则陷阱**：在 Python 规范中，Alpha 预览版（`2.1.0a0`）严格小于正式版（`2.1.0`），导致 `parse_version("2.1.0a0") < parse_version("2.1.0")` 永远返回 `True`；
+1. **PEP 440 版本规则陷阱**：在 Python 规范中，Alpha 预览版（`2.1.0a0`）严格小于正式版（`2.1.0`），导致 `parse_version("2.1.0a0") &lt; parse_version("2.1.0")` 永远返回 `True`；
 2. **底核算子未完工**：`2.1.0a0` 是 2023 年中编译的中间态产物，缺失了 Qwen-VL 计算 3D-mROPE 和视觉注意力所需的动态张量切片算子。
 
 ---
@@ -179,7 +179,7 @@ pip 在解析依赖树时，发现当前 Python 没有标准 PyTorch，便自动
 必须先行安装 NVIDIA 原厂专为 Jetson 编译的 Wheel，并在批量安装依赖时过滤掉底层核心库：
 ```bash
 # 1. 过滤底层加速库
-grep -ivE "^torch|^torchvision|^torchaudio|^tensorrt|^pycuda" requirements.txt > requirements_safe.txt
+grep -ivE "^torch|^torchvision|^torchaudio|^tensorrt|^pycuda" requirements.txt &gt; requirements_safe.txt
 
 # 2. 先装原厂 Jetson PyTorch Wheel
 pip install --no-cache-dir torch-xxx-nv-linux_aarch64.whl
@@ -203,7 +203,7 @@ ImportError: cannot import name 'Qwen3VLForConditionalGeneration' from 'transfor
 #### 根因
 - `transformers 4.46.3`（2024 年末）仅包含 `Qwen2VLForConditionalGeneration`；
 - Qwen3-VL 的内部配置文件 `config.json` 采用了全新的复合嵌套结构（如 `text_config` 为复合字典），直接用 Qwen2VL 类读取会发生结构反序列化崩溃；
-- 阿里官方在 `transformers >= 4.57.0` 中才正式并入 Qwen3-VL，而 4.57+ 强制依赖 Python 3.10+ 与 PyTorch 2.3+。
+- 阿里官方在 `transformers &gt;= 4.57.0` 中才正式并入 Qwen3-VL，而 4.57+ 强制依赖 Python 3.10+ 与 PyTorch 2.3+。
 
 ---
 
@@ -224,7 +224,7 @@ ImportError: cannot import name 'Qwen3VLForConditionalGeneration' from 'transfor
 
 面对不同项目的交付周期与板卡约束，我们总结出三条切实可行的落地路径：
 
-```
+```text
                               ┌── 允许重新刷机 ───► 【路线 A】升级 JetPack 6.1 + 官方 vLLM 容器 (终极性能)
                               │
 【当前处于 JetPack 5 宿主机】──┼── 车载封闭不刷机 ──► 【路线 B】纯 C++/CUDA 引擎 (llama.cpp / GGUF) (极速轻量)
@@ -257,7 +257,7 @@ ImportError: cannot import name 'Qwen3VLForConditionalGeneration' from 'transfor
 
 在轨道交通工业监控场景中，大模型不能也不应该处理每一帧原始图像。我们设计了**动静分离（Fast-Slow Dual Engine）两阶段架构**：
 
-```
+```text
 【4K 工业相机 RTSP 流】 (25 FPS)
          │
          ▼
@@ -281,7 +281,7 @@ ImportError: cannot import name 'Qwen3VLForConditionalGeneration' from 'transfor
 ```
 
 1. **时序一致性滤波（Temporal Consistency Filtering）**：  
-   针对受电弓背景快速切换（如树影、接触网硬点闪烁）带来的瞬时误报，算法设置 $N$ 帧时序命中确认窗口（如连续 3 帧确认存在拉弧或异物才触发告警），彻底消除单帧幻觉。
+   针对受电弓背景快速切换（如树影、接触网硬点闪烁）带来的瞬时误报，算法设置 N 帧时序命中确认窗口（如连续 3 帧确认存在拉弧或异物才触发告警），彻底消除单帧幻觉。
 2. **标准车载协议对接**：  
    诊断结果遵循《受电弓故障报警报文》规范，发射二进制 UDP 报文至车载主控网关，并同步上报 PHM 健康管理服务。
 
