@@ -1,14 +1,16 @@
 ---
 import Base from './Base.astro';
 
-const { title, date } = Astro.props;
+const { title, date, frontmatter } = Astro.props;
+const postTitle = title || frontmatter?.title;
+const postDate = date || frontmatter?.date;
 ---
 
-<Base title={title}>
+<Base title={postTitle}>
   <article class="blog-post">
     <header>
-      <h1>{title}</h1>
-      <p class="post-date">{date}</p>
+      <h1>{postTitle}</h1>
+      <p class="post-date">{postDate}</p>
     </header>
     <div class="content">
       <slot />

@@ -1,11 +1,8 @@
 ---
-import BlogPost from '../../layouts/BlogPost.astro';
-
-const title = 'Jetson Orin AGX 部署 Qwen-VL 系列多模态大模型踩坑实录与底层生态代沟复盘';
-const date = '2026-08-27';
+layout: ../../layouts/BlogPost.astro
+title: "Jetson Orin AGX 部署 Qwen-VL 系列多模态大模型踩坑实录与底层生态代沟复盘"
+date: "2026-08-27"
 ---
-
-<BlogPost title={title} date={date}>
 
 > **导读**：在云端服务器（A100 / RTX 4090）上一行 `pip install` 就能跑通的视觉多模态大模型（VLM），一旦搬到以 NVIDIA Jetson Orin AGX 为代表的边缘嵌入式工控板卡上，迎接你的往往不是惊艳的算法指标，而是层出不穷的驱动断层、内存爆仓与底层算子冲突。
 > 
@@ -19,8 +16,8 @@ const date = '2026-08-27';
 - [三、硬核实战：六大经典致命报错与破局技法](#三硬核实战六大经典致命报错与破局技法)
   - [坑点 1：CRLF 跨平台换行符导致脚本崩溃](#坑点-1crlf-跨平台换行符导致脚本崩溃)
   - [坑点 2：Python 3.8 对 PEP 585 类型注解的解析死锁](#坑点-2python-38-对-pep-585-类型注解的解析死锁)
-  - [坑点 3：54GB eMMC 空间耗尽与 /dev/shm 31GB 内存盘黑科技](#坑点-354gb-emmc-空间耗尽与-devshm-31gb-内存盘黑科技)
-  - [坑点 4：PyTorch 2.1.0a0 假版本与 Alpha 算子缺失陷阱](#坑点-4pytorch-210a0-假版本与-alpha-算子缺失陷阱)
+  - [坑点 3：54GB eMMC 空间耗尽与 `/dev/shm` 31GB 内存盘黑科技](#坑点-354gb-emmc-空间耗尽与-devshm-31gb-内存盘黑科技)
+  - [坑点 4：PyTorch `2.1.0a0` 假版本与 Alpha 算子缺失陷阱](#坑点-4pytorch-210a0-假版本与-alpha-算子缺失陷阱)
   - [坑点 5：PyPI 自动依赖解析的 manylinux 毒轮子](#坑点-5pypi-自动依赖解析的-manylinux-毒轮子)
   - [坑点 6：Transformers 与 Qwen 系列的代际版本锁](#坑点-6transformers-与-qwen-系列的代际版本锁)
 - [四、Qwen 全家桶在 Jetson 上的支持度矩阵](#四qwen-全家桶在-jetson-上的支持度矩阵)
@@ -54,7 +51,7 @@ const date = '2026-08-27';
 ├────────────────────────────┬─────────────────────────────┤
 │   CUDA Runtime (容器内)   │   Tegra 统一内存分配接口     │
 ├────────────────────────────┴─────────────────────────────┤
-│  宿主机 L4T BSP 内核驱动 (Linux 5.10 / 5.15 Kernel Driver)│
+│  宿主机 L4T BSP 内核驱动 (Linux 5.10 / 5.15 Kernel Driver)│ ⬅️ 决定生死的底座
 ├──────────────────────────────────────────────────────────┤
 │    Jetson Orin AGX 硬件 (Ampere GPU 275 TOPS + 64GB 统一显存)  │
 └──────────────────────────────────────────────────────────┘
@@ -97,7 +94,7 @@ find . -type f -exec sed -i 's/\r$//' {} +
 #### 现象
 运行官方工具脚本时，抛出如下 Python 语法解析异常：
 ```text
-File "/home/hirain/Desktop/jetson-containers/jetson_containers/l4t_version.py", line 465, in [module]
+File "/home/hirain/Desktop/jetson-containers/jetson_containers/l4t_version.py", line 465, in <module>
     def _parse_python_ver_and_nogil(s) -> tuple[Version, bool]:
 TypeError: 'type' object is not subscriptable
 ```
@@ -157,7 +154,7 @@ UserWarning: Disabling PyTorch because PyTorch >= 2.1 is required but found 2.1.
 ```
 
 #### 根因
-1. **PEP 440 版本规则陷阱**：在 Python 规范中，Alpha 预览版（`2.1.0a0`）严格小于正式版（`2.1.0`），导致 `parse_version("2.1.0a0") &lt; parse_version("2.1.0")` 永远返回 `True`；
+1. **PEP 440 版本规则陷阱**：在 Python 规范中，Alpha 预览版（`2.1.0a0`）严格小于正式版（`2.1.0`），导致 `parse_version("2.1.0a0") < parse_version("2.1.0")` 永远返回 `True`；
 2. **底核算子未完工**：`2.1.0a0` 是 2023 年中编译的中间态产物，缺失了 Qwen-VL 计算 3D-mROPE 和视觉注意力所需的动态张量切片算子。
 
 ---
@@ -179,7 +176,7 @@ pip 在解析依赖树时，发现当前 Python 没有标准 PyTorch，便自动
 必须先行安装 NVIDIA 原厂专为 Jetson 编译的 Wheel，并在批量安装依赖时过滤掉底层核心库：
 ```bash
 # 1. 过滤底层加速库
-grep -ivE "^torch|^torchvision|^torchaudio|^tensorrt|^pycuda" requirements.txt &gt; requirements_safe.txt
+grep -ivE "^torch|^torchvision|^torchaudio|^tensorrt|^pycuda" requirements.txt > requirements_safe.txt
 
 # 2. 先装原厂 Jetson PyTorch Wheel
 pip install --no-cache-dir torch-xxx-nv-linux_aarch64.whl
@@ -203,7 +200,7 @@ ImportError: cannot import name 'Qwen3VLForConditionalGeneration' from 'transfor
 #### 根因
 - `transformers 4.46.3`（2024 年末）仅包含 `Qwen2VLForConditionalGeneration`；
 - Qwen3-VL 的内部配置文件 `config.json` 采用了全新的复合嵌套结构（如 `text_config` 为复合字典），直接用 Qwen2VL 类读取会发生结构反序列化崩溃；
-- 阿里官方在 `transformers &gt;= 4.57.0` 中才正式并入 Qwen3-VL，而 4.57+ 强制依赖 Python 3.10+ 与 PyTorch 2.3+。
+- 阿里官方在 `transformers >= 4.57.0` 中才正式并入 Qwen3-VL，而 4.57+ 强制依赖 Python 3.10+ 与 PyTorch 2.3+。
 
 ---
 
@@ -304,5 +301,3 @@ ImportError: cannot import name 'Qwen3VLForConditionalGeneration' from 'transfor
 - [NVIDIA Jetson AI Lab 官方实验室](https://www.jetson-ai-lab.com/)
 - [llama.cpp Jetson CUDA 编译指南](https://github.com/ggml-org/llama.cpp/blob/master/docs/build.md#nvidia-jetson)
 - [Qwen2-VL 官方 GitHub 仓库](https://github.com/QwenLM/Qwen2-VL)
-
-</BlogPost>
