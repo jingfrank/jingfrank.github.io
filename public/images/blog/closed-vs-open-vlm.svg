@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif">
+  <defs>
+    <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0070f3"/>
+    </marker>
+  </defs>
+
+  <rect x="0.5" y="0.5" width="959" height="559" rx="10" fill="#ffffff" stroke="#e5e5e5"/>
+
+  <!-- context bar -->
+  <rect x="20" y="16" width="920" height="48" rx="8" fill="#f6f8fa" stroke="#d0d7de"/>
+  <text x="480" y="45" text-anchor="middle" font-size="14" fill="#444">业务场景：350 km/h 高速运行 · 2.5 万伏接触网 · 车载强光反射环境，须检出开集未知异物（塑料袋 / 风筝线 / 羽毛 / 棉纱）</text>
+
+  <!-- left panel -->
+  <rect x="20" y="92" width="400" height="360" rx="10" fill="#fef2f2" stroke="#fecaca" stroke-width="1.5"/>
+  <rect x="20" y="92" width="400" height="52" rx="10" fill="#fee2e2"/>
+  <rect x="20" y="132" width="400" height="12" fill="#fee2e2"/>
+  <text x="220" y="125" text-anchor="middle" font-size="16" font-weight="700" fill="#991b1b">传统 YOLO / Faster-RCNN</text>
+
+  <text x="44" y="184" font-size="14" font-weight="600" fill="#1a1a1a">机制：闭集分类（Closed-set）</text>
+  <text x="44" y="208" font-size="13" fill="#444">只能识别训练集中已标注、见过的类别</text>
+
+  <rect x="44" y="232" width="352" height="86" rx="8" fill="#ffffff" stroke="#fecaca"/>
+  <text x="60" y="260" font-size="13" font-weight="700" fill="#dc2626">痛点：面对形态千奇百怪的杂物</text>
+  <text x="60" y="284" font-size="13" fill="#444">薄膜 / 羽毛 / 棉纱未在训练集标注</text>
+  <text x="60" y="306" font-size="13" font-weight="700" fill="#dc2626">→ 漏检率极高！</text>
+
+  <rect x="44" y="338" width="352" height="86" rx="8" fill="#ffffff" stroke="#fecaca"/>
+  <text x="60" y="366" font-size="13" font-weight="700" fill="#1a1a1a">输出：矩形检测框</text>
+  <text x="60" y="390" font-size="13" fill="#444">无法理解「滑板与支臂的角度关系</text>
+  <text x="60" y="410" font-size="13" fill="#444">是否合理」等空间几何语义</text>
+
+  <!-- center arrow -->
+  <line x1="432" y1="272" x2="516" y2="272" stroke="#0070f3" stroke-width="2.5" marker-end="url(#arr2)"/>
+  <text x="474" y="252" text-anchor="middle" font-size="13" font-weight="700" fill="#0070f3">技术架构</text>
+  <text x="474" y="296" text-anchor="middle" font-size="13" font-weight="700" fill="#0070f3">升级</text>
+
+  <!-- right panel -->
+  <rect x="540" y="92" width="400" height="360" rx="10" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1.5"/>
+  <rect x="540" y="92" width="400" height="52" rx="10" fill="#dbeafe"/>
+  <rect x="540" y="132" width="400" height="12" fill="#dbeafe"/>
+  <text x="740" y="125" text-anchor="middle" font-size="16" font-weight="700" fill="#1e40af">多模态视觉大模型（Qwen-VL）</text>
+
+  <text x="564" y="184" font-size="14" font-weight="600" fill="#1a1a1a">机制：开放词表零样本语义对齐</text>
+  <text x="564" y="208" font-size="13" fill="#444">（Open-Vocabulary Grounding）</text>
+
+  <rect x="564" y="232" width="352" height="86" rx="8" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="580" y="260" font-size="13" font-weight="700" fill="#16a34a">优势：无需为每种异物采集数千张标注</text>
+  <text x="580" y="284" font-size="13" fill="#444">用自然语言描述即可精准定位</text>
+  <text x="580" y="306" font-size="13" font-weight="700" fill="#16a34a">未知形态也能「零样本」检出</text>
+
+  <rect x="564" y="338" width="352" height="86" rx="8" fill="#ffffff" stroke="#fde68a"/>
+  <text x="580" y="362" font-size="13" font-weight="700" fill="#d97706">挑战 ①：4 帧多图 Token 爆炸 → 高延迟</text>
+  <text x="580" y="390" font-size="13" font-weight="700" fill="#d97706">挑战 ②：单帧静态幻觉 → 高虚警</text>
+  <text x="580" y="414" font-size="12.5" fill="#666">（→ 本文架构 + 时序滤波逐一化解，见下文）</text>
+
+  <!-- bottom bar -->
+  <rect x="20" y="478" width="920" height="48" rx="8" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <text x="480" y="507" text-anchor="middle" font-size="14" font-weight="600" fill="#166534">目标：未知异物「检得出」 + 坐标「定得准」 + 误报「压得低」</text>
+
+  <text x="480" y="546" text-anchor="middle" font-size="12" fill="#999">闭集检测器的能力边界，正是开放词表 VLM 的切入点</text>
+</svg>

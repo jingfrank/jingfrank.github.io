@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif">
+  <defs>
+    <marker id="arr5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <rect x="0.5" y="0.5" width="959" height="619" rx="10" fill="#ffffff" stroke="#e5e5e5"/>
+
+  <text x="480" y="34" text-anchor="middle" font-size="16" font-weight="700" fill="#1a1a1a">JetPack 5 宿主机上的三条落地路线</text>
+
+  <!-- root -->
+  <rect x="310" y="54" width="340" height="56" rx="10" fill="#f6f8fa" stroke="#9ca3af" stroke-width="1.5"/>
+  <text x="480" y="78" text-anchor="middle" font-size="14.5" font-weight="700" fill="#1a1a1a">当前状态：JetPack 5 宿主机</text>
+  <text x="480" y="99" text-anchor="middle" font-size="12" fill="#666">（车载工控机，已在现场运行）</text>
+
+  <!-- connectors -->
+  <path d="M 480 110 L 480 132 L 175 132 L 175 168" fill="none" stroke="#666" stroke-width="1.5" marker-end="url(#arr5)"/>
+  <path d="M 480 110 L 480 168" fill="none" stroke="#666" stroke-width="1.5" marker-end="url(#arr5)"/>
+  <path d="M 480 110 L 480 132 L 785 132 L 785 168" fill="none" stroke="#666" stroke-width="1.5" marker-end="url(#arr5)"/>
+
+  <text x="175" y="152" text-anchor="middle" font-size="12" font-weight="600" fill="#666">允许重新刷机</text>
+  <text x="480" y="152" text-anchor="middle" font-size="12" font-weight="600" fill="#666">车载封闭 · 不刷机</text>
+  <text x="785" y="152" text-anchor="middle" font-size="12" font-weight="600" fill="#666">即刻上线 · 保交付</text>
+
+  <!-- Route A -->
+  <rect x="30" y="172" width="290" height="310" rx="12" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+  <rect x="50" y="192" width="112" height="26" rx="13" fill="#16a34a"/>
+  <text x="106" y="210" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">路线 A · 推荐</text>
+  <text x="178" y="210" font-size="12.5" fill="#16a34a" font-weight="600">长线演进</text>
+  <text x="50" y="252" font-size="14.5" font-weight="700" fill="#1a1a1a">升级 JetPack 6.1</text>
+  <text x="50" y="274" font-size="14.5" font-weight="700" fill="#1a1a1a">+ 官方 vLLM 容器</text>
+  <line x1="50" y1="292" x2="300" y2="292" stroke="#bbf7d0"/>
+  <text x="50" y="318" font-size="12.5" fill="#444">✓ PagedAttention 算子级加速</text>
+  <text x="50" y="342" font-size="12.5" fill="#444">✓ Qwen3-VL 毫秒级推理</text>
+  <text x="50" y="366" font-size="12.5" fill="#444">✓ 软件栈一步到位到 2024+</text>
+  <rect x="50" y="396" width="250" height="60" rx="8" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="66" y="420" font-size="12.5" font-weight="700" fill="#b45309">代价：整机重新刷机</text>
+  <text x="66" y="442" font-size="12.5" fill="#666">现场设备停机窗口 + 回归测试</text>
+
+  <!-- Route B -->
+  <rect x="335" y="172" width="290" height="310" rx="12" fill="#eff6ff" stroke="#0070f3" stroke-width="1.5"/>
+  <rect x="355" y="192" width="112" height="26" rx="13" fill="#0070f3"/>
+  <text x="411" y="210" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">路线 B</text>
+  <text x="483" y="210" font-size="12.5" fill="#0070f3" font-weight="600">免刷机高精度</text>
+  <text x="355" y="252" font-size="14.5" font-weight="700" fill="#1a1a1a">纯 C++/CUDA 引擎</text>
+  <text x="355" y="274" font-size="14.5" font-weight="700" fill="#1a1a1a">llama.cpp / GGUF</text>
+  <line x1="355" y1="292" x2="605" y2="292" stroke="#bfdbfe"/>
+  <text x="355" y="318" font-size="12.5" fill="#444">✓ 指定 Ampere 架构硬加速</text>
+  <text x="355" y="340" font-size="12" font-family="Menlo,Consolas,monospace" fill="#0070f3">CUDA_ARCHITECTURES=87</text>
+  <text x="355" y="366" font-size="12.5" fill="#444">✓ 显存仅需 3.5 GB</text>
+  <rect x="355" y="396" width="250" height="60" rx="8" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="371" y="420" font-size="12.5" font-weight="700" fill="#b45309">代价：自行编译与维护</text>
+  <text x="371" y="442" font-size="12.5" fill="#666">量化精度需逐一验证</text>
+
+  <!-- Route C -->
+  <rect x="640" y="172" width="290" height="310" rx="12" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
+  <rect x="660" y="192" width="112" height="26" rx="13" fill="#d97706"/>
+  <text x="716" y="210" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">路线 C</text>
+  <text x="788" y="210" font-size="12.5" fill="#d97706" font-weight="600">保交付快速上线</text>
+  <text x="660" y="252" font-size="14.5" font-weight="700" fill="#1a1a1a">Qwen2-VL-2B</text>
+  <text x="660" y="274" font-size="14.5" font-weight="700" fill="#1a1a1a">+ Transformers 4.46.3</text>
+  <line x1="660" y1="292" x2="910" y2="292" stroke="#fde68a"/>
+  <text x="660" y="318" font-size="12.5" fill="#444">✓ JetPack 5 原生完美支持</text>
+  <text x="660" y="342" font-size="12.5" fill="#444">✓ 容器即启即用，当天上线</text>
+  <text x="660" y="366" font-size="12.5" fill="#444">✓ 零环境改动，风险最低</text>
+  <rect x="660" y="396" width="250" height="60" rx="8" fill="#ffffff" stroke="#fde68a"/>
+  <text x="676" y="420" font-size="12.5" font-weight="700" fill="#b45309">代价：模型代际受限</text>
+  <text x="676" y="442" font-size="12.5" fill="#666">2B 天花板低，后续仍需迁移</text>
+
+  <!-- bottom -->
+  <rect x="30" y="512" width="900" height="56" rx="10" fill="#f6f8fa" stroke="#d0d7de"/>
+  <text x="480" y="537" text-anchor="middle" font-size="13.5" font-weight="600" fill="#1a1a1a">实战选择：交付期走 C 保上线 → 长期规划刷机迁移 A；B 适合不刷机且要精度的存量设备</text>
+  <text x="480" y="558" text-anchor="middle" font-size="12" fill="#666">三条路线共同前提：任何容器内的 CUDA 运行时都必须与宿主机 L4T BSP ABI 兼容</text>
+
+  <text x="480" y="598" text-anchor="middle" font-size="12" fill="#999">决策维度只有一个：这台车载工控机，允不允许动它的操作系统</text>
+</svg>

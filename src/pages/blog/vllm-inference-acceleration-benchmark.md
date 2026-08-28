@@ -74,26 +74,8 @@ docker run -d --name vllm-qwen3 \
 
 然而，在高铁运行中，**99% 的场景都是清晰正常的画面**。我们创新性地引入了 **推测并发执行（Speculative Concurrency）**：
 
-```mermaid
-sequenceDiagram
-    participant Main as 主调度器 (Main Thread)
-    participant Pool as 线程池 (ThreadPoolExecutor)
-    participant vLLM as vLLM 容器微服务 (:8000)
-    
-    Main->>Pool: 同时并发派发 Stage 1 (4帧视频) & Stage 2 (单图定位)
-    Pool->>vLLM: HTTP 并发请求 (Continuous Batching 并行计算)
-    vLLM-->>Pool: 双路结果几乎同时返回
-    Pool-->>Main: 回传 S1_res 与 S2_res (总耗时仅 max(S1, S2))
-    
-    Note over Main: 门控仲裁网关 (Gate Arbiter)
-    alt S1 报【脏污】
-        Main->>Main: 丢弃 S2，直接判定为画面脏污
-    else S1 报【火花】
-        Main->>Main: 触发火花 Box 定位
-    else S1 报【正常】 (99% 工况)
-        Main->>Main: 采纳 S2 异物坐标，送入时序追踪器
-    end
-```
+![推测并发调度与门控仲裁](/images/blog/speculative-concurrency.svg)
+*推测并发与 CPU 的投机执行同构：预测成功赚一半时间，预测失败只付一次被丢弃的 S2 计算。*
 
 ### 核心实现代码：
 ```python
@@ -148,6 +130,10 @@ malloc(): unsorted double linked list corrupted
 已中止 (核心已转储)
 ```
 
+<!-- SCREENSHOT-SLOT: 若有 malloc 崩溃现场 / core dump 回溯截图可插在此处：
+![malloc 崩溃现场](/images/blog/shot-malloc-crash.png)
+-->
+
 ### 1. 根因剖析
 Linux glibc 检测到了 **堆内存双向链表损坏**。排查发现：在视频重连异常处理中，主线程调用了 `cap.release()` 释放底层 C++ 句柄，而拉流子线程仍处于 `cap.read()` 阻塞中，导致底层 FFmpeg/OpenCV 动态库的内存发生**双重释放（Double Free）与指针竞态损坏**，被 glibc 保护机制直接发送 `SIGABRT` 强杀。
 
@@ -173,7 +159,14 @@ def stop(self):
 
 在 **NVIDIA TITAN RTX 24GB (Driver 595.84 / CUDA 13.2)** 上，针对 10 分钟典型视频（`foreign_1.mp4`）与标准测试图进行完整压测：
 
+<!-- SCREENSHOT-SLOT: 可插入 vLLM 容器真实运行截图（候选：docker ps 输出 / vLLM 启动日志含 PagedAttention、显存占用行）：
+![vLLM 容器运行现场](/images/blog/shot-vllm-runtime.png)
+-->
+
 ### 1. 推理耗时对比矩阵
+
+![推理耗时对比：原生 Transformers vs vLLM](/images/blog/latency-benchmark.svg)
+*四个维度全线压倒性提速：单图正常工况 Early-Exit 快至 81 ms，端到端稳态 1,068 ms 进入秒级实时区间。*
 
 | 评测维度 | 原生 Transformers (基线) | vLLM 容器化加速版 | 加速比 (Speedup) | 技术优化原理 |
 | :--- | :--- | :--- | :--- | :--- |

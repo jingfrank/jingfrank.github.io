@@ -43,18 +43,8 @@ date: "2026-08-27"
 
 排错之前，必须先理清 Jetson 平台与普通 x86 服务器的根本区别：
 
-```text
-┌──────────────────────────────────────────────────────────┐
-│                   Docker 容器应用层                      │
-│     (Python 解释器、PyTorch 框架、Transformers 库)       │
-├────────────────────────────┬─────────────────────────────┤
-│   CUDA Runtime (容器内)   │   Tegra 统一内存分配接口     │
-├────────────────────────────┴─────────────────────────────┤
-│  宿主机 L4T BSP 内核驱动 (Linux 5.10 / 5.15 Kernel Driver)│
-├──────────────────────────────────────────────────────────┤
-│    Jetson Orin AGX 硬件 (Ampere GPU 275 TOPS + 64GB 统一显存)  │
-└──────────────────────────────────────────────────────────┘
-```
+![Jetson Orin 软件栈与 ABI 约束](/images/blog/jetson-stack.svg)
+*与 x86 服务器「PCIe + 独立显卡」不同，Jetson 是统一内存的 Tegra SoC：容器隔离不了内核 ABI。*
 
 与 x86 服务器通过 PCIe 接入独立显卡不同，Jetson 采用 CPU 与 GPU 共享物理内存的 Tegra SoC 架构（Unified Memory）。这带来一个硬约束：**容器内的 CUDA 运行时必须与宿主机的 L4T（Linux for Tegra）BSP 版本 ABI 兼容，否则 GPU 算力直接瘫痪**。
 
@@ -84,6 +74,10 @@ NVIDIA 的 JetPack 软件包绑定特定的 L4T BSP 版本，而不同 JetPack �
 ## 三、踩坑实录：六个致命报错
 
 以下六个故障全部来自真实调试现场。
+
+<!-- SCREENSHOT-SLOT: 可插入一张真实终端报错截图增强现场感（候选：坑点 1 的 bash\r 报错 / 坑点 3 的 no space left on device + df -h 输出）：
+![Jetson 现场报错终端](/images/blog/shot-jetson-terminal.png)
+-->
 
 ### 坑点 1：CRLF 跨平台换行符导致脚本崩溃
 
@@ -174,13 +168,8 @@ pip install -r requirements_safe.txt
 
 ## 四、选型：三条落地路线
 
-```text
-                              ┌── 允许重新刷机 ───► 【路线 A】升级 JetPack 6.1 + 官方 vLLM 容器
-                              │
-【当前处于 JetPack 5 宿主机】──┼── 车载封闭不刷机 ──► 【路线 B】纯 C++/CUDA 引擎 (llama.cpp / GGUF)
-                              │
-                              └── 即刻上线保交付 ──► 【路线 C】Qwen2-VL-2B + Transformers 4.46.3
-```
+![JetPack 5 宿主机三条落地路线](/images/blog/three-routes.svg)
+*决策维度只有一个：这台车载工控机，允不允许动它的操作系统。*
 
 1. **路线 A（推荐长线演进）**：升级 JetPack 6.1 + vLLM 官方镜像，享受 PagedAttention 算子加速，Qwen3-VL 毫秒级推理；
 2. **路线 B（免刷机高精度）**：编译 llama.cpp，指定 Ampere 架构硬加速（`CUDA_ARCHITECTURES=87`），显存仅需 3.5GB；
