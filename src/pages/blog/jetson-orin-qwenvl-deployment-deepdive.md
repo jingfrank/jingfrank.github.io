@@ -25,8 +25,9 @@ date: "2026-08-27"
   - [坑点 5：PyPI 自动依赖解析拉错轮子](#坑点-5pypi-自动依赖解析拉错轮子)
   - [坑点 6：Transformers 与 Qwen 系列的代际版本锁](#坑点-6transformers-与-qwen-系列的代际版本锁)
   - [坑点 7：多路 4K RTSP 拉流导致 FFmpeg 管道死锁与僵尸进程失控](#坑点-7多路-4k-rtsp-拉流导致-ffmpeg-管道死锁与僵尸进程失控)
-- [四、选型：三条落地路线](#四选型三条落地路线)
-- [五、承上启下：从硬件避坑走向算法与推理攻坚](#五承上启下从硬件避坑走向算法与推理攻坚)
+- [四、车载存储自治：端-车-NAS 分级存储与 80%➔60% 双水位淘汰闭环](#四车载存储自治端-车-nas-分级存储与-8060-双水位淘汰闭环)
+- [五、选型：三条落地路线](#五选型三条落地路线)
+- [六、承上启下：从硬件避坑走向算法与推理攻坚](#六承上启下从硬件避坑走向算法与推理攻坚)
 
 ---
 
@@ -445,7 +446,111 @@ class IndustrialRTSPWorker:
 
 ---
 
-## 四、选型：三条落地路线
+## 四、车载存储自治：端-车-NAS 分级存储与 80%➔60% 双水位淘汰闭环
+
+在高速动车组车载环境中，AI 系统面临着另一个常被忽视的物理红线——**工控机本地存储极度紧缺与视频/诊断大图海量爆发的结构性矛盾**：
+- **工控机存储告急**：Jetson Orin AGX 板载 eMMC 仅 54GB（扣除 Ubuntu OS、CUDA 驱动、Docker 镜像与大模型权重后，可用空间不足 10GB）；
+- **数据吞吐巨大**：4 路车顶 4K 工业相机连续录制切片视频，配合 VLM 阶段性抓拍的 4K 结构化诊断原图，单日产生的数据量高达数百 GB。若直接堆积在工控机本地，几小时内便会引发 `No space left on device`，导致 Docker 崩溃、TensorRT 引擎反序列化失败以及系统死锁。
+
+为此，我们在 `ftp_uploader.py` 中设计了 **「端-车-NAS 分级存储架构与容量自治管理机制」**：
+
+```text
+┌─────────────────────────────────────────────────────────────┐
+│  Jetson Orin AGX 车载工控机 (本地存储零积压)                │
+│  - 4K 切片视频生成 (segment_recorder.py)                    │
+│  - VLM 阶段诊断大图生成 (Algo-result)                      │
+│  - 异步上传 Worker: upload_and_delete()                     │
+│  - 上传成功即刻原子删除本地文件 ──► 本地磁盘使用率始终 < 10%│
+└──────────────────────────────┬──────────────────────────────┘
+                               │ FTP (被动模式 PASV / 线程安全连接池)
+                               ▼
+┌─────────────────────────────────────────────────────────────┐
+│  车载 NAS 集中存储 (720GB NVMe/SATA 阵列)                   │
+│  - 运行目录: /nvme1/Algo-result                             │
+│                                                             │
+│  ┌───────────────────────────────────────────────────────┐  │
+│  │ 80% 高水位触发 (576GB) ──► 启动 FIFO 时间戳递归淘汰   │  │
+│  │                                 │                     │  │
+│  │                                 ▼                     │  │
+│  │ 60% 低水位回落 (432GB) ──► 停止淘汰并递归修剪空目录   │  │
+│  └───────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### 1. 核心机制一：`upload_and_delete` 本地零积压外溢
+工控机本地只做短暂的内存与切片中转。一旦文件生成完毕，异步工作线程立即将其推送到车载 NAS，并严格校验上传结果。只有确认 NAS 完整接收并落盘后，才原子执行 `os.remove(local_path)` 释放本地 inode 与数据块：
+
+```python
+def upload_and_delete(self, local_path: str, remote_path: str) -> bool:
+    """上传到 NAS 成功后立即删除容器内本地文件，确保工控机本地零积压"""
+    ok = self.upload_file(local_path, remote_path)
+    if not ok:
+        return False
+    try:
+        os.remove(local_path)
+        print(f"[FTP] 已删除容器本地文件: {local_path}")
+        return True
+    except OSError as e:
+        print(f"[FTP] 上传成功但删除本地失败: {local_path}, 错误: {e}")
+        return False
+```
+
+### 2. 核心机制二：NAS 远程 80% ➔ 60% 双水位 FIFO 容量淘汰算法
+车载 NAS（如 720GB）并非无限容量，在长期 7×24 小时无人值守运行下同样会写满。传统方案往往依赖外部数据库记录文件生命周期，但在车载恶劣断电环境下数据库极易损坏。我们设计了**基于文件路径天然时间戳排序的无数据库自治淘汰引擎**：
+
+```python
+class FtpUploader:
+    def __init__(self, ftp_cfg: dict):
+        self.cleanup_threshold = float(ftp_cfg.get("cleanup_threshold", 0.80))       # 80% 触发清理
+        self.cleanup_target_ratio = float(ftp_cfg.get("cleanup_target_ratio", 0.60)) # 60% 清理目标
+        self.max_storage_size_gb = float(ftp_cfg.get("max_storage_size_gb", 720.0))  # NAS 容量 720GB
+        self.clean_paths = ftp_cfg.get("clean_paths", ["nvme1/Algo-result"])
+        self._lock = threading.Lock()
+
+    def run_remote_capacity_cleanup(self):
+        """按容量双水位阈值自治清理 NAS 远程磁盘"""
+        max_bytes = int(self.max_storage_size_gb * (1024 ** 3))
+        cleanup_threshold_bytes = max_bytes * self.cleanup_threshold   # 576 GB
+        cleanup_target_bytes = max_bytes * self.cleanup_target_ratio     # 432 GB
+
+        with self._lock:
+            ftp = self._connect()
+            try:
+                for base_clean_path in self.clean_paths:
+                    all_files = []
+                    # 递归遍历远程 FTP 目录收集文件大小与路径
+                    self._collect_ftp_files_recursive(ftp, base_clean_path, all_files)
+                    
+                    total_bytes = sum(f["size"] for f in all_files)
+                    if total_bytes >= cleanup_threshold_bytes:
+                        # 核心设计：路径天然包含时间戳 (如 .../2026-08-27/142000_cam01.mp4)
+                        # 直接按路径升序排序，严格保证最旧的文件排在最前面进行 FIFO 淘汰
+                        all_files.sort(key=lambda x: x["path"])
+
+                        for file_info in all_files:
+                            if total_bytes <= cleanup_target_bytes:
+                                break  # 成功回落至 60% 以下，立即终止淘汰
+                            try:
+                                ftp.delete("/" + file_info["path"])
+                                total_bytes -= file_info["size"]
+                            except Exception as e:
+                                print(f"[FTP-Clean] 删除远程文件失败: {e}")
+
+                        # 递归深度修剪无文件的空日期目录
+                        self._remove_empty_ftp_dirs(ftp, base_clean_path)
+            finally:
+                ftp.quit()
+```
+
+### 3. 工业级设计细节与收益
+1. **轻量无状态（Stateless & Zero-DB）**：无需引入 Redis/MySQL，直接利用规范化的时间目录路径（`YYYY-MM-DD/HHMMSS.mp4`）完成字符串级自然时序排序，天然抵御非正常断电导致的数据索引损坏；
+2. **防网络与防火墙阻断**：显式配置 `set_pasv(True)` 被动模式传输，适配车载专用交换机与网关防火墙的端口隔离策略；
+3. **空目录级联修剪（`_remove_empty_ftp_dirs`）**：淘汰文件的同时递归向上删除空的日期目录，防止几万个空文件夹造成 NAS 系统的 `inode` 耗尽与文件检索变慢；
+4. **端到端 7×24h 零维护闭环**：工控机磁盘占用率常年稳定在 8% 以下，NAS 容量常年维持在 60%~80% 的健康动态平衡区间。
+
+---
+
+## 五、选型：三条落地路线
 
 ![JetPack 5 宿主机三条落地路线](/images/blog/three-routes.svg)
 *决策维度只有一个：这台车载工控机，允不允许动它的操作系统。*
@@ -456,7 +561,7 @@ class IndustrialRTSPWorker:
 
 ---
 
-## 五、承上启下：从硬件避坑走向算法与推理攻坚
+## 六、承上启下：从硬件避坑走向算法与推理攻坚
 
 解决了边缘端“能不能跑”的基础环境问题后，我们迎来了真正的工业级核心挑战：
 
