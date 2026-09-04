@@ -23,8 +23,9 @@ date: "2026-09-04"
   - [2. 官方 Jetson IoT 底座选型机理](#2-官方-jetson-iot-底座选型机理)
   - [3. 一体化 Dockerfile 与 AWQ 权重内嵌权衡](#3-一体化-dockerfile-与-awq-权重内嵌权衡)
 - [三、Tegra 统一内存（UMA）与容器资源调度](#三tegra-统一内存uma与容器资源调度)
-  - [1. 物理内存共享下的 OOM-Killer 风险](#1-物理内存共享下的-oom-killer-风险)
-  - [2. 关键启动参数：内存利用率与 Eager 模式](#2-关键启动参数内存利用率与-eager-模式)
+  - [1. Jetson Orin 全系列官方技术规格对比 (Technical Specifications)](#1-jetson-orin-全系列官方技术规格对比-technical-specifications)
+  - [2. 物理内存共享下的 OOM-Killer 风险](#2-物理内存共享下的-oom-killer-风险)
+  - [3. 关键启动参数：内存利用率与 Eager 模式](#3-关键启动参数内存利用率与-eager-模式)
 - [四、容器进程守护与生命周期治理 (entrypoint.sh 深度拆解)](#四容器进程守护与生命周期治理-entrypointsh-深度拆解)
   - [1. 生产级探针机制 (Healthcheck Probe)](#1-生产级探针机制-healthcheck-probe)
   - [2. 信号捕获与优雅退出 (Trap Signal)](#2-信号捕获与优雅退出-trap-signal)
@@ -146,7 +147,27 @@ ENTRYPOINT ["/app/deploy/orin/entrypoint.sh"]
 
 ## 三、Tegra 统一内存（UMA）与容器资源调度
 
-### 1. 物理内存共享下的 OOM-Killer 风险
+### 1. Jetson Orin 全系列官方技术规格对比 (Technical Specifications)
+
+以下为 NVIDIA 官方公布的 Jetson Orin 家族全系列核心硬件技术规格（源自 [NVIDIA 官方页面](https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/)）：
+
+| 规格参数 | Jetson AGX Orin 64GB | Jetson AGX Orin Industrial | Jetson AGX Orin 32GB | Jetson Orin NX 16GB | Jetson Orin NX 8GB | Jetson Orin Nano 8GB | Jetson Orin Nano 4GB |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **AI 算力** | **275 TOPS** | **248 TOPS** | **241 TOPS** | **157 TOPS** | **117 TOPS** | **67 TOPS** | **34 TOPS** |
+| **GPU 架构** | 2048 核 Ampere (64 Tensor Cores) | 2048 核 Ampere (64 Tensor Cores) | 1792 核 Ampere (56 Tensor Cores) | 1024 核 Ampere (32 Tensor Cores) | 1024 核 Ampere (32 Tensor Cores) | 1024 核 Ampere (32 Tensor Cores) | 512 核 Ampere (16 Tensor Cores) |
+| **GPU 最大主频** | 1.3 GHz | 1.2 GHz | 1.3 GHz | 1173 MHz | 1173 MHz | 1020 MHz | 1020 MHz |
+| **CPU 架构** | 12 核 Cortex-A78AE (3MB L2 + 6MB L3) | 12 核 Cortex-A78AE (3MB L2 + 6MB L3) | 8 核 Cortex-A78AE (2MB L2 + 4MB L3) | 8 核 Cortex-A78AE (2MB L2 + 4MB L3) | 6 核 Cortex-A78AE (1.5MB L2 + 4MB L3) | 6 核 Cortex-A78AE (1.5MB L2 + 4MB L3) | 6 核 Cortex-A78AE (1.5MB L2 + 4MB L3) |
+| **CPU 最大主频** | 2.2 GHz | 2.0 GHz | 2.2 GHz | 2.0 GHz | 2.0 GHz | 1.7 GHz | 1.7 GHz |
+| **深度学习加速器** | 2x NVDLA v2 (1.6 GHz) | 2x NVDLA v2 (1.4 GHz) | 2x NVDLA v2 (1.23 GHz) | 1x NVDLA v2 | 1x NVDLA v2 | - | - |
+| **视觉加速器** | 1x PVA v2 | 1x PVA v2 | 1x PVA v2 | - | - | - | - |
+| **统一内存 (UMA)** | **64GB LPDDR5 (204.8 GB/s)** | **64GB LPDDR5 (+ECC, 204.8 GB/s)** | **32GB LPDDR5 (204.8 GB/s)** | **16GB LPDDR5 (102.4 GB/s)** | **8GB LPDDR5 (102.4 GB/s)** | **8GB LPDDR5 (102 GB/s)** | **4GB LPDDR5 (51 GB/s)** |
+| **内部存储** | 64GB eMMC 5.1 | 64GB eMMC 5.1 | 64GB eMMC 5.1 | 外接 NVMe | 外接 NVMe | 外接 NVMe / SD | 外接 NVMe |
+| **视频编码** | 2x 4K60, 4x 4K30, 8x 1080p60 (H.265) | 1x 4K60, 3x 4K30, 7x 1080p60 (H.265) | 1x 4K60, 3x 4K30, 6x 1080p60 (H.265) | 1x 4K60, 3x 4K30, 6x 1080p60 (H.265) | 1x 4K60, 3x 4K30, 6x 1080p60 (H.265) | 1080p30 (CPU软编) | 1080p30 (CPU软编) |
+| **视频解码** | 1x 8K30, 3x 4K60, 11x 1080p60 (H.265) | 1x 8K30, 3x 4K60, 11x 1080p60 (H.265) | 1x 8K30, 2x 4K60, 9x 1080p60 (H.265) | 1x 8K30, 2x 4K60, 9x 1080p60 (H.265) | 1x 8K30, 2x 4K60, 9x 1080p60 (H.265) | 1x 4K60, 5x 1080p60 (H.265) | 1x 4K60, 5x 1080p60 (H.265) |
+| **功耗范围** | **15W - 60W** | **15W - 75W** | **15W - 60W** | **10W - 25W (最高40W)** | **10W - 25W (最高40W)** | **7W - 15W (最高25W)** | **7W - 10W (最高25W)** |
+| **物理模块尺寸** | 100mm x 87mm (699-pin Molex) | 100mm x 87mm (699-pin Molex) | 100mm x 87mm (699-pin Molex) | 69.6mm x 45mm (260-pin SO-DIMM) | 69.6mm x 45mm (260-pin SO-DIMM) | 69.6mm x 45mm (260-pin SO-DIMM) | 69.6mm x 45mm (260-pin SO-DIMM) |
+
+### 2. 物理内存共享下的 OOM-Killer 风险
 
 与台式机独立显卡（如 24GB 独立显存 + 64GB 内存）完全不同，**Jetson AGX Orin 采用的是统一内存架构（Unified Memory Architecture, UMA）**。64GB 的物理 LPDDR5 内存池是由 CPU、GPU 和多媒体硬件编解码器共同共享的。
 
