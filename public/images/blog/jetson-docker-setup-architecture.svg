@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 760" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/>
+    </marker>
+    <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#16a34a"/>
+    </marker>
+    <linearGradient id="grad-dev" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#eff6ff" />
+      <stop offset="100%" stop-color="#f8fafc" />
+    </linearGradient>
+    <linearGradient id="grad-jetson" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f0fdf4" />
+      <stop offset="100%" stop-color="#f8fafc" />
+    </linearGradient>
+  </defs>
+
+  <!-- background -->
+  <rect x="0.5" y="0.5" width="959" height="759" rx="10" fill="#ffffff" stroke="#e2e8f0"/>
+
+  <!-- Title Header -->
+  <rect x="220" y="16" width="520" height="42" rx="8" fill="#0f172a"/>
+  <text x="480" y="42" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">Jetson AGX Orin 工业级 Docker 容器化与全离线交付流水线</text>
+
+  <!-- Part 1: Dev Workstation (x86 Cross-Building) -->
+  <rect x="60" y="74" width="840" height="210" rx="10" fill="url(#grad-dev)" stroke="#3b82f6" stroke-width="1.5"/>
+  <rect x="84" y="88" width="180" height="24" rx="12" fill="#2563eb"/>
+  <text x="174" y="105" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">阶段一：开发端跨架构打包</text>
+  <text x="280" y="105" font-size="13" font-weight="600" fill="#1e3a8a">x86_64 工作站 ➔ ARM64 (aarch64) 异构拉取与一键构建</text>
+
+  <!-- Dev Box 1: Skopeo -->
+  <rect x="84" y="126" width="240" height="136" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <rect x="96" y="138" width="120" height="20" rx="4" fill="#dbeafe"/>
+  <text x="156" y="152" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">1. Skopeo 异构分层拉取</text>
+  <text x="96" y="178" font-size="11" fill="#334155">• <tspan font-family="monospace">--override-arch arm64</tspan></text>
+  <text x="96" y="198" font-size="11" fill="#334155">• 绕过 x86 Docker 架构拦截</text>
+  <text x="96" y="218" font-size="11" fill="#334155">• 断点续传同步至 dir 缓存目录</text>
+  <text x="96" y="238" font-size="11" fill="#16a34a">✓ 固化为 vllm_jetson_base.tar</text>
+
+  <!-- Dev Box 2: Buildx & Pre-bake -->
+  <rect x="360" y="126" width="240" height="136" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <rect x="372" y="138" width="130" height="20" rx="4" fill="#dbeafe"/>
+  <text x="437" y="152" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">2. Docker Buildx 打包</text>
+  <text x="372" y="178" font-size="11" fill="#334155">• 官方底座：L4T r36.4 + CUDA 12.6</text>
+  <text x="372" y="198" font-size="11" fill="#334155">• 预置 Qwen3-VL AWQ 4-bit 权重</text>
+  <text x="372" y="218" font-size="11" fill="#334155">• 编译注入 Tegra SM87 内核</text>
+  <text x="372" y="238" font-size="11" fill="#16a34a">✓ 生成 pantograph-vllm-orin:v1.0</text>
+
+  <!-- Dev Box 3: Docker Save -->
+  <rect x="636" y="126" width="240" height="136" rx="8" fill="#ffffff" stroke="#cbd5e1"/>
+  <rect x="648" y="138" width="130" height="20" rx="4" fill="#dbeafe"/>
+  <text x="713" y="152" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">3. 全离线归档导出</text>
+  <text x="648" y="178" font-size="11" fill="#334155">• 执行 <tspan font-family="monospace">docker save -o</tspan></text>
+  <text x="648" y="198" font-size="11" fill="#334155">• 剥离一切外部公网依赖</text>
+  <text x="648" y="218" font-size="11" fill="#334155">• 交付件：单一离线 tar 归档包</text>
+  <text x="648" y="238" font-size="11" fill="#16a34a">✓ 交付件具备 100% 幂等可复制</text>
+
+  <!-- Air-gapped Barrier -->
+  <rect x="60" y="296" width="840" height="42" rx="6" fill="#fef2f2" stroke="#f87171" stroke-dasharray="6,4"/>
+  <text x="480" y="322" text-anchor="middle" font-size="13" font-weight="700" fill="#b91c1c">🔒 动车组物理隔离屏障：机柜完全断网 · 零公网连接 · 离线 U 盘/移动硬盘物理介质导入</text>
+
+  <!-- Part 2: Edge Jetson Deployment -->
+  <rect x="60" y="350" width="840" height="340" rx="10" fill="url(#grad-jetson)" stroke="#16a34a" stroke-width="1.5"/>
+  <rect x="84" y="364" width="200" height="24" rx="12" fill="#16a34a"/>
+  <text x="184" y="381" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">阶段二：Jetson AGX Orin 落地</text>
+  <text x="300" y="381" font-size="13" font-weight="600" fill="#14532d">统一内存架构 (UMA) 资源调度与 entrypoint 容器进程治理</text>
+
+  <!-- Jetson Grid 1: Container Runtime -->
+  <rect x="84" y="402" width="250" height="150" rx="8" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="96" y="426" font-size="13" font-weight="700" fill="#15803d">① 边缘底座与运行时环境</text>
+  <text x="96" y="450" font-size="12" fill="#334155">• <tspan font-family="monospace">--runtime=nvidia</tspan> 驱动直通</text>
+  <text x="96" y="472" font-size="12" fill="#334155">• <tspan font-family="monospace">--network host</tspan> 零 NAT 损耗</text>
+  <text x="96" y="494" font-size="12" fill="#475569">  直连 RTSP 25 FPS 与 UDP 0xFF 0x20</text>
+  <text x="96" y="516" font-size="12" fill="#334155">• NVMe 挂载：<tspan font-family="monospace">/hirain/.../Algo-result</tspan></text>
+  <text x="96" y="536" font-size="12" fill="#334155">• 时区双向同步：<tspan font-family="monospace">/etc/localtime:ro</tspan></text>
+
+  <!-- Jetson Grid 2: UMA Memory Budget -->
+  <rect x="354" y="402" width="250" height="150" rx="8" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="366" y="426" font-size="13" font-weight="700" fill="#15803d">② Tegra 统一内存 (UMA) 管控</text>
+  <text x="366" y="450" font-size="12" fill="#334155">• 64GB CPU/GPU 共享物理物理池</text>
+  <text x="366" y="472" font-size="12" fill="#334155">• <tspan font-family="monospace">--gpu-memory-utilization 0.8</tspan></text>
+  <text x="366" y="494" font-size="12" fill="#475569">  留足 20% 规避 Linux OOM-Killer</text>
+  <text x="366" y="516" font-size="12" fill="#334155">• <tspan font-family="monospace">--enforce-eager</tspan> 节省显存预热</text>
+  <text x="366" y="536" font-size="12" fill="#334155">• AWQ-4bit：显存压缩至仅 3.5 GB</text>
+
+  <!-- Jetson Grid 3: Entrypoint Supervisor -->
+  <rect x="624" y="402" width="256" height="150" rx="8" fill="#ffffff" stroke="#bbf7d0"/>
+  <text x="636" y="426" font-size="13" font-weight="700" fill="#15803d">③ entrypoint 进程治理与探针</text>
+  <text x="636" y="450" font-size="12" fill="#334155">• 后台拉起 vllm serve 核心服务</text>
+  <text x="636" y="472" font-size="12" fill="#334155">• 生产级就绪探针 (Health Probe):</text>
+  <text x="636" y="494" font-size="12" fill="#475569">  轮询 <tspan font-family="monospace">curl /v1/models</tspan> 等待就绪</text>
+  <text x="636" y="516" font-size="12" fill="#334155">• 信号陷阱：<tspan font-family="monospace">trap cleanup SIGTERM</tspan></text>
+  <text x="636" y="536" font-size="12" fill="#16a34a">✓ 优雅销毁，绝无僵尸显存泄露</text>
+
+  <!-- One-Click Deploy Script -->
+  <rect x="84" y="568" width="796" height="106" rx="8" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="100" y="592" font-size="13" font-weight="700" fill="#166534">🚀 边缘端极简交付：一键装机命令 (Zero Configuration)</text>
+  <rect x="100" y="604" width="764" height="34" rx="4" fill="#0f172a"/>
+  <text x="114" y="626" font-family="monospace" font-size="12" fill="#38bdf8">sudo chmod +x deploy_on_jetson.sh &amp;&amp; sudo ./deploy_on_jetson.sh pantograph-vllm-orin-v1.0.tar</text>
+  <text x="100" y="658" font-size="12" fill="#15803d">自动完成：镜像 load ➔ 旧容器原子平滑替换 ➔ NVMe 存储挂载 ➔ 状态机与探针启动</text>
+
+  <!-- Bottom Footer -->
+  <text x="480" y="736" text-anchor="middle" font-size="12" fill="#64748b">从 x86 异构交叉打包到车载 Jetson 边缘机柜全离线装机，实现高可靠 100% 确定性交付</text>
+</svg>
