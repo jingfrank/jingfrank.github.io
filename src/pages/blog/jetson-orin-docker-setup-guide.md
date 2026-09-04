@@ -96,7 +96,7 @@ skopeo copy \
 NVIDIA 官方给出的嵌入式软件全栈架构（NVIDIA Embedded Software Stack）清晰展示了从硬件层到应用层的完整层次结构：
 
 ![NVIDIA Embedded Software Stack](/images/blog/nvidia-embedded-software-stack.svg)
-*图 2：NVIDIA 官方 Jetson 嵌入式软件全栈架构（从底层 BSP、CUDA-X 算子库到上层生成式 AI 与容器运行时）*
+*图 2：NVIDIA 官方 Jetson 嵌入式软件全栈架构（图片源自 [NVIDIA Embedded Systems 官方主页](https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/)，官方高清矢量图见 [embedded-jetson-robotics-diagram.svg](https://www.nvidia.com/content/dam/en-zz/Solutions/intelligent-machines/embedded-systems/embedded-jetson-robotics-diagram.svg)）*
 
 从上图可以看出，Jetson 的软件栈深度依赖于底层的 **Jetson Linux (L4T)** 和系统级硬件加速库（CUDA 12.x、cuDNN、TensorRT、VPI）。如果使用非针对 Tegra 优化的普通 Docker 镜像，不仅无法调用 SM87 的 Tensor Core 进行量化加速，甚至在容器启动时就会因缺少 Tegra 驱动用户态挂载而直接报错。
 
@@ -149,7 +149,7 @@ ENTRYPOINT ["/app/deploy/orin/entrypoint.sh"]
 
 ### 1. Jetson Orin 全系列官方技术规格对比 (Technical Specifications)
 
-以下为 NVIDIA 官方公布的 Jetson Orin 家族全系列核心硬件技术规格（源自 [NVIDIA 官方页面](https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/)）：
+以下为 NVIDIA 官方公布的 Jetson Orin 家族全系列核心硬件技术规格（完整参数矩阵源自 [NVIDIA Jetson Orin Technical Specifications 官方页面](https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/)）：
 
 | 规格参数 | Jetson AGX Orin 64GB | Jetson AGX Orin Industrial | Jetson AGX Orin 32GB | Jetson Orin NX 16GB | Jetson Orin NX 8GB | Jetson Orin Nano 8GB | Jetson Orin Nano 4GB |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
