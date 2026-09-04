@@ -4,6 +4,13 @@ import Base from '../../layouts/Base.astro';
 // 博客文章列表
 const posts = [
   {
+    slug: 'jetson-orin-docker-setup-guide',
+    title: '【系列五】Jetson AGX Orin 生产级 Docker 容器化与全离线交付实战',
+    date: '2026-09-04',
+    tag: '边缘计算 / Docker 实战',
+    description: '深入复盘高铁车载机柜无公网受限环境下，NVIDIA Jetson AGX Orin 生产级 Docker 容器化落地全流程：用 Skopeo 突破 x86-ARM 跨架构拉取与离线封包、统一内存 UMA 显存配额治理、entrypoint 探针与信号看门狗，以及现场一键部署避坑实操。',
+  },
+  {
     slug: 'vllm-inference-acceleration-benchmark',
     title: '【系列三】从 5.5s 到 1.06s：基于 vLLM 与推测并发的高性能推理优化实战',
     date: '2026-08-27',
