@@ -59,7 +59,9 @@ date: "2026-09-04"
 
 ### 1. 用 Skopeo 突破异构架构拉取限制
 
-当在 x86 机器上执行 `docker pull ghcr.io/nvidia-ai-iot/vllm:r36.4.tegra-aarch64-cu126-22.04` 时，Docker 守护进程会默认尝试匹配 `linux/amd64` 清单并报错退出。
+当在 x86 机器上尝试拉取 NVIDIA 官方 Jetson 专属镜像（发布于 [GitHub Packages: nvidia-ai-iot/vllm](https://github.com/orgs/nvidia-ai-iot/packages/container/package/vllm)）：
+`docker pull ghcr.io/nvidia-ai-iot/vllm:r36.4.tegra-aarch64-cu126-22.04`
+此时 Docker 守护进程会默认尝试匹配 `linux/amd64` 清单并报错退出。
 
 我们采用专业容器工具 **Skopeo**，通过强制覆盖目标架构参数，实现了多架构分层的断点续传与本地镜像封包：
 
@@ -100,8 +102,9 @@ NVIDIA 官方给出的嵌入式软件全栈架构（NVIDIA Embedded Software Sta
 
 从上图可以看出，Jetson 的软件栈深度依赖于底层的 **Jetson Linux (L4T)** 和系统级硬件加速库（CUDA 12.x、cuDNN、TensorRT、VPI）。如果使用非针对 Tegra 优化的普通 Docker 镜像，不仅无法调用 SM87 的 Tensor Core 进行量化加速，甚至在容器启动时就会因缺少 Tegra 驱动用户态挂载而直接报错。
 
-因此，我们选用了 NVIDIA 官方维护的专属容器底座：
+因此，我们选用了 NVIDIA 官方维护的专属容器底座（详见 [GitHub Packages: nvidia-ai-iot/vllm 容器仓库](https://github.com/orgs/nvidia-ai-iot/packages/container/package/vllm)）：
 `ghcr.io/nvidia-ai-iot/vllm:r36.4.tegra-aarch64-cu126-22.04`
+* **容器镜像托管地址**：[nvidia-ai-iot/vllm (GitHub Packages)](https://github.com/orgs/nvidia-ai-iot/packages/container/package/vllm)
 * **操作系统**：Ubuntu 22.04 aarch64
 * **JetPack 版本**：JetPack 6.x (L4T r36.4)
 * **CUDA / cuDNN**：CUDA 12.6 + 专为 Orin SM87 编译优化的 vLLM 核心轮子
