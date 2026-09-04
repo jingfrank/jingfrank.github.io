@@ -92,11 +92,18 @@ skopeo copy \
 
 在基础镜像选型上，千万不能使用社区通用的 x86 版 `vllm/vllm-openai:latest`。Jetson 采用的是 Tegra 架构 SoC，其 GPU 架构为 Ampere（SM87），算子编译需要绑定特定的 Tegra 驱动桩和统一内存（UMA）补丁。
 
-我们选用了 NVIDIA 官方维护的容器底座：
+NVIDIA 官方给出的嵌入式软件全栈架构（NVIDIA Embedded Software Stack）清晰展示了从硬件层到应用层的完整层次结构：
+
+![NVIDIA Embedded Software Stack](/images/blog/nvidia-embedded-software-stack.svg)
+*图 2：NVIDIA 官方 Jetson 嵌入式软件全栈架构（从底层 BSP、CUDA-X 算子库到上层生成式 AI 与容器运行时）*
+
+从上图可以看出，Jetson 的软件栈深度依赖于底层的 **Jetson Linux (L4T)** 和系统级硬件加速库（CUDA 12.x、cuDNN、TensorRT、VPI）。如果使用非针对 Tegra 优化的普通 Docker 镜像，不仅无法调用 SM87 的 Tensor Core 进行量化加速，甚至在容器启动时就会因缺少 Tegra 驱动用户态挂载而直接报错。
+
+因此，我们选用了 NVIDIA 官方维护的专属容器底座：
 `ghcr.io/nvidia-ai-iot/vllm:r36.4.tegra-aarch64-cu126-22.04`
 * **操作系统**：Ubuntu 22.04 aarch64
 * **JetPack 版本**：JetPack 6.x (L4T r36.4)
-* **CUDA / cuDNN**：CUDA 12.6 + 专为 Orin 优化的 vLLM 核心轮子
+* **CUDA / cuDNN**：CUDA 12.6 + 专为 Orin SM87 编译优化的 vLLM 核心轮子
 
 ### 3. 一体化 Dockerfile 与 AWQ 权重内嵌权衡
 
