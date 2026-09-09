@@ -1,0 +1,229 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 880" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif">
+  <defs>
+    <marker id="arr-gray" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#64748b"/>
+    </marker>
+    <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#0284c7"/>
+    </marker>
+    <marker id="arr-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#dc2626"/>
+    </marker>
+    <marker id="arr-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#16a34a"/>
+    </marker>
+    <linearGradient id="header-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Canvas Background -->
+  <rect x="0.5" y="0.5" width="999" height="879" rx="12" fill="#ffffff" stroke="#e2e8f0"/>
+
+  <!-- Top Title Banner -->
+  <rect x="20" y="16" width="960" height="64" rx="8" fill="url(#header-grad)"/>
+  <text x="40" y="44" font-size="18" font-weight="700" fill="#ffffff">动车组“弓网智能分析系统”全景架构与演进矩阵</text>
+  <text x="40" y="66" font-size="12" fill="#94a3b8">对标行业商用标准（华启 HQ-TSW-PIA-01A 规范）· 车载物理拓扑 · 5大故障闭环 · 四代算法演进</text>
+
+  <!-- ================= SECTION 1: 车载物理与网络拓扑 ================= -->
+  <rect x="20" y="92" width="960" height="210" rx="10" fill="#f8fafc" stroke="#cbd5e1"/>
+  <rect x="36" y="104" width="220" height="22" rx="4" fill="#0284c7"/>
+  <text x="146" y="119" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">Part 1. 车载硬件与网络系统拓扑</text>
+
+  <!-- Roof Unit -->
+  <rect x="36" y="136" width="170" height="150" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-dasharray="3 3"/>
+  <rect x="46" y="146" width="150" height="24" rx="4" fill="#f1f5f9"/>
+  <text x="121" y="162" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">车顶高压接触网区</text>
+  <text x="48" y="190" font-size="11" font-weight="600" fill="#0f172a">📹 车顶受电弓摄像机</text>
+  <text x="48" y="208" font-size="10" fill="#64748b">• 扁平/红外双光高速相机</text>
+  <text x="48" y="224" font-size="10" fill="#64748b">• 预置位锁定 (Preset Gating)</text>
+  <text x="48" y="240" font-size="10" fill="#64748b">• 25 FPS 高清 RTSP 视频流</text>
+  <text x="48" y="265" font-size="10" fill="#0284c7">⚡ 350 km/h 动态受流</text>
+
+  <!-- Arrow to Switch -->
+  <line x1="206" y1="211" x2="242" y2="211" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr-gray)"/>
+  <text x="224" y="203" text-anchor="middle" font-size="9" fill="#64748b">网线</text>
+
+  <!-- Switch Box -->
+  <rect x="246" y="136" width="150" height="150" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+  <rect x="256" y="146" width="130" height="24" rx="4" fill="#f1f5f9"/>
+  <text x="321" y="162" text-anchor="middle" font-size="12" font-weight="700" fill="#334155">车载交换机 (中车统型)</text>
+  <text x="258" y="190" font-size="11" font-weight="600" fill="#0f172a">🔀 列车以太环网</text>
+  <text x="258" y="208" font-size="10" fill="#64748b">• 千兆工业环网协议</text>
+  <text x="258" y="224" font-size="10" fill="#64748b">• POE 供电 / VLAN 隔离</text>
+  <text x="258" y="240" font-size="10" fill="#64748b">• QoS 高优先级队列</text>
+  <text x="258" y="265" font-size="10" fill="#16a34a">🛡️ 满足 EN 50155 标准</text>
+
+  <!-- Arrow to Orin & NVR -->
+  <line x1="396" y1="180" x2="434" y2="180" stroke="#0284c7" stroke-width="1.5" marker-end="url(#arr-blue)"/>
+  <line x1="396" y1="245" x2="434" y2="245" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr-gray)"/>
+
+  <!-- Core Analysis Host (Orin) -->
+  <rect x="438" y="136" width="240" height="150" rx="8" fill="#eff6ff" stroke="#0284c7" stroke-width="1.8"/>
+  <rect x="448" y="146" width="220" height="24" rx="4" fill="#0284c7"/>
+  <text x="558" y="162" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">智能分析主机 (核心算力)</text>
+  <text x="450" y="190" font-size="11" font-weight="600" fill="#0f172a">🧠 1U 车载工控 / Jetson AGX Orin</text>
+  <text x="450" y="208" font-size="10" fill="#334155">• FastAD 45ms 单类无监督初筛网关</text>
+  <text x="450" y="224" font-size="10" fill="#334155">• 空间时序状态机 (消抖 / 熔断 / 脏污自愈)</text>
+  <text x="450" y="240" font-size="10" fill="#334155">• Qwen3-VL 开放多模态异步深度研判</text>
+  <text x="450" y="265" font-size="10" font-weight="600" fill="#0284c7">⚡ 统一内存 UMA 显存隔离 · 全离线 Docker</text>
+
+  <!-- NVR Unit -->
+  <rect x="702" y="136" width="116" height="68" rx="6" fill="#ffffff" stroke="#94a3b8"/>
+  <text x="760" y="156" text-anchor="middle" font-size="11" font-weight="600" fill="#0f172a">📼 车载 NVR-1U</text>
+  <text x="712" y="174" font-size="9" fill="#64748b">• 7×24h 原始码流存盘</text>
+  <text x="712" y="188" font-size="9" fill="#64748b">• 客室 CCTV 复用架构</text>
+
+  <!-- Downstream Devices: Screen & PHM -->
+  <line x1="678" y1="180" x2="838" y2="180" stroke="#dc2626" stroke-width="1.5" marker-end="url(#arr-red)"/>
+  <text x="758" y="222" text-anchor="middle" font-size="9" fill="#dc2626">UDP 0xFF 0x20 毫秒直报</text>
+
+  <rect x="842" y="136" width="124" height="68" rx="6" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5"/>
+  <text x="904" y="156" text-anchor="middle" font-size="11" font-weight="700" fill="#991b1b">🖥️ 司机室监控屏</text>
+  <text x="852" y="174" font-size="9" fill="#7f1d1d">• 10.4/12.1 寸触摸屏</text>
+  <text x="852" y="188" font-size="9" fill="#dc2626">• 紧急声光硬报警</text>
+
+  <line x1="678" y1="245" x2="838" y2="245" stroke="#16a34a" stroke-width="1.5" marker-end="url(#arr-green)"/>
+  <rect x="842" y="218" width="124" height="68" rx="6" fill="#f0fdf4" stroke="#16a34a"/>
+  <text x="904" y="238" text-anchor="middle" font-size="11" font-weight="700" fill="#166534">📊 车载 PHM / TCMS</text>
+  <text x="852" y="256" font-size="9" fill="#14532d">• 0x23 周期健康包</text>
+  <text x="852" y="270" font-size="9" fill="#16a34a">• 地面段修闭环管理</text>
+
+  <!-- ================= SECTION 2: 华启标准 5 大核心故障识别与防御闭环 ================= -->
+  <rect x="20" y="314" width="960" height="236" rx="10" fill="#f8fafc" stroke="#cbd5e1"/>
+  <rect x="36" y="326" width="240" height="22" rx="4" fill="#059669"/>
+  <text x="156" y="341" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">Part 2. 华启工业规范 5 大故障识别与量化硬指标</text>
+
+  <!-- Fault 1 -->
+  <rect x="36" y="358" width="176" height="176" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+  <rect x="46" y="368" width="80" height="18" rx="3" fill="#f59e0b"/>
+  <text x="86" y="381" text-anchor="middle" font-size="10" font-weight="700" fill="#ffffff">预警 Warning</text>
+  <text x="46" y="404" font-size="13" font-weight="700" fill="#0f172a">01. 大火花检测</text>
+  <text x="46" y="424" font-size="10" font-weight="600" fill="#b45309">标尺：面积 &gt; 1/20 弓头区</text>
+  <text x="46" y="440" font-size="10" font-weight="600" fill="#b45309">标尺：持续时长 &gt; 700 ms</text>
+  <text x="46" y="462" font-size="10" fill="#64748b">• 过滤正常刚柔微火花</text>
+  <text x="46" y="478" font-size="10" fill="#64748b">• 过分相区/断路器防误报</text>
+  <text x="46" y="494" font-size="10" fill="#64748b">• 动态自适应亮度直方图</text>
+  <text x="46" y="518" font-size="10" fill="#059669">✅ 归档 PHM 亚健康态</text>
+
+  <!-- Fault 2 -->
+  <rect x="224" y="358" width="176" height="176" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+  <rect x="234" y="368" width="80" height="18" rx="3" fill="#dc2626"/>
+  <text x="274" y="381" text-anchor="middle" font-size="10" font-weight="700" fill="#ffffff">报警 Alarm</text>
+  <text x="234" y="404" font-size="13" font-weight="700" fill="#0f172a">02. 受电弓倾斜</text>
+  <text x="234" y="424" font-size="10" font-weight="600" fill="#b91c1c">标尺：倾斜角度 &gt; 5°</text>
+  <text x="234" y="440" font-size="10" font-weight="600" fill="#b91c1c">标尺：持续时长 &gt; 3 s</text>
+  <text x="234" y="462" font-size="10" fill="#64748b">• 4 刚性铰点拓扑解耦</text>
+  <text x="234" y="478" font-size="10" fill="#64748b">• SO(2) 局部基准系不变性</text>
+  <text x="234" y="494" font-size="10" fill="#64748b">• 免疫车体过弯超高侧滚</text>
+  <text x="234" y="518" font-size="10" fill="#dc2626">🚨 触发司机室硬报警</text>
+
+  <!-- Fault 3 -->
+  <rect x="412" y="358" width="176" height="176" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+  <rect x="422" y="368" width="80" height="18" rx="3" fill="#dc2626"/>
+  <text x="462" y="381" text-anchor="middle" font-size="10" font-weight="700" fill="#ffffff">报警 Alarm</text>
+  <text x="422" y="404" font-size="13" font-weight="700" fill="#0f172a">03. 结构异常检测</text>
+  <text x="422" y="424" font-size="10" font-weight="600" fill="#b91c1c">标尺：特征不匹配 &gt; 3 s</text>
+  <text x="422" y="440" font-size="10" font-weight="600" fill="#b91c1c">范围：弓角缺失/滑板断裂</text>
+  <text x="422" y="462" font-size="10" fill="#64748b">• FastAD 空间流形突变捕捉</text>
+  <text x="422" y="478" font-size="10" fill="#64748b">• 碳滑板磨耗自适应公差</text>
+  <text x="422" y="494" font-size="10" fill="#64748b">• 解决极端缺乏正样本难题</text>
+  <text x="422" y="518" font-size="10" fill="#dc2626">🚨 触发司机室硬报警</text>
+
+  <!-- Fault 4 -->
+  <rect x="600" y="358" width="176" height="176" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+  <rect x="610" y="368" width="80" height="18" rx="3" fill="#dc2626"/>
+  <text x="650" y="381" text-anchor="middle" font-size="10" font-weight="700" fill="#ffffff">报警 Alarm</text>
+  <text x="610" y="404" font-size="13" font-weight="700" fill="#0f172a">04. 悬挂异物检测</text>
+  <text x="610" y="424" font-size="10" font-weight="600" fill="#b91c1c">标尺：尺寸 &gt; 10×10 cm</text>
+  <text x="610" y="440" font-size="10" font-weight="600" fill="#b91c1c">标尺：持续挂附 &gt; 3 s</text>
+  <text x="610" y="462" font-size="10" fill="#64748b">• 开集未知异物 100% 召回</text>
+  <text x="610" y="478" font-size="10" fill="#64748b">• 塑料袋/防尘网/风筝线/树枝</text>
+  <text x="610" y="494" font-size="10" fill="#64748b">• Qwen3-VL 点级定位与归因</text>
+  <text x="610" y="518" font-size="10" fill="#dc2626">🚨 触发司机室硬报警</text>
+
+  <!-- Fault 5 -->
+  <rect x="788" y="358" width="176" height="176" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+  <rect x="798" y="368" width="80" height="18" rx="3" fill="#64748b"/>
+  <text x="838" y="381" text-anchor="middle" font-size="10" font-weight="700" fill="#ffffff">自检 Self-Check</text>
+  <text x="798" y="404" font-size="13" font-weight="700" fill="#0f172a">05. 画面脏污自检</text>
+  <text x="798" y="424" font-size="10" font-weight="600" fill="#475569">标尺：无法识别弓头 &gt; 3 min</text>
+  <text x="798" y="440" font-size="10" font-weight="600" fill="#475569">处置：报预警并暂停分析</text>
+  <text x="798" y="462" font-size="10" fill="#64748b">• dirt_pending 观察态防闪烁</text>
+  <text x="798" y="478" font-size="10" fill="#64748b">• 全局频域能量/对比度跌落</text>
+  <text x="798" y="494" font-size="10" fill="#64748b">• 镜头清洗恢复后自愈重启</text>
+  <text x="798" y="518" font-size="10" fill="#0284c7">🔄 具备健康度降级与自愈</text>
+
+  <!-- ================= SECTION 3: 四代核心算法演进历程 ================= -->
+  <rect x="20" y="562" width="960" height="298" rx="10" fill="#f8fafc" stroke="#cbd5e1"/>
+  <rect x="36" y="574" width="230" height="22" rx="4" fill="#6366f1"/>
+  <text x="151" y="589" text-anchor="middle" font-size="12" font-weight="700" fill="#ffffff">Part 3. 四代核心架构演进路线与决策推演</text>
+
+  <!-- Gen 1 -->
+  <rect x="36" y="606" width="220" height="236" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+  <rect x="46" y="616" width="60" height="20" rx="4" fill="#94a3b8"/>
+  <text x="76" y="630" text-anchor="middle" font-size="10" font-weight="700" fill="#ffffff">Gen 1.0</text>
+  <text x="114" y="631" font-size="13" font-weight="700" fill="#334155">传统目标检测 (YOLO)</text>
+  <text x="46" y="658" font-size="11" font-weight="600" fill="#dc2626">❌ 致命瓶颈：闭集假设破产</text>
+  <text x="46" y="678" font-size="10" fill="#64748b">• 恶性真实缺陷正样本几近为 0</text>
+  <text x="46" y="694" font-size="10" fill="#64748b">• 未知开集异物（编织袋）漏检</text>
+  <text x="46" y="710" font-size="10" fill="#64748b">• 站台强反光/钢轨光斑高频虚警</text>
+  <text x="46" y="726" font-size="10" fill="#64748b">• 几何姿态解算对碳滑板磨损极敏感</text>
+  <rect x="46" y="776" width="200" height="52" rx="4" fill="#fef2f2"/>
+  <text x="56" y="796" font-size="10" font-weight="600" fill="#991b1b">结局：无法满足商用安全准入</text>
+  <text x="56" y="814" font-size="9" fill="#7f1d1d">漏检率高、虚警频发，被迫彻底推翻</text>
+
+  <!-- Arrow G1 -> G2 -->
+  <line x1="256" y1="724" x2="274" y2="724" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr-gray)"/>
+
+  <!-- Gen 2 -->
+  <rect x="276" y="606" width="220" height="236" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+  <rect x="286" y="616" width="60" height="20" rx="4" fill="#94a3b8"/>
+  <text x="316" y="630" text-anchor="middle" font-size="10" font-weight="700" fill="#ffffff">Gen 2.0</text>
+  <text x="354" y="631" font-size="13" font-weight="700" fill="#334155">纯端侧端到端 VLM</text>
+  <text x="286" y="658" font-size="11" font-weight="600" fill="#ea580c">❌ 致命瓶颈：算力与时延黑洞</text>
+  <text x="286" y="678" font-size="10" fill="#64748b">• 单次推理耗时 5,500 ms 严重阻塞</text>
+  <text x="286" y="694" font-size="10" fill="#64748b">• 多帧输入 Token 爆炸压垮显存</text>
+  <text x="286" y="710" font-size="10" fill="#64748b">• 单帧静态“光斑幻觉”引发虚警</text>
+  <text x="286" y="726" font-size="10" fill="#64748b">• 边缘端 60W 功耗墙下吞吐极低</text>
+  <rect x="286" y="776" width="200" height="52" rx="4" fill="#fff7ed"/>
+  <text x="296" y="796" font-size="10" font-weight="600" fill="#c2410c">结局：理论很美，工程撞墙</text>
+  <text x="296" y="814" font-size="9" fill="#9a3412">无法支撑车载 20~25 FPS 连续视频流</text>
+
+  <!-- Arrow G2 -> G3 -->
+  <line x1="496" y1="724" x2="514" y2="724" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr-gray)"/>
+
+  <!-- Gen 3 -->
+  <rect x="516" y="606" width="220" height="236" rx="8" fill="#ffffff" stroke="#e2e8f0"/>
+  <rect x="526" y="616" width="60" height="20" rx="4" fill="#0284c7"/>
+  <text x="556" y="630" text-anchor="middle" font-size="10" font-weight="700" fill="#ffffff">Gen 3.0</text>
+  <text x="594" y="631" font-size="13" font-weight="700" fill="#0284c7">动静分离两阶段+滤波</text>
+  <text x="526" y="658" font-size="11" font-weight="600" fill="#0284c7">⚡ 突破：动态时序+原图定位解耦</text>
+  <text x="526" y="678" font-size="10" fill="#64748b">• Stage 1 判火花/起雾等动态过程</text>
+  <text x="526" y="694" font-size="10" fill="#64748b">• Stage 2 判高清点级空间异物定位</text>
+  <text x="526" y="710" font-size="10" fill="#64748b">• 跨窗口时序追踪过滤 95% 瞬态噪点</text>
+  <text x="526" y="726" font-size="10" fill="#64748b">• 推理时延降至 1.06s (vLLM 并发)</text>
+  <rect x="526" y="776" width="200" height="52" rx="4" fill="#eff6ff"/>
+  <text x="536" y="796" font-size="10" font-weight="600" fill="#0369a1">局限：前端逐帧初筛依然偏重</text>
+  <text x="536" y="814" font-size="9" fill="#0284c7">1.06s 仍无法满足 20 FPS 逐帧初筛要求</text>
+
+  <!-- Arrow G3 -> G4 -->
+  <line x1="736" y1="724" x2="754" y2="724" stroke="#16a34a" stroke-width="2" marker-end="url(#arr-green)"/>
+
+  <!-- Gen 4 -->
+  <rect x="756" y="606" width="212" height="236" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+  <rect x="766" y="616" width="60" height="20" rx="4" fill="#16a34a"/>
+  <text x="796" y="630" text-anchor="middle" font-size="10" font-weight="700" fill="#ffffff">Gen 4.0</text>
+  <text x="834" y="631" font-size="13" font-weight="700" fill="#15803d">异构三层协同 (商用终态)</text>
+  <text x="766" y="658" font-size="11" font-weight="700" fill="#15803d">🏆 终极破局：速度+泛化+可解释</text>
+  <text x="766" y="678" font-size="10" font-weight="600" fill="#0f172a">• L1: FastAD 45ms 极速无监督初筛</text>
+  <text x="766" y="694" font-size="10" fill="#64748b">  仅学正常流形，开集异常必报</text>
+  <text x="766" y="710" font-size="10" font-weight="600" fill="#0f172a">• L2: 几何与物理时序状态机</text>
+  <text x="766" y="726" font-size="10" fill="#64748b">  SO(2)倾斜计算 / 3s消抖 / 脏污自愈</text>
+  <text x="766" y="742" font-size="10" font-weight="600" fill="#0f172a">• L3: Qwen3-VL 开放多模态异步研判</text>
+  <text x="766" y="758" font-size="10" fill="#64748b">  疑难切片按需唤醒，生成结构化报告</text>
+  <rect x="766" y="776" width="192" height="52" rx="4" fill="#dcfce7"/>
+  <text x="776" y="796" font-size="10" font-weight="700" fill="#166534">终极收益：量化指标全线达标</text>
+  <text x="776" y="814" font-size="9" fill="#15803d">初筛 45ms (提速 122 倍) · 600s 零虚警</text>
+</svg>
