@@ -4,6 +4,13 @@ import Base from '../../layouts/Base.astro';
 // 博客文章列表
 const posts = [
   {
+    slug: 'pantograph-geometric-tilt-detection-hrnet',
+    title: '【实战】受电弓姿态倾斜监测：从 HRNet 刚性关键点解耦到局部基准系抗误报全景',
+    date: '2026-09-09',
+    tag: '工业视觉 / 姿态解算 / 抗虚警',
+    description: '高铁动车组受电弓 2D 倾斜监测实战：为什么从 10 关键点精简为 4 刚性铰点以避开碳滑板磨耗干扰？为什么直接求绝对角平均会导致 50%+ 虚警？如何基于下横梁局部浮动坐标系构建 SO(2) 刚体旋转不变量，将虚警率降至 3.3% 并精准捕获真实结构扭折？附 120 秒高清视频全量评测与工程级代码。',
+  },
+  {
     slug: 'jetson-hardware-commands-and-rtsp-guide',
     title: '【实战】Jetson 硬件底座特有查询指令与 EasyDarwin RTSP 推拉流联调踩坑全景',
     date: '2026-09-08',
