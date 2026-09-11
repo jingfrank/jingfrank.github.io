@@ -29,6 +29,7 @@ date: "2026-09-09"
   - [4.2 6 层插件化分层架构全景拓扑](#42-6-层插件化分层架构全景拓扑)
   - [4.3 6 大故障检测插件协同矩阵](#43-6-大故障检测插件协同矩阵)
   - [4.4 跨模块互斥抑制与融合仲裁机制](#44-跨模块互斥抑制与融合仲裁机制)
+  - [4.5 异常飘弓（Abnormal Float）深度解析：零计算复用与 TCMS 状态机融合](#45-异常飘弓abnormal-float深度解析零计算复用与-tcms-状态机融合)
 - [五、工业级业务闭环机制的工程落地](#五工业级业务闭环机制的工程落地)
   - [5.1 机制一：报警（Alarm）与预警（Warning）双轨分级](#51-机制一报警alarm与预警warning双轨分级)
   - [5.2 机制二：全场景防误报与环境鲁棒性设计](#52-机制二全场景防误报与环境鲁棒性设计)
@@ -323,7 +324,7 @@ flowchart TD
 | **`YoloSparkDetector`** (大火花) | YOLOv11 目标检测 + 连通域色度分析 | **30 FPS (逐帧)** | 导出 `pantograph_bbox` 与 `spark_roi` 至黑板 | 火花面积 $> 1/20$ 弓头区，持续时长 $> 700$ ms |
 | **`HrnetTiltDetector`** (受电弓倾斜) | HRNet-W32 四刚性关键点 + 局部浮动系 | **1 Hz (周期)** | 仅读取受电弓整体大致范围 | 局部相对偏角 $|\theta_{rel}| \ge 1.8^\circ$ 且持续 $> 3$ s |
 | **`FastadDirtDetector`** (画面脏污) | FastAD + 64×64 网格时序 EMA 衰减累积 | **1 Hz (周期)** | 导出静止污染掩模 `dirt_mask` 供融合层拦截 | 特征消失持续超 3 分钟，挂起推理并触发预警 |
-| **`YoloFloatDetector`** (异常飘弓) | 复用受电弓 BBox，监控垂向质心时序差分 | **30 FPS (逐帧)** | 直接复用 YOLO 导出的受电弓中心 $y_c$ | 垂向跳变速度 $> 350$ px/s 且结合 TCMS 降弓信号 |
+| **`YoloFloatDetector`** (异常飘弓) | 复用受电弓 BBox，双工况状态机 + 垂向质心时序差分 | **30 FPS (逐帧)** | 零计算读取黑板 `panto_bbox` + TCMS `is_panto_raised` | 垂向跳变速度 $> 40.0$ px/s 或降弓高度 $> 70.0$ px（双向步进消抖 $\ge 5$ 帧报警） |
 | **`FastadStructDetector`** (结构异常) | FastAD 浅层特征重构差分 + 动态几何掩模 | **1 Hz (周期)** | 复用黑板 `pantograph_bbox` 自动扣除环境背景 | 空间异常评分突变且持续超 3 秒 |
 | **`FastadForeignDetector`** (悬挂异物) | FastAD 接触网开集异常聚类检测 | **1 Hz (周期)** | 融合闭集候选，排除站台钢架结构反光 | 开集异物尺度 $\ge 10\times 10$ cm 且持续超 3 秒 |
 
@@ -343,6 +344,108 @@ flowchart TD
    * 当同一视频帧被多个插件同时标记为异常时，系统按照对行车安全的紧急致命程度进行严密优先级裁决：
      $$\text{结构断裂 (P1)} > \text{悬挂异物 (P2)} > \text{受电弓倾斜 (P3)} > \text{异常飘弓 (P4)} > \text{大火花放电 (P5)} > \text{画面脏污 (P6)}$$
    * 确保推送至司机室监控屏与 TCMS 控制总线的始终是威胁等级最高、最紧急的故障代码与处置建议。
+
+---
+
+### 4.5 异常飘弓（Abnormal Float）深度解析：零计算复用与 TCMS 状态机融合
+
+在 350 km/h 高速受流场景中，“异常飘弓（Abnormal Pantograph Float）”是危害等级仅次于结构断裂与大异物的恶性工况。在工程实现上，算法源码位于 [`core/detectors/float_detector.py`](file:///home/ibd/jyb/gongwang/core/detectors/float_detector.py)。该模块不仅体现了极致的端侧算力复用哲学，更展示了车载多模态状态机与双向步进滤波的工程严密性。
+
+#### 4.5.1 物理机理与行车安全致命风险
+
+为什么受电弓会发生“飘弓”？在流体动力学与机械动力学双重作用下，受电弓高速运行受到三大关键因素扰动：
+1. **空气动力学负压与升力失衡**：当列车以 350 km/h 飞驰或遭遇强侧风、会车压力波时，弓头迎风面产生的空气动力升力剧烈波动，极易打破弓网间预设的 70~120 N 静态接触力；
+2. **接触网硬点冲击共振**：接触网定位器、分相绝缘器处存在弹性不均匀的“机械硬点”，高速碰撞后受电弓产生大幅度上下高频反弹；
+3. **气路或机械锁死故障**：降弓风道漏气、气阀电磁铁卡死、或防跳弹簧卡销松动。
+
+在实际行车规程中，飘弓对应两类毁灭性风险：
+* **风险一：降弓状态异常浮起（打网钻弓）**：当动车组驶入无电区分相区、折返入库、或双弓重联的非工作弓时，TCMS 明确下达降弓指令。若受电弓因机械锁扣失效或高速负压抽吸而未完全降下甚至浮起，受电弓将以极高位撞击接触网导线或未防范的硬质绝缘件，瞬间导致**“打网撕弓”**，整列停运；
+* **风险二：升弓受流剧烈跳变脱网（离线拉弧烧断接触线）**：正常取流时，弓头垂向中心发生剧烈高频超限跳动，接触压力忽大忽小直至脱网跳弧，高频强电弧瞬间烧蚀碳滑板与铜合金接触线，极易造成断线断电事故。
+
+```mermaid
+graph TD
+    A["动车组高动态工况 (350 km/h / 强侧风 / 硬点冲击)"] --> B{"TCMS 状态判别<br/>context.packet.is_panto_raised"}
+    B -->|降弓工况 (False)| C["几何高度超限校验<br/>Height = py2 - py1"]
+    C -->|Height > 70.0 px| D["触发飘弓候选<br/>reason: down_state_raised"]
+    C -->|Height ≤ 70.0 px| E["正常锁定在底座"]
+    B -->|升弓工况 (True)| F["质心垂向速度监测<br/>v_y = |yc - prev_yc| / dt"]
+    F -->|v_y > 40.0 px/s| G["触发跳变候选<br/>reason: excessive_vertical_bounce"]
+    F -->|v_y ≤ 40.0 px/s| H["稳定平滑受流 (v_y < 20 px/s)"]
+    D & G --> I["双向步进消抖积分器<br/>abnormal_frame_count += 1"]
+    E & H --> J["平滑衰减退减<br/>abnormal_frame_count = max(0, count - 1)"]
+    I & J --> K{"连续异常帧计数<br/>abnormal_frame_count"}
+    K -->|count ≥ 5| L["🚨 严重告警 Level: CRITICAL<br/>(10ms UDP 报文直抵司机室)"]
+    K -->|2 ≤ count < 5| M["⚠️ 黄色预警 Level: WARNING<br/>(写入车载 PHM 记录池)"]
+    K -->|count < 2| N["✅ 正常状态 Level: NORMAL"]
+```
+
+#### 4.5.2 极致边缘设计：基于黑板的“零额外计算开销”（Zero-Compute Reuse）
+
+如果为飘弓检测单独部署一个卷积神经网络或 Transformer，在 Jetson Orin 边缘端会无端浪费宝贵的显存带宽与 Tensor Core 算力。`YoloFloatDetector` 充分利用分层架构中的**共享黑板上下文（`DetectionContext`）**，实现了算法层面的“零计算开销”：
+
+```python
+@DetectorRegistry.register("YoloFloatDetector")
+class YoloFloatDetector(BaseDetector):
+    name: str = "float_yolo"
+    fault_type: str = "abnormal_float"
+    input_size: tuple = (640, 640)
+
+    def preprocess(self, image: Any, context: Optional[DetectionContext] = None) -> Any:
+        # 优先直接读取黑板上下文中 YOLO 提取的受电弓框，零额外计算开销
+        panto_box = context.panto_bbox if context is not None else None
+        return panto_box
+
+    def infer(self, tensor: Any) -> Any:
+        # 纯透传受电弓框，0 ms GPU 推理
+        return tensor
+```
+
+* **无感复用**：`preprocess` 直接从前序 `YoloSparkDetector` 或主干 YOLO 写入黑板的 `context.panto_bbox` 提取已解析的高精度目标框坐标 $(px_1, py_1, px_2, py_2)$；
+* **零 GPU 占用**：`infer` 函数直接透传，耗时 $0\text{ ms}$；
+* **轻量算术**：所有几何中心与时序微分在 CPU 核心以极简浮点算术完成（单帧计算耗时 $<0.05\text{ ms}$），轻松以 30 FPS 全速逐帧并行执行。
+
+#### 4.5.3 TCMS 状态机与双工况判定机理
+
+进入 `postprocess` 后，算法将视觉空间坐标与列车总线 TCMS 信号深度绑定，形成双工况判定分支：
+
+##### 工况 1：TCMS 降弓状态防浮起监测（Down State Floating）
+* **触发前提**：`not is_panto_raised`（列车控制总线指示受电弓应处于降弓下落位）；
+* **物理几何约束**：计算当前受电弓外接矩形框的像素垂向高度：
+  $$H = py_2 - py_1$$
+* **判定准则**：在正常落弓状态下，折叠后的受电弓高度极小；若 $H > \text{panto\_down\_height\_limit}$（系统配置阈值 $70.0\text{ px}$），表明受电弓未完全落锁到位或已因高速气流抽吸发生危险抬升：
+  $$\text{is\_float\_candidate} = \text{True}, \quad \text{metrics}[\text{"reason"}] = \text{"down\_state\_raised"}$$
+
+##### 工况 2：升弓受流中垂向高频跳跃监测（Excessive Vertical Bounce）
+* **触发前提**：`is_panto_raised`（受电弓正常升起取流）；
+* **时序滑动窗口**：插件维护一个容量为 30（`window_size = 30`）的时序双端队列 `trajectory: deque[(timestamp, yc)]`，其中质心坐标定义为：
+  $$y_c = \frac{py_1 + py_2}{2.0}$$
+* **瞬时微分速度计算**：当队列中已有历史轨迹点时，读取上一有效帧时间戳 $t_{k-1}$ 与垂向中心 $y_{c}^{(k-1)}$，计算两帧瞬时时间差 $\Delta t = \max(0.01, t_k - t_{k-1})$ 与垂向跳变速度：
+  $$v_y = \frac{|y_c^{(k)} - y_c^{(k-1)}|}{\Delta t} \quad (\text{px/s})$$
+* **判定准则**：正常受流起伏速度极平稳（通常 $v_y < 15\sim 20\text{ px/s}$）。当硬点冲击或气动失稳导致垂向剧烈弹跳，速度超过突变阈值时：
+  $$v_y > \text{float\_speed\_thresh } (40.0\text{ px/s}) \implies \text{is\_float\_candidate} = \text{True}, \quad \text{metrics}[\text{"reason"}] = \text{"excessive\_vertical_bounce"}$$
+
+#### 4.5.4 双向步进消抖积分器与双轨告警输出
+
+高速轨道场景中，单帧光影闪烁、路基振动或 YOLO 边界框单像素回归抖动十分常见。如果采用单帧突变报警，会产生严重虚警；若采用“遇到正常帧立刻清零”，在断续跳变时又会频繁漏报。
+
+`YoloFloatDetector` 采用了工业界验证极其成熟的**非对称双向步进积分消抖算法（Bi-directional Leaky Step Integrator）**：
+
+```python
+if is_float_candidate:
+    self.abnormal_frame_count += 1
+else:
+    # 优雅平滑退减：不直接归零，而是单步递减衰退，吸收断续抖动
+    self.abnormal_frame_count = max(0, self.abnormal_frame_count - 1)
+
+# 阈值判定：达到连续 5 帧报警，达到 2 帧进入预警
+is_abnormal = self.abnormal_frame_count >= self.consecutive_alarm_frames  # 默认 5 帧
+level = "critical" if is_abnormal else ("warning" if self.abnormal_frame_count >= 2 else "normal")
+```
+
+* **双轨处置输出**：
+  * **Critical（严重报警）**：当积分计数器累积达到 5 帧（`consecutive_alarm_frames = 5`，在 30 FPS 视频流中仅需约 166 ms），立即锁定为 `is_abnormal = True`，评分置为 1.0，直接触发 10 ms 内直抵司机室屏显的红色告警通道，并联动 TCMS 预备降弓；
+  * **Warning（预警记录）**：当计数器处于 $[2, 4]$ 帧区间时，标记为 `level = "warning"`，作为潜伏期瞬态异常送入车载 PHM 健康日志，供地面夜间检修分析弓网动态接触压力曲线；
+  * **Normal（正常平息）**：若仅为单帧孤立扰动，计数器在下一帧即衰减至 0，绝不产生误报侵扰。
 
 ---
 
