@@ -111,7 +111,7 @@ $$\Sigma_{\text{LW}} = (1 - \rho)\Sigma_{\text{emp}} + \rho \nu I$$
 
 ## 四、深度拆解：PantographFaultClassifier 空间-时序解耦状态机
 
-针对上述物理特性的交织，我们编写了独立高效的解耦引擎 [`fault_classifier.py`](file:///home/ibd/jyb/gongwang_fastad/fastad_detector/fault_classifier.py)。这套引擎不增加重度深度学习计算量，全部基于 OpenCV、NumPy 与纯物理特征状态机实现，执行耗时小于 **1.5 ms**。
+针对上述物理特性的交织，我们编写了独立高效的解耦引擎 `fault_classifier.py`。这套引擎不增加重度深度学习计算量，全部基于 OpenCV、NumPy 与纯物理特征状态机实现，执行耗时小于 **1.5 ms**。
 
 ### 1. 空间 ROI 切片与环境背景屏蔽
 
