@@ -79,7 +79,7 @@ dataset/
 
 在提取特征 Patch 并计算局部与全局马氏距离（Mahalanobis Distance）时，高维特征样本协方差矩阵容易出现病态或不可逆。FastAD 采用 **Ledoit-Wolf 收缩估计器（Ledoit-Wolf Shrinkage）**，在经验协方差矩阵与单位阵之间进行解析最优加权，确保逆协方差矩阵的高效稳定数值解：
 
-$$\Sigma_{\text{LW}} = (1 - \rho)\Sigma_{\text{emp}} + \rho \nu I$$
+`Σ_LW = (1 - ρ) Σ_emp + ρ ν I`
 
 随后，模型在 100 帧独立验证集上计算正态分位数（Quantile CDF），自动拟合并固化出无偏门限：
 * **自适应图像级异常门限（Image Threshold）**：标定值为 `4.20`（高于此分值意味着全图特征出现整体分布漂移）；
