@@ -4,6 +4,13 @@ import Base from '../../layouts/Base.astro';
 // 博客文章列表
 const posts = [
   {
+    slug: 'edge-hardware-video-encoding',
+    title: '《边缘端硬件视频编码实践》',
+    date: '2026-09-24',
+    tag: '边缘计算 / 音视频工程',
+    description: '深度剖析为什么在嵌入式平台必须坚决弃用 CPU 软编。拆解如何基于 GStreamer 管道与 NVENC 专用硬件核心录制高可靠 MP4，避开 BGRx 对齐断层、NVMM 内存标记与断电损坏三大深水坑，单路 CPU 占用压至不足 3%。',
+  },
+  {
     slug: 'pantograph-system-project-retrospective',
     title: '【重磅复盘】动车组“弓网智能分析系统”：从零到规模商用的全周期架构演进与落地复盘',
     date: '2026-09-09',
