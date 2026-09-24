@@ -4,6 +4,13 @@ import Base from '../../layouts/Base.astro';
 // 博客文章列表
 const posts = [
   {
+    slug: 'industrial-rtsp-stream-resilience',
+    title: '《工业视频流断线自愈与防卡死》',
+    date: '2026-09-24',
+    tag: '流媒体 / 车载工程',
+    description: '针对工业相机 RTSP 码流偶发弱网与断流痛点，详细拆解双线程解耦、底层 Socket 超时注入、丢老留新有界环形缓冲队列（RingBuffer）与指数退避自愈状态机，消除 30 秒卡死与累积延迟。',
+  },
+  {
     slug: 'pantograph-system-project-retrospective',
     title: '【重磅复盘】动车组“弓网智能分析系统”：从零到规模商用的全周期架构演进与落地复盘',
     date: '2026-09-09',
