@@ -4,6 +4,13 @@ import Base from '../../layouts/Base.astro';
 // 博客文章列表
 const posts = [
   {
+    slug: 'embedded-unified-memory-oom-prevention',
+    title: '《嵌入式统一内存防爆死指南》',
+    date: '2026-09-24',
+    tag: '边缘底座 / 内存治理',
+    description: '深度复盘 Jetson Orin 统一内存架构（UMA）下的显存与内存争抢机理。深入分析高频图像动态申请与大模型缓存引发内存碎片的根因，落地系统缓冲隔离、显存配额锁死与静态对象池三板斧，实现 72 小时压力老化零 OOM 崩溃。',
+  },
+  {
     slug: 'pantograph-system-project-retrospective',
     title: '【重磅复盘】动车组“弓网智能分析系统”：从零到规模商用的全周期架构演进与落地复盘',
     date: '2026-09-09',
