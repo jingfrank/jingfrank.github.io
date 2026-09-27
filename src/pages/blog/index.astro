@@ -8,7 +8,7 @@ const posts = [
     title: '《边缘端硬件视频编码实践》',
     date: '2026-09-24',
     tag: '边缘计算 / 音视频工程',
-    description: '从端到端视频数据通路切入，剖析为什么在嵌入式边缘设备上必须将视频编解码从通用 CPU 彻底卸载隔离。拆解基于 GStreamer 管道与 NVENC 专用硬件核心的高可靠双任务录像配方，避开 BGRx 对齐断层、NVMM 内存标记与断电损坏等工程陷阱，实现单路 CPU 占用不足 3%。',
+    description: '记录在 Jetson 嵌入式平台上将视频编码卸载至 NVENC 硬件硅片的三个核心实践：跨越 BGRx 对齐断层与 NVMM 零拷贝管道配方、四级自适应降级矩阵与 ARM errno -22 避坑、NVENC 静默失败嗅探与原子落盘防御。实测单帧编码提速 4.8 倍，CPU 占用降至 3% 以下。',
   },
   {
     slug: 'pantograph-system-project-retrospective',
