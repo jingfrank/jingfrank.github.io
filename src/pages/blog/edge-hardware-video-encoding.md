@@ -221,6 +221,8 @@ def synthesize_video(all_frames, tmp_path, final_path, fps, w, h):
 
 以下数据来自嵌入式加固工控机（NVIDIA Jetson AGX Orin 64GB）上的实际压测，对比同一批 200+ 帧视频切片在不同编码路径下的表现：
 
+![边缘端硬件视频编码性能基准对比：软编保底 vs 极速软编 vs 全硬件零拷贝](/images/blog/edge-video-encoding-benchmark.svg)
+
 | 指标 | 软编兜底 (`mp4v`) | 极速软编 (`x264enc`) | 全硬件 (`nvv4l2h264enc + NVMM`) | 全硬件相比软编收益 |
 | :--- | :--- | :--- | :--- | :--- |
 | **单帧编码耗时** | 129.2 ms | *待实测* | 26.9 ms | **4.8× 提速** |
