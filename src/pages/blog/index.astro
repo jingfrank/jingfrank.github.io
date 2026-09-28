@@ -5,10 +5,10 @@ import Base from '../../layouts/Base.astro';
 const posts = [
   {
     slug: 'edge-hardware-video-encoding',
-    title: '《边缘端硬件视频编码实践》',
-    date: '2026-09-24',
+    title: '《边缘端硬件视频编解码实践》',
+    date: '2026-09-28',
     tag: '边缘计算 / 音视频工程',
-    description: '记录在 Jetson 嵌入式平台上将视频编码卸载至 NVENC 硬件硅片的三个核心实践：跨越 BGRx 对齐断层与 NVMM 零拷贝管道配方、四级自适应降级矩阵与 ARM errno -22 避坑、NVENC 静默失败嗅探与原子落盘防御。实测单帧编码提速 4.8 倍，CPU 占用降至 3% 以下。',
+    description: '记录在 Jetson 嵌入式平台上将视频处理全链路卸载至专用硬件的工程实践：依据 JetPack 官方接口分工（Table 1）选型 GStreamer，前端基于 NVDEC 硬件解码释放 2~3 个 CPU 核心，后端基于 NVENC 全硬件编码打通 NVMM 零拷贝与四级容灾降级，配合文件体积嗅探杜绝空文件，单帧编码提速 4.8 倍，CPU 占用降至 3% 以下。',
   },
   {
     slug: 'pantograph-system-project-retrospective',
