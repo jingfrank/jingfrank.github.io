@@ -17,6 +17,9 @@ date: "2026-09-28"
 
 - [一、背景与问题：为什么边缘端必须做硬件编解码？](#一背景与问题为什么边缘端必须做硬件编解码)
 - [二、Jetson 官方视频接口分工与选型依据](#二jetson-官方视频接口分工与选型依据)
+  - [1. 官方四层接口体系](#1-官方四层接口体系)
+  - [2. 什么是 GStreamer？](#2-什么是-gstreamer)
+  - [3. 为什么在本项目场景下选择 GStreamer？](#3-为什么在本项目场景下选择-gstreamer)
 - [三、硬件机制：专用硅片与内存通路](#三硬件机制专用硅片与内存通路)
 - [四、输入端改造：拉流从 CPU 软解切到 NVDEC](#四输入端改造拉流从-cpu-软解切到-nvdec)
 - [五、输出端改造：切片从 CPU 软编切到 NVENC](#五输出端改造切片从-cpu-软编切到-nvenc)
@@ -50,6 +53,8 @@ date: "2026-09-28"
 
 很多初学者容易把桌面端的视频开发经验套用到 Jetson 上，误以为可以随意调用 NVIDIA Video Codec SDK 或各种开源库。实际上，NVIDIA 针对 Jetson 嵌入式架构有一套非常清晰的官方接口分工。
 
+### 1. 官方四层接口体系
+
 在 NVIDIA 官方针对 JetPack 视频工作流的技术梳理中，Jetson 平台提供了四个不同层级的编程接口：
 
 | 接口名称 | 定位与控制粒度 | 典型应用场景 |
@@ -59,7 +64,30 @@ date: "2026-09-28"
 | **Video Codec SDK** | C/C++ 底层直调接口 | 针对 NVENC/NVDEC 硬件特性的底层微观参数调控，网络传输与封装需自行开发 |
 | **PyNvVideoCodec** | Python 显存直通接口 | 专为 AI 训练与推理设计，直接把解码帧以 CUDA 设备指针（DLPack）交给 PyTorch |
 
-### 为什么选择 GStreamer 多媒体组件？
+### 2. 什么是 GStreamer？
+
+在上述四个选项中，GStreamer 处于高层，但许多习惯了 Python OpenCV 或 FFmpeg 命令行操作的开发者，对其具体运作模式往往缺乏直观感受。
+
+**简单来说，GStreamer 是 Linux 生态中事实标准的多媒体管线框架（Multimedia Framework）。**
+
+如果把多媒体数据比作水流，GStreamer 的设计就是一套**“管道与积木”（Pipeline & Elements）**模型：
+
+* **积木元件（Element）**：完成特定音视频任务的最小功能模块，主要有三类：
+  * **Source（源头）**：数据的起点。例如 `rtspsrc` 负责抓取网络 RTSP 流，`appsrc` 负责从 Python 代码中接收内存图像帧；
+  * **Filter / Transform（转换过滤）**：中间处理节点。例如 `videoconvert` 调整像素排布，`nvvidconv` 调用硬件完成色彩空间转换，`nvv4l2h264enc` 调用硬件完成 H.264 编码；
+  * **Sink（终点）**：数据的接收目的地。例如 `filesink` 负责把数据写进磁盘文件，`appsink` 负责把处理好的帧吐给 Python 主程序。
+* **数据衬垫（Pad）与格式协商（Caps）**：元件首尾相接的插槽叫 Pad。两个元件对接时，必须通过 Caps（Capabilities）明确商定传输的数据格式（如 `video/x-raw(memory:NVMM), format=NV12`），只有双方格式兼容，管道才能成功通水。
+* **流水线（Pipeline）**：用感叹号 `!` 将多个元件首尾串联起来的完整通路。在系统底层，GStreamer 会为整条流水线自动分配多线程调度、时钟同步与缓冲队列。
+
+#### 为什么 NVIDIA 在 Jetson 上力推 GStreamer？
+
+在桌面 PC 上，开发者更习惯用 FFmpeg。但在嵌入式领域，NVIDIA 官方将 GStreamer 作为 Jetson 平台的一等公民：
+
+1. **插件化解耦**：GStreamer 只负责定义框架标准和数据流转规则，不干预具体运算。NVIDIA 只需要遵循其接口规范，编写一套 Jetson 芯片专用的硬件加速插件（即以 `nv*` 开头的插件，如 `nvv4l2decoder`、`nvvidconv`、`nvv4l2h264enc` 等）。这些插件由官方维护并内置在 JetPack 系统镜像中；
+2. **直通硬件驱动**：这些 `nv*` 插件底层通过 Linux 标准的 V4L2 内核接口，直接驱动芯片上的 NVDEC、VIC、NVENC 独立硬件单元，绕开了复杂的应用层数据搬运；
+3. **OpenCV 原生无缝衔接**：OpenCV 的 `cv2.VideoCapture` 和 `cv2.VideoWriter` 底层编译集成了 GStreamer 后端。在 Python 中，开发者只需要传入一段用 `!` 拼接元件的管道字符串，OpenCV 就会调用系统 GStreamer 引擎在后台自动拉起硬件流水线，既保留了 Python 调用的便利性，又吃满了芯片的硬件算力。
+
+### 3. 为什么在本项目场景下选择 GStreamer？
 
 在这个分工体系下，决定我们选型的核心是实际业务复杂度：
 1. **输入端需要网络容错**：RTSP 拉流不仅涉及 H.264 解码，还需要处理网络丢包、TCP/UDP 协议协商和自动重连；
