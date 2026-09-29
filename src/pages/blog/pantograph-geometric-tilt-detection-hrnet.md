@@ -155,9 +155,9 @@ $$\theta_{\text{fused}} = \frac{\theta_{\text{horn}} + \theta_{\text{support}}}{
 
 ### 1. 定义向量
 - **下横梁基准向量**：
-  $$\vec{v}_{\text{base}} = \vec{P_2 P_3} = \begin{bmatrix} x_3 - x_2 \\\\ y_3 - y_2 \end{bmatrix} = \begin{bmatrix} \Delta x_{\text{base}} \\\\ \Delta y_{\text{base}} \end{bmatrix}$$
+  $$\vec{v}_{\text{base}} = \vec{P_2 P_3} = \begin{bmatrix} x_3 - x_2 \\ y_3 - y_2 \end{bmatrix} = \begin{bmatrix} \Delta x_{\text{base}} \\ \Delta y_{\text{base}} \end{bmatrix}$$
 - **上滑板向量**：
-  $$\vec{v}_{\text{horn}} = \vec{P_1 P_4} = \begin{bmatrix} x_4 - x_1 \\\\ y_4 - y_1 \end{bmatrix} = \begin{bmatrix} \Delta x_{\text{horn}} \\\\ \Delta y_{\text{horn}} \end{bmatrix}$$
+  $$\vec{v}_{\text{horn}} = \vec{P_1 P_4} = \begin{bmatrix} x_4 - x_1 \\ y_4 - y_1 \end{bmatrix} = \begin{bmatrix} \Delta x_{\text{horn}} \\ \Delta y_{\text{horn}} \end{bmatrix}$$
 
 ### 2. 计算相对角度
 利用向量的点积和叉积计算夹角：

@@ -13,6 +13,7 @@ const { title, description } = Astro.props;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description || '个人网站'} />
     <title>{title || 'Your Name'}</title>
+    <slot name="head" />
   </head>
   <body>
     <Nav />
