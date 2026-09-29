@@ -4,6 +4,13 @@ import Base from '../../layouts/Base.astro';
 // 博客文章列表
 const posts = [
   {
+    slug: 'edge-hardware-video-encoding',
+    title: '《边缘端硬件视频编解码实践》',
+    date: '2026-09-28',
+    tag: '边缘计算 / 音视频工程',
+    description: '记录在 Jetson 嵌入式平台上将视频处理全链路卸载至专用硬件的工程实践：依据 JetPack 官方接口分工（Table 1）选型 GStreamer，前端基于 NVDEC 硬件解码释放 2~3 个 CPU 核心，后端基于 NVENC 全硬件编码打通 NVMM 零拷贝与四级容灾降级，配合文件体积嗅探杜绝空文件，单帧编码提速 4.8 倍，CPU 占用降至 3% 以下。',
+  },
+  {
     slug: 'pantograph-system-project-retrospective',
     title: '【重磅复盘】动车组“弓网智能分析系统”：从零到规模商用的全周期架构演进与落地复盘',
     date: '2026-09-09',
