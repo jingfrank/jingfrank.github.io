@@ -95,12 +95,23 @@ const postDate = date || frontmatter?.date;
   .content :global(.mermaid) {
     display: flex;
     justify-content: center;
-    margin: 1.5rem 0;
+    margin: 1.5rem 0 0.5rem 0;
     overflow-x: auto;
     background: transparent;
   }
   .content :global(.mermaid svg) {
     max-width: 100%;
     height: auto;
+  }
+  .content :global(img) {
+    display: block;
+    margin: 1.5rem auto 0.5rem auto;
+  }
+  .content :global(p:has(> em:only-child)) {
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--text-light);
+    margin-top: -0.25rem;
+    margin-bottom: 1.75rem;
   }
 </style>

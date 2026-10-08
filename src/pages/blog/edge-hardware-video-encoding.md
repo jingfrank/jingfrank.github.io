@@ -15,8 +15,6 @@ description: "记录在 Jetson 嵌入式平台上将视频编解码全链路卸�
 > 2. **双向硬件卸载**：前端通过 `nvv4l2decoder` 硬件解码释放 2 到 3 个 CPU 核心，后端通过 `nvv4l2h264enc` 硬件编码将落盘时延压缩 74%，单帧编码耗时从 129ms 降至 27ms；
 > 3. **生产级防护**：硬件处理需兼顾 32 位 BGRx 内存对齐，配置四级降级矩阵以兼容无 NVENC 的机型，并在写盘后做文件大小嗅探，避免硬件异常时写出空文件。
 
-![边缘计算场景下的车载监控摄像](/images/blog/edge-computing-camera.webp)
-
 ## 目录
 
 - [一、背景与问题：为什么边缘端必须做硬件编解码？](#一背景与问题为什么边缘端必须做硬件编解码)
@@ -42,7 +40,7 @@ flowchart LR
     D --> E[视频编码]
     E --> F[磁盘切片]
 ```
-*(图1：边缘端视频与算法处理流水线)*
+*图 1：边缘端视频与算法处理流水线*
 
 在这套流水线上，视频切片通常对应两类业务任务：
 1. **常规巡检切片**：每 10 分钟生成一段标准 MP4 视频，连续存盘供历史归档和事后追溯；
@@ -92,7 +90,7 @@ flowchart TD
         HW[三大专用硬件<br/>NVDEC / VIC / NVENC]
     end
 ```
-*(图2：Jetson SoC 硬件与三大专用硅片)*
+*图 2：Jetson SoC 内部硬件处理单元与三大专用硅片划分*
 
 * **NVDEC**：硬件视频解码器，专职 H.264/H.265 解码；
 * **VIC（视频图像合成器）**：专职硬件图像转换，负责缩放和色彩空间转换；
@@ -100,7 +98,8 @@ flowchart TD
 
 在 Python OpenCV 中，开发者只需传入一段拼接好的 GStreamer 管道字符串。OpenCV 就会在后台拉起 Jetson 专用的 `nv*` 硬件加速插件（如 `nvv4l2decoder`），这些插件底层直接驱动上述三大专用硅片，完全绕开应用层的数据搬运。
 
-![GStreamer 管道转换示意图](/images/blog/gstreamer-pipeline-concept.webp)
+![Jetson GStreamer 全链路编解码管道与硬件直通架构](/images/blog/gstreamer-pipeline-concept.svg)
+*图 3：Jetson GStreamer 全链路编解码管道与专用硬件直通架构*
 
 ## 三、输入端改造：拉流从 CPU 软解切到 NVDEC
 
@@ -173,6 +172,7 @@ def create_hardware_video_pipeline(output_path: str, fps: float, w: int, h: int)
 在加固工控机（NVIDIA Jetson AGX Orin 64GB）上，针对 200+ 帧 1080P@30FPS 视频切片进行实测，数据对比如下：
 
 ![边缘端硬件视频编解码性能基准对比：软编保底 vs 极速软编 vs 全硬件零拷贝](/images/blog/edge-video-encoding-benchmark.svg)
+*图 4：边缘端硬件视频编解码性能基准对比：软编保底 vs 极速软编 vs 全硬件零拷贝*
 
 | 指标 | 软编保底 (`mp4v`) | 极速软编 (`x264enc`) | 全硬件 (`nvv4l2h264enc + NVMM`) | 全硬件相比软编收益 |
 | :--- | :--- | :--- | :--- | :--- |
@@ -196,8 +196,7 @@ def create_hardware_video_pipeline(output_path: str, fps: float, w: int, h: int)
       "@type": "BlogPosting",
       "headline": "《边缘端硬件视频编解码实践》",
       "image": [
-        "/images/blog/edge-computing-camera.webp",
-        "/images/blog/gstreamer-pipeline-concept.webp",
+        "/images/blog/gstreamer-pipeline-concept.svg",
         "/images/blog/edge-video-encoding-benchmark.svg"
       ],
       "datePublished": "2026-09-28T00:00:00+08:00",
