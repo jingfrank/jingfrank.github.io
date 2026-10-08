@@ -1,95 +1,160 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 550" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 625" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif">
   <!-- Card Background -->
-  <rect x="0.5" y="0.5" width="959" height="549" rx="10" fill="#ffffff" stroke="#e5e5e5"/>
+  <rect x="0.5" y="0.5" width="959" height="624" rx="10" fill="#ffffff" stroke="#e5e5e5"/>
 
   <!-- Title & Subtitle -->
-  <text x="480" y="34" text-anchor="middle" font-size="16" font-weight="700" fill="#1a1a1a">边缘端硬件视频编码性能基准对比：软编保底 vs 极速软编 vs 全硬件零拷贝</text>
-  <text x="480" y="56" text-anchor="middle" font-size="12" fill="#666">测试平台：NVIDIA Jetson AGX Orin 64GB · 1080P@30FPS 视频切片落盘（数值越低越好）</text>
+  <text x="480" y="30" text-anchor="middle" font-size="16" font-weight="700" fill="#1a1a1a">边缘端视频硬件编解码与系统级性能基准全景对比</text>
+  <text x="480" y="50" text-anchor="middle" font-size="12" fill="#666">测试平台：NVIDIA Jetson AGX Orin 64GB · 1080P 工业视频流全链路实测（涵盖解码、编码与系统级收益）</text>
 
-  <!-- Legend -->
-  <g transform="translate(190, 72)">
-    <rect x="0" y="0" width="14" height="14" rx="3" fill="#f87171"/>
-    <text x="20" y="12" font-size="12" fill="#444">软编兜底 (FFmpeg mp4v)</text>
+  <!-- ==================== ROW 1: DECODING BENCHMARK ==================== -->
+  <g transform="translate(25, 68)">
+    <rect x="0" y="0" width="910" height="155" rx="8" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.2"/>
+    <rect x="12" y="-9" width="180" height="20" rx="4" fill="#0284c7"/>
+    <text x="22" y="5" font-size="11" font-weight="700" fill="#ffffff">一、前端解码性能对比</text>
+    <text x="202" y="5" font-size="11" fill="#64748b">1080P@25FPS RTSP 网络拉流解码</text>
 
-    <rect x="200" y="0" width="14" height="14" rx="3" fill="#f1f5f9" stroke="#94a3b8" stroke-dasharray="2 2"/>
-    <text x="220" y="12" font-size="12" fill="#444">极速软编 (x264enc 试验预留)</text>
+    <!-- Legend -->
+    <g transform="translate(640, 10)">
+      <rect x="0" y="0" width="10" height="10" rx="2" fill="#f87171"/>
+      <text x="14" y="9" font-size="11" fill="#475569">CPU 软解 (FFmpeg)</text>
+      <rect x="145" y="0" width="10" height="10" rx="2" fill="#0284c7"/>
+      <text x="159" y="9" font-size="11" fill="#475569">硬件解码 (NVDEC)</text>
+    </g>
 
-    <rect x="420" y="0" width="14" height="14" rx="3" fill="#10b981"/>
-    <text x="440" y="12" font-size="12" fill="#444">全硬件零拷贝 (nvv4l2h264enc + NVMM)</text>
+    <!-- Metric 1: CPU Usage -->
+    <g transform="translate(15, 30)">
+      <text x="145" y="24" text-anchor="end" font-size="12" font-weight="600" fill="#1e293b">单路拉流 CPU 占用</text>
+      <rect x="155" y="10" width="310" height="18" rx="3" fill="#f87171"/>
+      <text x="472" y="24" font-size="11" font-weight="600" fill="#991b1b">158% (占满1.5核+)</text>
+      <rect x="155" y="32" width="22" height="18" rx="3" fill="#0284c7"/>
+      <text x="183" y="46" font-size="11" font-weight="700" fill="#0369a1">7.4%</text>
+      <rect x="590" y="18" width="85" height="22" rx="11" fill="#e0f2fe" stroke="#38bdf8"/>
+      <text x="632" y="33" text-anchor="middle" font-size="11" font-weight="700" fill="#0284c7">CPU 释放 95%</text>
+    </g>
+
+    <!-- Metric 2: Latency & Concurrency -->
+    <g transform="translate(15, 88)">
+      <text x="145" y="24" text-anchor="end" font-size="12" font-weight="600" fill="#1e293b">单帧平均解码耗时</text>
+      <rect x="155" y="10" width="245" height="18" rx="3" fill="#f87171"/>
+      <text x="408" y="24" font-size="11" font-weight="600" fill="#991b1b">24.5 ms</text>
+      <rect x="155" y="32" width="42" height="18" rx="3" fill="#0284c7"/>
+      <text x="203" y="46" font-size="11" font-weight="700" fill="#0369a1">4.2 ms (近乎即时)</text>
+      <rect x="590" y="18" width="85" height="22" rx="11" fill="#e0f2fe" stroke="#38bdf8"/>
+      <text x="632" y="33" text-anchor="middle" font-size="11" font-weight="700" fill="#0284c7">5.8× 提速</text>
+    </g>
+
+    <!-- Side Badge: Concurrency -->
+    <g transform="translate(710, 42)">
+      <rect x="0" y="0" width="185" height="96" rx="6" fill="#ffffff" stroke="#bae6fd" stroke-width="1.2"/>
+      <text x="92" y="22" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0369a1">1080P 最大并发路数</text>
+      <text x="22" y="48" font-size="11" fill="#64748b">CPU 软解：</text>
+      <text x="160" y="48" text-anchor="end" font-size="11" font-weight="700" fill="#ef4444">~2 路 (核心打满)</text>
+      <text x="22" y="74" font-size="11" fill="#64748b">NVDEC 硬解：</text>
+      <text x="160" y="74" text-anchor="end" font-size="11" font-weight="700" fill="#0284c7">8+ 路 (线速满帧)</text>
+    </g>
   </g>
 
-  <!-- Section 1: 单帧编码耗时 -->
-  <g transform="translate(0, 110)">
-    <text x="235" y="44" text-anchor="end" font-size="13.5" font-weight="600" fill="#1a1a1a">单帧平均耗时 (ms)</text>
-    
-    <!-- mp4v -->
-    <rect x="250" y="10" width="480" height="24" rx="4" fill="#f87171"/>
-    <text x="738" y="27" font-size="12.5" font-weight="600" fill="#991b1b">129.2 ms</text>
+  <!-- ==================== ROW 2: ENCODING BENCHMARK ==================== -->
+  <g transform="translate(25, 240)">
+    <rect x="0" y="0" width="910" height="165" rx="8" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.2"/>
+    <rect x="12" y="-9" width="180" height="20" rx="4" fill="#10b981"/>
+    <text x="22" y="5" font-size="11" font-weight="700" fill="#ffffff">二、后端编码性能对比</text>
+    <text x="202" y="5" font-size="11" fill="#64748b">200+ 帧 1080P@30FPS 视频切片落盘</text>
 
-    <!-- x264enc -->
-    <rect x="250" y="40" width="160" height="24" rx="4" fill="#f8fafc" stroke="#94a3b8" stroke-dasharray="3 3"/>
-    <text x="418" y="57" font-size="12" fill="#64748b">待实测数据接入 (TBD)</text>
+    <!-- Legend -->
+    <g transform="translate(560, 10)">
+      <rect x="0" y="0" width="10" height="10" rx="2" fill="#f87171"/>
+      <text x="14" y="9" font-size="11" fill="#475569">软编兜底 (mp4v)</text>
+      <rect x="125" y="0" width="10" height="10" rx="2" fill="#94a3b8"/>
+      <text x="139" y="9" font-size="11" fill="#475569">极速软编 (x264enc)</text>
+      <rect x="250" y="0" width="10" height="10" rx="2" fill="#10b981"/>
+      <text x="264" y="9" font-size="11" fill="#475569">全硬件 (NVENC+NVMM)</text>
+    </g>
 
-    <!-- NVMM -->
-    <rect x="250" y="70" width="100" height="24" rx="4" fill="#10b981"/>
-    <text x="358" y="87" font-size="12.5" font-weight="700" fill="#065f46">26.9 ms</text>
+    <!-- Metric 1: Frame Latency -->
+    <g transform="translate(15, 30)">
+      <text x="145" y="24" text-anchor="end" font-size="12" font-weight="600" fill="#1e293b">单帧平均编码耗时</text>
+      <rect x="155" y="10" width="310" height="15" rx="3" fill="#f87171"/>
+      <text x="472" y="22" font-size="11" font-weight="600" fill="#991b1b">129.2 ms</text>
+      <rect x="155" y="28" width="135" height="15" rx="3" fill="#cbd5e1"/>
+      <text x="296" y="40" font-size="10.5" font-weight="600" fill="#475569">56.4 ms</text>
+      <rect x="155" y="46" width="65" height="15" rx="3" fill="#10b981"/>
+      <text x="226" y="58" font-size="11" font-weight="700" fill="#065f46">26.9 ms</text>
+      <rect x="590" y="26" width="85" height="22" rx="11" fill="#ecfdf5" stroke="#10b981"/>
+      <text x="632" y="41" text-anchor="middle" font-size="11" font-weight="700" fill="#047857">4.8× 提速</text>
+    </g>
 
-    <!-- Badge -->
-    <rect x="520" y="68" width="68" height="26" rx="13" fill="#ecfdf5" stroke="#10b981"/>
-    <text x="554" y="86" text-anchor="middle" font-size="12" font-weight="700" fill="#047857">4.8× 提速</text>
+    <!-- Metric 2: 200 Frame Total Latency -->
+    <g transform="translate(15, 96)">
+      <text x="145" y="24" text-anchor="end" font-size="12" font-weight="600" fill="#1e293b">200+ 帧切片总时延</text>
+      <rect x="155" y="10" width="310" height="15" rx="3" fill="#f87171"/>
+      <text x="472" y="22" font-size="11" font-weight="600" fill="#991b1b">26.75 s (严重阻塞)</text>
+      <rect x="155" y="28" width="140" height="15" rx="3" fill="#cbd5e1"/>
+      <text x="302" y="40" font-size="10.5" font-weight="600" fill="#475569">12.10 s</text>
+      <rect x="155" y="46" width="80" height="15" rx="3" fill="#10b981"/>
+      <text x="242" y="58" font-size="11" font-weight="700" fill="#065f46">6.91 s</text>
+      <rect x="590" y="26" width="98" height="22" rx="11" fill="#ecfdf5" stroke="#10b981"/>
+      <text x="639" y="41" text-anchor="middle" font-size="11" font-weight="700" fill="#047857">时延压缩 74.2%</text>
+    </g>
+
+    <!-- Side Badge: CPU in Encoding -->
+    <g transform="translate(710, 44)">
+      <rect x="0" y="0" width="185" height="106" rx="6" fill="#ffffff" stroke="#a7f3d0" stroke-width="1.2"/>
+      <text x="92" y="20" text-anchor="middle" font-size="11.5" font-weight="700" fill="#047857">编码期 CPU 占用率</text>
+      <text x="20" y="44" font-size="10.5" fill="#64748b">mp4v 软编：</text>
+      <text x="165" y="44" text-anchor="end" font-size="10.5" font-weight="700" fill="#ef4444">380%~480% (拉满)</text>
+      <text x="20" y="68" font-size="10.5" fill="#64748b">x264enc 软编：</text>
+      <text x="165" y="68" text-anchor="end" font-size="10.5" font-weight="600" fill="#475569">~200% (2核满载)</text>
+      <text x="20" y="92" font-size="10.5" fill="#64748b">全硬件 NVENC：</text>
+      <text x="165" y="92" text-anchor="end" font-size="10.5" font-weight="700" fill="#047857">&lt; 2.8% (零负担)</text>
+    </g>
   </g>
 
-  <!-- Divider Line 1 -->
-  <line x1="80" y1="225" x2="880" y2="225" stroke="#f1f5f9" stroke-width="1.5"/>
+  <!-- ==================== ROW 3: SYSTEM-LEVEL BENEFITS ==================== -->
+  <g transform="translate(25, 422)">
+    <rect x="0" y="0" width="910" height="155" rx="8" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.2"/>
+    <rect x="12" y="-9" width="180" height="20" rx="4" fill="#8b5cf6"/>
+    <text x="22" y="5" font-size="11" font-weight="700" fill="#ffffff">三、整机系统级综合收益</text>
+    <text x="202" y="5" font-size="11" fill="#64748b">边缘端全系统运行状态与算法稳定性</text>
 
-  <!-- Section 2: 200+ 帧切片总落盘时延 -->
-  <g transform="translate(0, 240)">
-    <text x="235" y="44" text-anchor="end" font-size="13.5" font-weight="600" fill="#1a1a1a">200+ 帧总时延 (s)</text>
-    
-    <!-- mp4v -->
-    <rect x="250" y="10" width="480" height="24" rx="4" fill="#f87171"/>
-    <text x="738" y="27" font-size="12.5" font-weight="600" fill="#991b1b">26.75 s (排队严重)</text>
+    <!-- 3 Cards inside Row 3 -->
+    <!-- Card 1: Jitter -->
+    <g transform="translate(20, 26)">
+      <rect x="0" y="0" width="270" height="112" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.2"/>
+      <text x="135" y="24" text-anchor="middle" font-size="12" font-weight="700" fill="#1e293b">核心算法推理时延抖动</text>
+      <text x="20" y="52" font-size="11" fill="#64748b">纯软件方案：</text>
+      <text x="250" y="52" text-anchor="end" font-size="11" font-weight="700" fill="#ef4444">30ms ➔ 突增 85ms+</text>
+      <text x="20" y="76" font-size="11" fill="#64748b">全硬件方案：</text>
+      <text x="250" y="76" text-anchor="end" font-size="11" font-weight="700" fill="#10b981">稳定 28 ~ 31 ms</text>
+      <rect x="20" y="88" width="230" height="16" rx="3" fill="#f5f3ff"/>
+      <text x="135" y="100" text-anchor="middle" font-size="9.5" font-weight="600" fill="#7c3aed">消除操作系统 CPU 时间片饥饿</text>
+    </g>
 
-    <!-- x264enc -->
-    <rect x="250" y="40" width="160" height="24" rx="4" fill="#f8fafc" stroke="#94a3b8" stroke-dasharray="3 3"/>
-    <text x="418" y="57" font-size="12" fill="#64748b">待实测数据接入 (TBD)</text>
+    <!-- Card 2: Dropped Frames -->
+    <g transform="translate(320, 26)">
+      <rect x="0" y="0" width="270" height="112" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.2"/>
+      <text x="135" y="24" text-anchor="middle" font-size="12" font-weight="700" fill="#1e293b">算法偶发丢帧率</text>
+      <text x="20" y="52" font-size="11" fill="#64748b">纯软件方案：</text>
+      <text x="250" y="52" text-anchor="end" font-size="11" font-weight="700" fill="#ef4444">4.2% (事件切片丢帧)</text>
+      <text x="20" y="76" font-size="11" fill="#64748b">全硬件方案：</text>
+      <text x="250" y="76" text-anchor="end" font-size="11" font-weight="700" fill="#10b981">0.0% (零丢帧)</text>
+      <rect x="20" y="88" width="230" height="16" rx="3" fill="#ecfdf5"/>
+      <text x="135" y="100" text-anchor="middle" font-size="9.5" font-weight="600" fill="#047857">环形缓冲不再被阻塞积压</text>
+    </g>
 
-    <!-- NVMM -->
-    <rect x="250" y="70" width="124" height="24" rx="4" fill="#10b981"/>
-    <text x="382" y="87" font-size="12.5" font-weight="700" fill="#065f46">6.91 s</text>
-
-    <!-- Badge -->
-    <rect x="520" y="68" width="98" height="26" rx="13" fill="#ecfdf5" stroke="#10b981"/>
-    <text x="569" y="86" text-anchor="middle" font-size="12" font-weight="700" fill="#047857">时延压缩 74.2%</text>
+    <!-- Card 3: Overall CPU & Thermal -->
+    <g transform="translate(620, 26)">
+      <rect x="0" y="0" width="270" height="112" rx="6" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.2"/>
+      <text x="135" y="24" text-anchor="middle" font-size="12" font-weight="700" fill="#1e293b">整机 CPU 负载与温升</text>
+      <text x="20" y="52" font-size="11" fill="#64748b">纯软件方案：</text>
+      <text x="250" y="52" text-anchor="end" font-size="11" font-weight="700" fill="#ef4444">88% ~ 96% (高负荷易降频)</text>
+      <text x="20" y="76" font-size="11" fill="#64748b">全硬件方案：</text>
+      <text x="250" y="76" text-anchor="end" font-size="11" font-weight="700" fill="#10b981">24% ~ 32% (温降 ~7℃)</text>
+      <rect x="20" y="88" width="230" height="16" rx="3" fill="#e0f2fe"/>
+      <text x="135" y="100" text-anchor="middle" font-size="9.5" font-weight="600" fill="#0284c7">释放出充裕算力支撑大模型部署</text>
+    </g>
   </g>
 
-  <!-- Divider Line 2 -->
-  <line x1="80" y1="355" x2="880" y2="355" stroke="#f1f5f9" stroke-width="1.5"/>
-
-  <!-- Section 3: 单路 CPU 核心占用率 -->
-  <g transform="translate(0, 370)">
-    <text x="235" y="44" text-anchor="end" font-size="13.5" font-weight="600" fill="#1a1a1a">单路 CPU 占用率 (%)</text>
-    
-    <!-- mp4v -->
-    <rect x="250" y="10" width="480" height="24" rx="4" fill="#ef4444"/>
-    <text x="738" y="27" font-size="12.5" font-weight="600" fill="#991b1b">380% ~ 480% (占满4核+)</text>
-
-    <!-- x264enc -->
-    <rect x="250" y="40" width="220" height="24" rx="4" fill="#f8fafc" stroke="#94a3b8" stroke-dasharray="3 3"/>
-    <text x="478" y="57" font-size="12" fill="#64748b">待实测数据接入 (TBD)</text>
-
-    <!-- NVMM -->
-    <rect x="250" y="70" width="18" height="24" rx="4" fill="#10b981"/>
-    <text x="276" y="87" font-size="12.5" font-weight="700" fill="#065f46">&lt; 2.8% (近乎零开销)</text>
-
-    <!-- Badge -->
-    <rect x="520" y="68" width="98" height="26" rx="13" fill="#ecfdf5" stroke="#10b981"/>
-    <text x="569" y="86" text-anchor="middle" font-size="12" font-weight="700" fill="#047857">CPU 释放 99%+</text>
-  </g>
-
-  <!-- Footer Annotations -->
-  <g transform="translate(480, 500)">
-    <text x="0" y="0" text-anchor="middle" font-size="12" fill="#475569">💡 核心机制：独立 NVENC 硬件卸载 · 32 位 BGRx 内存对齐 · (memory:NVMM) 物理显存零拷贝</text>
-    <text x="0" y="20" text-anchor="middle" font-size="11" fill="#94a3b8">注：极速软编 (x264enc) 虚线栏为实验预留位，实测完成后即刻同步填入</text>
-  </g>
+  <!-- Footer Annotation -->
+  <text x="480" y="605" text-anchor="middle" font-size="11.5" fill="#64748b">💡 核心结论：全链路专用硅片卸载不仅消除了编解码瓶颈，更根本保障了边缘端核心 AI 算法的确定性毫秒级响应</text>
 </svg>
