@@ -4,6 +4,13 @@ import Base from '../../layouts/Base.astro';
 // 博客文章列表
 const posts = [
   {
+    slug: 'pantograph-detection-tensorrt-acceleration',
+    title: '【硬实时加速】受电弓检测层 TensorRT FP16 端到端优化：从现场 1.8 FPS 积压到 96 FPS 吞吐与边缘容器落地',
+    date: '2026-10-08',
+    tag: 'TensorRT / 边缘计算 / 模型剪枝 / 性能量化',
+    description: '动车组受电弓边缘检测层硬实时加速实战复盘：以实车 PerfMonitor 监控日志为切入点，分析算法吞吐跌至 1.8 FPS、流延迟累积达 3.2 秒、环形队列满载的原因；详解多模型错峰调度的耗时构成，落地 YOLOv11 动态 Shape 优化、HRNet-W32 姿态网络多分支算子融合，以及 FastAD 无监督异常检测‘94% 骨干冗余剪枝 + GPU 硬件级预处理’带来的显著提速；系统呈现微基准与宏基准实测量化数据（极限吞吐 96 FPS，释放 78.1% 算力裕量），并给出 Jetson Orin Docker 容器冷启动自愈与后续实机评测路线。',
+  },
+  {
     slug: 'edge-hardware-video-encoding',
     title: '《边缘端硬件视频编解码实践》',
     date: '2026-09-28',
