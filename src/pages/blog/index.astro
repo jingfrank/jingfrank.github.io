@@ -4,6 +4,13 @@ import Base from '../../layouts/Base.astro';
 // 博客文章列表
 const posts = [
   {
+    slug: 'pantograph-camera-offset-and-lens-dirt-defense',
+    title: '【工程实战】受电弓边缘出画与镜头污染抗虚警攻坚：从机位偏转时序锁存到动态引导与脏污解耦实录',
+    date: '2026-10-27',
+    tag: '工业视觉 / 抗虚警 / 异常检测 / 时序状态机',
+    description: '动车组 350 km/h 高速运行下弓网监控抗虚警工程实录：深入剖析摄像头机位偏转导致受电弓边缘截断出画、YOLO 置信度骤降引发的结构异常与车顶伪脏污连锁虚警；详解基于 YOLO 目标框引导的动态接触网浮动 ROI 与放电致盲时序保持（BBox Hold）；创新落地低置信度贴边残损弓召回与出画 10s 时序平滑锁存状态机；断然废除 sky_cells<4 天空单点误杀先验，对齐 FastAD Layer 2 像素阈值，成功在实车样本中稳定召回镜片中央真实油污，实现多场景长视频全段 0 误报与真故障无漏报。',
+  },
+  {
     slug: 'pantograph-detection-tensorrt-acceleration',
     title: '【硬实时加速】受电弓检测层 TensorRT FP16 端到端优化：从现场 1.8 FPS 积压到 96 FPS 吞吐与边缘容器落地',
     date: '2026-10-08',
