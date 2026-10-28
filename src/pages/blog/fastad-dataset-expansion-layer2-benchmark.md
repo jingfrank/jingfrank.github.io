@@ -17,8 +17,8 @@ date: "2026-10-28"
   - [2. 异常评分倒挂：为什么正常帧会测出 21.2 分？](#2-异常评分倒挂为什么正常帧会测出-212-分)
   - [3. calibrate_thresholds 标定网格搜索的崩塌](#3-calibrate_thresholds-标定网格搜索的崩塌)
 - [二、双轨数据工程：基准测试集与训练数据集的系统构建](#二双轨数据工程基准测试集与训练数据集的系统构建)
-  - [1. 基准测试集构建 (/home/ibd/jyb/Dataset)：黄金评估标尺](#1-基准测试集构建-homeibdjybdataset黄金评估标尺)
-  - [2. 训练数据集治理 (/home/ibd/jyb/gongwang_fastad/dataset)：从偏置失真到开集泛化](#2-训练数据集治理-homeibdjybgongwang_fastaddataset从偏置失真到开集泛化)
+  - [1. 基准测试集构建 (Dataset)：黄金评估标尺](#1-基准测试集构建-dataset黄金评估标尺)
+  - [2. 训练数据集治理 (fastad/dataset)：从偏置失真到开集泛化](#2-训练数据集治理-fastaddataset从偏置失真到开集泛化)
   - [3. “训练-测试”双集的严格物理隔离准则 (Zero-Leakage Protocol)](#3-训练-测试双集的严格物理隔离准则-zero-leakage-protocol)
 - [三、核心算法突破：Layer 2 浅中层几何特征重构](#三核心算法突破layer-2-浅中层几何特征重构)
   - [1. 物理感受野机理：Layer 2（局部几何）vs Layer 3（全图语义）](#1-物理感受野机理layer-2局部几何vs-layer-3全图语义)
@@ -91,16 +91,16 @@ FastAD Layer 3 综合阈值标定与基准评测看板:
 
 任何工业级算法落地的成败，70% 决定于底层数据的纯度与代表性。面对现场 653 个视频带来的剧烈工况冲击，我们重构了“双轨数据工程”：一面打造绝对权威、零泄露的现场评测基准集，一面精炼治理多源开集训练集。
 
-### 1. 基准测试集构建 (`/home/ibd/jyb/Dataset`)：黄金评估标尺
+### 1. 基准测试集构建 (`Dataset/`)：黄金评估标尺
 
 为了摆脱过往“用训练集看效果”的主观陷阱，我们从现场反馈样本中精心抽离并标注了具有独立裁判权的黄金评测基准库。
 
 #### (1) 测试集目录结构与物理架构
 
-测试集严格按照类别规范落盘于 `/home/ibd/jyb/Dataset`：
+测试集严格按照类别规范落盘于基准目录 `Dataset/`：
 
 ```text
-/home/ibd/jyb/Dataset/
+Dataset/
 ├── Anomaly/                             # 正样本：各类现场真实故障缺陷 (总计 80 帧)
 │   ├── dirt/                            # 镜头泥浆、油污、密集雨滴大面积糊镜 (76 帧)
 │   ├── foreign_object/                  # 接触网/受电弓挂载塑料薄膜、编织袋开集异物 (3 帧)
@@ -131,22 +131,22 @@ FastAD Layer 3 综合阈值标定与基准评测看板:
 
 #### (3) 自动化 Manifest 索引同步机制
 
-为了防止测试集文件变动导致评测脚本失效，开发了专门的元数据同步套件 [`tools/sync_dataset_manifest.py`](file:///mnt/T4/jyb/gongwang_clean/tools/sync_dataset_manifest.py)。每次测试集增删图像时，自动提取类别标签、故障子属性及绝对路径，实时刷新：
+为了防止测试集文件变动导致评测脚本失效，开发了专门的元数据同步套件 `tools/sync_dataset_manifest.py`。每次测试集增删图像时，自动提取类别标签、故障子属性及对应路径，实时刷新：
 - `Dataset/manifest.json`：包含完整的 JSON 元数据结构，供 Python 异步加载；
 - `Dataset/manifest.csv`：供 Pandas 与数据科学流水线直接切片与交叉验证。
 
 ---
 
-### 2. 训练数据集治理 (`/home/ibd/jyb/gongwang_fastad/dataset`)：从偏置失真到开集泛化
+### 2. 训练数据集治理 (`fastad/dataset/`)：从偏置失真到开集泛化
 
 FastAD 是单类无监督算法，其训练集必须满足两大核心法则：**“纯净无污染”** 与 **“多样覆盖”**。
 
 #### (1) 历史训练集的偏置诊断与冷备份保护
 
-原训练集目录位于 `/home/ibd/jyb/gongwang_fastad/dataset`。排查发现，该数据集仅来源于 3 个早期测试视频，更严重的是：**包含高达 239 帧单一视频的强烈大火花样本**！
+原训练集目录位于 `fastad/dataset/`。排查发现，该数据集仅来源于 3 个早期测试视频，更严重的是：**包含高达 239 帧单一视频的强烈大火花样本**！
 - 样本严重倾斜导致模型的马氏均值向量被大面积电弧强光拉向极值；
 - 现场正常的暗光或隧道阴影由于远离火花中心，被直接当作离群异常点；
-- 在启动治理前，我们首先在本地建立了完整的原始数据冷备份：`/home/ibd/jyb/gongwang_fastad/dataset_backup_orig`，确保历史基线随时可溯源。
+- 在启动治理前，我们首先在本地建立了完整的原始数据冷备份：`dataset_backup_orig/`，确保历史基线随时可溯源。
 
 #### (2) 冗余脱水与结构重组
 
@@ -158,10 +158,10 @@ FastAD 是单类无监督算法，其训练集必须满足两大核心法则：*
 #### (3) 现场 653 误报视频跨工况抽样与候选隔离池
 
 针对 653 个现场反馈的误报视频（涵盖隧道、暴雨、晴空、多车顶型号）：
-1. **抽样池搭建**：从 653 个视频中跨场景均匀抽取了 250 张候选图像，输出至物理隔离目录 `/home/ibd/jyb/candidate_train_frames/`；
+1. **抽样池搭建**：从 653 个视频中跨场景均匀抽取了 250 张候选图像，输出至物理隔离目录 `candidate_train_frames/`；
 2. **人工严苛质检**：无监督模型一旦吸纳带瑕疵样本，就会将缺陷“常态化”。我们逐帧审核了 250 张候选切片，剔除带电弧放电火花、微弱泥渍或机位畸变的 191 张样本；
 3. **59 帧纯净现场工况帧入库**：最终筛选出 **59 帧覆盖隧道暗影、日光镜面反光、吊弦复杂纹理的纯净现场真实正常帧**；
-4. **自动化合并入库**：编写 [`scripts/merge_reviewed_candidates.py`](file:///mnt/T4/jyb/gongwang_clean/scripts/merge_reviewed_candidates.py)，按 8:2 黄金比例将 59 帧无缝注入训练集：
+4. **自动化合并入库**：编写 `scripts/merge_reviewed_candidates.py`，按 8:2 黄金比例将 59 帧无缝注入训练集：
    - **47 帧** 注入 `dataset/train/`
    - **12 帧** 注入 `dataset/val/`
 
@@ -170,7 +170,7 @@ FastAD 是单类无监督算法，其训练集必须满足两大核心法则：*
 治理后的训练集目录结构与各来源比例：
 
 ```text
-/home/ibd/jyb/gongwang_fastad/dataset/
+fastad/dataset/
 ├── train/                               # 训练集：总计 247 帧 (完全无污染的高泛化正常样本)
 │   ├── cand_0001 ~ cand_0242.jpg        # 从 653 个现场误报视频清洗提取的纯净现场帧 (47 帧)
 │   ├── val_0001 ~ val_0099 (部分).jpg   # 精简后的历史背景：火花(80帧)、倾斜(50帧)、异物(50帧)
@@ -189,9 +189,9 @@ FastAD 是单类无监督算法，其训练集必须满足两大核心法则：*
 工业 AI 项目最忌讳“自圆其说”式的数据泄露。我们在工程全流程中严格执行三项物理边界准则：
 
 1. **样本来源零交集 (Zero Intersection)**：
-   测试集 `/home/ibd/jyb/Dataset` 中的 134 帧图像（无论 Normal 还是 Anomaly），绝对禁止以任何形式流入训练集 `/home/ibd/jyb/gongwang_fastad/dataset`。
+   测试集 `Dataset/` 中的 134 帧图像（无论 Normal 还是 Anomaly），绝对禁止以任何形式流入训练集 `fastad/dataset/`。
 2. **候选池完全隔离审核**：
-   从 653 个误报视频抽取的 250 张候选切片单独存放在 `/home/ibd/jyb/candidate_train_frames/`，未经人工审核签字确认的切片绝不进入训练目录。
+   从 653 个误报视频抽取的 250 张候选切片单独存放在 `candidate_train_frames/`，未经人工审核签字确认的切片绝不进入训练目录。
 3. **可复现流水线**：
    无论是测试集的生成（`sync_dataset_manifest.py`）、候选集注入（`merge_reviewed_candidates.py`），还是模型性能评测（`evaluate_auroc.py`），均由脚本一键自动化执行并记录完整 Hash 与日志，杜绝任何人工随意篡改。
 
@@ -357,7 +357,7 @@ is_abnormal = len(structural_boxes) > 0 and (img_score > img_thresh * 1.15)
 
 ### 2. detectors.yaml 核心参数更新清单
 
-针对 Layer 2 优秀的低基线特性，我们全面重构了 [`config/detectors.yaml`](file:///mnt/T4/jyb/gongwang_clean/config/detectors.yaml) 的参数配置：
+针对 Layer 2 优秀的低基线特性，我们全面重构了 `config/detectors.yaml` 的参数配置：
 
 ```yaml
   - name: dirt
