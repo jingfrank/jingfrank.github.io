@@ -4,6 +4,13 @@ import Base from '../../layouts/Base.astro';
 // 博客文章列表
 const posts = [
   {
+    slug: 'fastad-dataset-expansion-layer2-benchmark',
+    title: '【工业无监督实战】FastAD 真实开集数据治理与 Layer 2 几何特征重构：AUROC 0.8882 突破与 8.4MB TensorRT 极速落地',
+    date: '2026-10-28',
+    tag: '无监督异常检测 / 数据治理 / AUROC基准 / TensorRT优化',
+    description: '针对动车组弓网监控中 FastAD 面对 653 个现场误报视频因背景高基线漂移（7.0~21.2）导致阈值标定失效的难题，系统复盘开集数据精细化治理与双集绝对物理隔离、Layer 2 vs Layer 3 几何感受野消融实验，以及 8.4MB TensorRT FP16 极速导出。在 134 帧纯净现场测试集上，Layer 2 全图 AUROC 跃升至 0.8882（+18.4%），受电弓结构断裂达成 100% 完美分离，单帧全流程耗时仅需 16.6 ms。',
+  },
+  {
     slug: 'pantograph-camera-offset-and-lens-dirt-defense',
     title: '受电弓边缘出画防御与镜头脏污检测解耦实践',
     date: '2026-10-27',
