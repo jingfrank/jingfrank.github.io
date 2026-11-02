@@ -5,6 +5,7 @@
   --bg-hover: #f0f0f0;
   --border: #e5e5e5;
   --accent: #0070f3;
+  --accent-rgb: 0, 112, 243;
   --code-bg: #f6f8fa;
 }
 
@@ -20,6 +21,7 @@ html {
   line-height: 1.7;
   color: var(--text);
   background: var(--bg);
+  scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -38,6 +40,15 @@ main {
   padding: 3rem 1.5rem;
 }
 
+main.wide-layout {
+  max-width: 1140px;
+}
+
+body.wide-layout .nav-container,
+body.wide-layout .footer-container {
+  max-width: 1140px;
+}
+
 a {
   color: var(--accent);
   text-decoration: none;
@@ -46,6 +57,10 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  scroll-margin-top: 5rem;
 }
 
 h1 {

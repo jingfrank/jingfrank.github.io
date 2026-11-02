@@ -1,0 +1,322 @@
+---
+export interface HeadingItem {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings?: HeadingItem[];
+  type?: 'desktop' | 'mobile';
+}
+
+const { headings = [], type = 'desktop' } = Astro.props;
+
+// 过滤掉原有的 "目录" 标题以及过深的层级（仅展示 h2 和 h3，保证目录清晰专注）
+const tocItems = headings.filter(
+  (h) => h.slug !== '目录' && h.text !== '目录' && (h.depth === 2 || h.depth === 3)
+);
+---
+
+{type === 'mobile' ? (
+  <nav class="mobile-toc-container" id="mobile-toc-container" aria-label="移动端文章目录">
+    <details class="mobile-toc-details">
+      <summary class="mobile-toc-summary">
+        <span class="mobile-toc-title">
+          <svg class="toc-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="8" y1="6" x2="21" y2="6"></line>
+            <line x1="8" y1="12" x2="21" y2="12"></line>
+            <line x1="8" y1="18" x2="21" y2="18"></line>
+            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+          </svg>
+          <span>文章目录</span>
+        </span>
+        <span class="mobile-toc-arrow">▸</span>
+      </summary>
+      <ul class="mobile-toc-list" id="mobile-toc-list">
+        {tocItems.map((item) => (
+          <li class:list={['mobile-toc-item', `depth-${item.depth}`]}>
+            <a href={`#${item.slug}`} class="mobile-toc-link">{item.text}</a>
+          </li>
+        ))}
+      </ul>
+    </details>
+  </nav>
+) : (
+  <aside class="desktop-toc-aside" id="desktop-toc-aside" aria-label="文章目录侧边栏">
+    <div class="desktop-toc-wrapper">
+      <div class="desktop-toc-header">
+        <svg class="toc-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="8" y1="6" x2="21" y2="6"></line>
+          <line x1="8" y1="12" x2="21" y2="12"></line>
+          <line x1="8" y1="18" x2="21" y2="18"></line>
+          <line x1="3" y1="6" x2="3.01" y2="6"></line>
+          <line x1="3" y1="12" x2="3.01" y2="12"></line>
+          <line x1="3" y1="18" x2="3.01" y2="18"></line>
+        </svg>
+        <span>本页目录</span>
+      </div>
+
+      <nav class="desktop-toc-nav" id="desktop-toc-nav">
+        <ul class="desktop-toc-list" id="desktop-toc-list">
+          {tocItems.map((item) => (
+            <li class:list={['desktop-toc-item', `depth-${item.depth}`]}>
+              <a href={`#${item.slug}`} class="desktop-toc-link" data-slug={item.slug}>
+                {item.text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <div class="desktop-toc-footer">
+        <button type="button" class="back-to-top-btn" id="toc-back-to-top" title="回到文章顶部">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"></polyline>
+          </svg>
+          <span>回到顶部</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+)}
+
+<style>
+  /* 基础图标样式 */
+  .toc-icon {
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  /* ---------------- 移动端折叠目录样式 ---------------- */
+  .mobile-toc-container {
+    display: none;
+    margin: 1.25rem 0 2rem 0;
+  }
+
+  .mobile-toc-details {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .mobile-toc-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+  }
+
+  .mobile-toc-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .mobile-toc-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .mobile-toc-arrow {
+    color: var(--text-light);
+    font-size: 0.85rem;
+    transition: transform 0.2s ease;
+  }
+
+  .mobile-toc-details[open] .mobile-toc-arrow {
+    transform: rotate(90deg);
+  }
+
+  .mobile-toc-details[open] .mobile-toc-summary {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .mobile-toc-list {
+    list-style: none;
+    margin: 0;
+    padding: 0.6rem 0.8rem;
+    max-height: 320px;
+    overflow-y: auto;
+  }
+
+  .mobile-toc-item {
+    margin: 0;
+    padding: 0;
+  }
+
+  .mobile-toc-link {
+    display: block;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--text-light);
+    text-decoration: none;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    transition: all 0.15s;
+  }
+
+  .mobile-toc-link:hover {
+    color: var(--accent);
+    background: var(--bg-hover);
+  }
+
+  .mobile-toc-item.depth-3 .mobile-toc-link {
+    padding-left: 1.4rem;
+    font-size: 0.8rem;
+    opacity: 0.85;
+  }
+
+  /* ---------------- 桌面端吸顶侧边栏样式 ---------------- */
+  .desktop-toc-aside {
+    display: block;
+    width: 260px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 5rem;
+    max-height: calc(100vh - 6rem);
+  }
+
+  .desktop-toc-wrapper {
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - 6rem);
+    padding: 0.25rem 0 0.5rem 0.5rem;
+    border-left: 1px solid var(--border);
+  }
+
+  .desktop-toc-header {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.04em;
+    margin-bottom: 0.75rem;
+    padding-left: 0.75rem;
+  }
+
+  .desktop-toc-nav {
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex: 1;
+    padding-right: 0.35rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+  }
+
+  .desktop-toc-nav::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .desktop-toc-nav::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+  }
+
+  .desktop-toc-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .desktop-toc-item {
+    margin: 0;
+    padding: 0;
+  }
+
+  .desktop-toc-link {
+    display: block;
+    font-size: 0.825rem;
+    line-height: 1.45;
+    color: var(--text-light);
+    text-decoration: none;
+    padding: 0.35rem 0.5rem 0.35rem 0.75rem;
+    border-left: 2px solid transparent;
+    margin-left: -1px;
+    border-radius: 0 4px 4px 0;
+    transition: all 0.15s ease-in-out;
+    word-break: break-word;
+  }
+
+  .desktop-toc-link:hover {
+    color: var(--text);
+    background: var(--bg-hover);
+    text-decoration: none;
+  }
+
+  .desktop-toc-link.active {
+    color: var(--accent);
+    font-weight: 600;
+    border-left-color: var(--accent);
+    background: rgba(0, 112, 243, 0.06);
+  }
+
+  .desktop-toc-item.depth-3 .desktop-toc-link {
+    padding-left: 1.55rem;
+    font-size: 0.775rem;
+    color: #777;
+  }
+
+  .desktop-toc-item.depth-3 .desktop-toc-link:hover {
+    color: var(--text);
+  }
+
+  .desktop-toc-item.depth-3 .desktop-toc-link.active {
+    color: var(--accent);
+  }
+
+  .desktop-toc-footer {
+    margin-top: 0.75rem;
+    padding-top: 0.5rem;
+    border-top: 1px dashed var(--border);
+    padding-left: 0.75rem;
+  }
+
+  .back-to-top-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.75rem;
+    color: var(--text-light);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem 0.45rem;
+    border-radius: 4px;
+    transition: all 0.15s;
+  }
+
+  .back-to-top-btn:hover {
+    color: var(--accent);
+    background: var(--bg-hover);
+  }
+
+  /* ---------------- 响应式断点控制 ---------------- */
+  @media (max-width: 1079px) {
+    .desktop-toc-aside {
+      display: none !important;
+    }
+    .mobile-toc-container {
+      display: block !important;
+    }
+  }
+
+  @media (min-width: 1080px) {
+    .mobile-toc-container {
+      display: none !important;
+    }
+    .desktop-toc-aside {
+      display: block !important;
+    }
+  }
+</style>
