@@ -3,7 +3,13 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 
-const { title, description } = Astro.props;
+interface Props {
+  title?: string;
+  description?: string;
+  wide?: boolean;
+}
+
+const { title, description, wide = false } = Astro.props;
 ---
 
 <!doctype html>
@@ -15,9 +21,9 @@ const { title, description } = Astro.props;
     <title>{title || 'Your Name'}</title>
     <slot name="head" />
   </head>
-  <body>
+  <body class:list={[{ 'wide-layout': wide }]}>
     <Nav />
-    <main>
+    <main class:list={[{ 'wide-layout': wide }]}>
       <slot />
     </main>
     <Footer />

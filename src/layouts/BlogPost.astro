@@ -1,12 +1,13 @@
 ---
 import Base from './Base.astro';
+import TableOfContents from '../components/TableOfContents.astro';
 
-const { title, date, frontmatter } = Astro.props;
+const { title, date, frontmatter, headings } = Astro.props;
 const postTitle = title || frontmatter?.title;
 const postDate = date || frontmatter?.date;
 ---
 
-<Base title={postTitle}>
+<Base title={postTitle} wide={true}>
   <!-- KaTeX stylesheet for math formula rendering -->
   <link
     rel="stylesheet"
@@ -15,20 +16,204 @@ const postDate = date || frontmatter?.date;
     crossorigin="anonymous"
     slot="head"
   />
-  <article class="blog-post">
-    <header>
-      <h1>{postTitle}</h1>
-      <p class="post-date">{postDate}</p>
-    </header>
-    <div class="content">
-      <slot />
-    </div>
-    <hr />
-    <a href="/blog">← 返回博客</a>
-  </article>
 
-  <!-- Mermaid.js for rendering diagrams -->
+  <div class="post-layout-container">
+    <article class="blog-post">
+      <header>
+        <h1>{postTitle}</h1>
+        <p class="post-date">{postDate}</p>
+      </header>
+
+      <!-- 移动端在此处折叠展示 (屏幕 < 1080px) -->
+      <TableOfContents headings={headings} type="mobile" />
+
+      <div class="content">
+        <slot />
+      </div>
+
+      <hr />
+      <a href="/blog">← 返回博客</a>
+    </article>
+
+    <!-- 桌面端在此处吸顶侧边悬浮展示 (屏幕 >= 1080px) -->
+    <TableOfContents headings={headings} type="desktop" />
+  </div>
+
+  <!-- Client-side script: TOC ScrollSpy, DOM cleanup & Mermaid rendering -->
   <script is:inline type="module">
+    // ---------------- 1. 目录交互与滚动监听控制器 ----------------
+    function initTableOfContents() {
+      // (1) 清理正文中的历史内联目录（彻底消除正文内占用空间）
+      const inlineToc = document.getElementById('目录');
+      if (inlineToc) {
+        const prev = inlineToc.previousElementSibling;
+        if (prev && prev.tagName === 'HR') prev.remove();
+        let next = inlineToc.nextElementSibling;
+        while (next && (next.tagName === 'UL' || next.tagName === 'HR')) {
+          const toRemove = next;
+          next = next.nextElementSibling;
+          toRemove.remove();
+        }
+        inlineToc.remove();
+      }
+
+      // (2) 收集正文所有有效标题
+      const contentHeadings = Array.from(
+        document.querySelectorAll('.content h2, .content h3')
+      ).filter((h) => h.id !== '目录' && h.textContent.trim() !== '目录');
+
+      const desktopAside = document.getElementById('desktop-toc-aside');
+      const mobileContainer = document.getElementById('mobile-toc-container');
+
+      // 若正文无标题或少于 2 个标题，判定为短文，自动隐藏侧边目录与移动折叠目录
+      if (contentHeadings.length < 2) {
+        if (desktopAside) desktopAside.style.display = 'none';
+        if (mobileContainer) mobileContainer.style.display = 'none';
+        return;
+      }
+
+      // (3) 服务端未注入 headings（如 .astro 页面）时的客户端动态补全
+      const desktopList = document.getElementById('desktop-toc-list');
+      const mobileList = document.getElementById('mobile-toc-list');
+      if (desktopList && desktopList.children.length === 0) {
+        contentHeadings.forEach((h) => {
+          if (!h.id) {
+            h.id = h.textContent.trim().toLowerCase().replace(/\s+/g, '-');
+          }
+          const depth = h.tagName.toLowerCase() === 'h2' ? 2 : 3;
+
+          const dLi = document.createElement('li');
+          dLi.className = `desktop-toc-item depth-${depth}`;
+          const dLink = document.createElement('a');
+          dLink.href = `#${h.id}`;
+          dLink.className = 'desktop-toc-link';
+          dLink.dataset.slug = h.id;
+          dLink.textContent = h.textContent.trim();
+          dLi.appendChild(dLink);
+          desktopList.appendChild(dLi);
+
+          if (mobileList) {
+            const mLi = document.createElement('li');
+            mLi.className = `mobile-toc-item depth-${depth}`;
+            const mLink = document.createElement('a');
+            mLink.href = `#${h.id}`;
+            mLink.className = 'mobile-toc-link';
+            mLink.textContent = h.textContent.trim();
+            mLi.appendChild(mLink);
+            mobileList.appendChild(mLi);
+          }
+        });
+      }
+
+      // (4) ScrollSpy 动态追踪与高亮
+      const tocLinks = Array.from(document.querySelectorAll('.desktop-toc-link'));
+      const desktopNav = document.getElementById('desktop-toc-nav');
+      let isManualScrolling = false;
+      let manualScrollTimer = null;
+
+      function setActive(activeId) {
+        if (!activeId) return;
+        let currentActive = null;
+        tocLinks.forEach((link) => {
+          const match = link.getAttribute('data-slug') === activeId || link.getAttribute('href') === `#${activeId}`;
+          if (match) {
+            link.classList.add('active');
+            currentActive = link;
+          } else {
+            link.classList.remove('active');
+          }
+        });
+
+        if (currentActive && desktopNav) {
+          const navRect = desktopNav.getBoundingClientRect();
+          const linkRect = currentActive.getBoundingClientRect();
+          if (linkRect.top < navRect.top || linkRect.bottom > navRect.bottom) {
+            currentActive.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+          }
+        }
+      }
+
+      function onScroll() {
+        if (isManualScrolling) return;
+
+        // 触底时直接高亮最后一项目录
+        if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 50) {
+          const last = contentHeadings[contentHeadings.length - 1];
+          if (last) {
+            setActive(last.id);
+            return;
+          }
+        }
+
+        const scrollY = window.scrollY;
+        const offset = 120; // 56px navbar + 间距
+        let currentId = contentHeadings[0]?.id || null;
+
+        for (let i = 0; i < contentHeadings.length; i++) {
+          const h = contentHeadings[i];
+          if (h.offsetTop - offset <= scrollY) {
+            currentId = h.id;
+          } else {
+            break;
+          }
+        }
+
+        if (currentId) {
+          setActive(currentId);
+        }
+      }
+
+      let ticking = false;
+      window.addEventListener(
+        'scroll',
+        () => {
+          if (!ticking) {
+            window.requestAnimationFrame(() => {
+              onScroll();
+              ticking = false;
+            });
+            ticking = true;
+          }
+        },
+        { passive: true }
+      );
+
+      // 初次加载计算位置
+      onScroll();
+
+      // (5) 点击目录项平滑定位与防抖
+      document.querySelectorAll('.desktop-toc-link, .mobile-toc-link').forEach((link) => {
+        link.addEventListener('click', (e) => {
+          const href = link.getAttribute('href');
+          if (href && href.startsWith('#')) {
+            const targetId = href.substring(1);
+            isManualScrolling = true;
+            clearTimeout(manualScrollTimer);
+            setActive(targetId);
+
+            // 移动端点击后自动收起折叠面板
+            const mobileDetails = link.closest('details.mobile-toc-details');
+            if (mobileDetails) {
+              mobileDetails.removeAttribute('open');
+            }
+
+            manualScrollTimer = setTimeout(() => {
+              isManualScrolling = false;
+            }, 800);
+          }
+        });
+      });
+
+      // (6) 回到顶部按钮
+      const backToTopBtn = document.getElementById('toc-back-to-top');
+      if (backToTopBtn) {
+        backToTopBtn.addEventListener('click', () => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
+    }
+
+    // ---------------- 2. Mermaid 图表渲染 ----------------
     async function renderMermaid() {
       const blocks = Array.from(document.querySelectorAll('pre')).filter((pre) => {
         return (
@@ -67,15 +252,45 @@ const postDate = date || frontmatter?.date;
       }
     }
 
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', renderMermaid);
-    } else {
+    // 页面就绪后初始化
+    function init() {
+      initTableOfContents();
       renderMermaid();
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
     }
   </script>
 </Base>
 
 <style>
+  .post-layout-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 3.5rem;
+    width: 100%;
+    position: relative;
+  }
+
+  .blog-post {
+    flex: 1 1 0%;
+    min-width: 0;
+    max-width: 760px;
+  }
+
+  @media (max-width: 1079px) {
+    .post-layout-container {
+      display: block;
+    }
+    .blog-post {
+      max-width: 100%;
+    }
+  }
+
   .blog-post header {
     margin-bottom: 2rem;
   }
@@ -92,6 +307,15 @@ const postDate = date || frontmatter?.date;
   .content :global(h2) {
     margin-top: 2.5rem;
   }
+
+  /* 隐藏正文内冗余的手写内联目录及其分割线，彻底释放正文空间 */
+  .content :global(h2#目录),
+  .content :global(h2#目录 + ul),
+  .content :global(h2#目录 + ul + hr),
+  .content :global(hr:has(+ h2#目录)) {
+    display: none !important;
+  }
+
   .content :global(.mermaid) {
     display: flex;
     justify-content: center;

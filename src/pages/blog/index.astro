@@ -4,6 +4,20 @@ import Base from '../../layouts/Base.astro';
 // 博客文章列表
 const posts = [
   {
+    slug: 'fastad-dataset-expansion-layer2-benchmark',
+    title: '【工业无监督实战】FastAD 真实开集数据治理与 Layer 2 几何特征重构：AUROC 0.8882 突破与 8.4MB TensorRT 极速落地',
+    date: '2026-10-28',
+    tag: '无监督异常检测 / 数据治理 / AUROC基准 / TensorRT优化',
+    description: '针对动车组弓网监控中 FastAD 面对 653 个现场误报视频因背景高基线漂移（7.0~21.2）导致阈值标定失效的难题，系统复盘开集数据精细化治理与双集绝对物理隔离、三代模型演进（原始旧模型 vs 扩充后 Layer 3 vs 扩充后 Layer 2）全维度消融实验，以及 8.4MB TensorRT FP16 极速导出。在 134 帧纯净现场测试集上，Layer 2 全图 AUROC 从旧模型的 0.6502 跃升至 0.8882（+36.6%），受电弓结构断裂达成 100% 完美分离（旧模型仅 0.4225 倒挂失效），单帧全流程耗时仅需 16.6 ms。',
+  },
+  {
+    slug: 'pantograph-camera-offset-and-lens-dirt-defense',
+    title: '受电弓边缘出画防御与镜头脏污检测解耦实践',
+    date: '2026-10-27',
+    tag: '工业视觉 / 异常检测 / 时序状态机',
+    description: '针对动车组车载监控中摄像头偏移导致受电弓边缘截断出画、引发结构异常与车顶伪脏污误报的问题，总结了动态接触网浮动 ROI、低置信度贴边残损弓召回及 10s 出画时序锁存的实现方案；同时分析并废除了天空网格数阈值限制，恢复 FastAD Layer 2 校准阈值，解决了镜面中央真实污渍漏报的问题。',
+  },
+  {
     slug: 'pantograph-detection-tensorrt-acceleration',
     title: '【硬实时加速】受电弓检测层 TensorRT FP16 端到端优化：从现场 1.8 FPS 积压到 96 FPS 吞吐与边缘容器落地',
     date: '2026-10-08',
