@@ -11,7 +11,7 @@ date: "2026-09-09"
 > 本文跳出“技术怎么调、Bug 怎么解”的微观视角，全面对标行业成熟商用标准（以**苏州华启智能科技《弓网智能分析系统》（HQ-TSW-PIA-01A）**为基准），系统复盘整个项目从立项选型、四代技术演进、三大攻坚战役、工业规则闭环到规模商用交付的全周期工程实践。
 > 
 > 📌 **航母编队支撑专题（点击可深潜底层代码与实战细节）**：
-> * **👉 底层底座：[【实战】Jetson 硬件底座特有查询指令与 RTSP 联调踩坑全景](/blog/jetson-hardware-commands-and-rtsp-guide)**
+> * **👉 底层底座：[【实战】Jetson 硬件状态透视与算力调优指南](/blog/jetson-hardware-commands-and-tuning-guide) 与 [【实战】RTSP 视频流断流与稳定性避坑实战](/blog/rtsp-stream-opencv-troubleshooting-guide)**
 > * **👉 边缘底座：[【系列一】Jetson Orin 部署 Qwen-VL 踩坑实录与底层软件栈断层复盘](/blog/jetson-orin-qwenvl-deployment-deepdive)**
 > * **👉 多模态算法：[【系列二】动静分离两阶段 VLM 架构与跨窗口时序一致性滤波实战](/blog/pantograph-vlm-twostage-algorithm)**
 > * **👉 推理加速：[【系列三】从 5.5s 到 1.06s：基于 vLLM 与推测并发的高性能推理优化实战](/blog/vllm-inference-acceleration-benchmark)**
@@ -710,7 +710,7 @@ level = "critical" if is_abnormal else ("warning" if self.abnormal_frame_count >
 
 本篇全周期复盘长文至此告一段落。如果你希望深潜并复现其中某一个关键环节的代码实现与踩坑全貌，欢迎阅读下方专题舰队的深度文章：
 
-* 🔧 **底座与联调**：[Jetson 硬件底座特有查询指令与 RTSP 联调踩坑全景](/blog/jetson-hardware-commands-and-rtsp-guide)
+* 🔧 **底座与联调**：[Jetson 硬件状态透视与算力调优指南](/blog/jetson-hardware-commands-and-tuning-guide)
 * 🐳 **环境与生态**：[Jetson Orin 部署 Qwen-VL 踩坑实录与底层软件栈断层复盘](/blog/jetson-orin-qwenvl-deployment-deepdive)
 * 🎯 **算法与滤波**：[动静分离两阶段 VLM 架构与跨窗口时序一致性滤波实战](/blog/pantograph-vlm-twostage-algorithm)
 * ⚡ **推理与并发**：[从 5.5s 到 1.06s：基于 vLLM 与推测并发的高性能推理优化实战](/blog/vllm-inference-acceleration-benchmark)

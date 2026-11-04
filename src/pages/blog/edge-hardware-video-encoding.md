@@ -59,7 +59,7 @@ flowchart LR
 
 ## 二、Jetson 官方视频接口与底层硬件机制
 
-很多初学者容易把桌面端的视频开发经验套用到 Jetson 上，误以为可以随意调用 NVIDIA Video Codec SDK 或各种开源库。实际上，NVIDIA 针对 Jetson 嵌入式架构有一套非常清晰的官方接口分工。关于 Jetson 的基础命令和流媒体测试，推荐阅读 [Jetson 硬件命令与 RTSP 指南](/blog/jetson-hardware-commands-and-rtsp-guide) 补充前置知识。
+很多初学者容易把桌面端的视频开发经验套用到 Jetson 上，误以为可以随意调用 NVIDIA Video Codec SDK 或各种开源库。实际上，NVIDIA 针对 Jetson 嵌入式架构有一套非常清晰的官方接口分工。关于 Jetson 的基础命令和流媒体测试，推荐阅读 [Jetson 硬件状态透视与算力调优指南](/blog/jetson-hardware-commands-and-tuning-guide) 补充前置知识。
 
 ### 1. 官方四层接口体系与 GStreamer 选型
 

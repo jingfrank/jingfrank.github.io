@@ -60,11 +60,18 @@ const posts = [
     description: '高铁动车组受电弓 2D 倾斜监测实战：为什么从 10 关键点精简为 4 刚性铰点以避开碳滑板磨耗干扰？为什么直接求绝对角平均会导致 50%+ 虚警？如何基于下横梁局部浮动坐标系构建 SO(2) 刚体旋转不变量，将虚警率降至 3.3% 并精准捕获真实结构扭折？附 120 秒高清视频全量评测与工程级代码。',
   },
   {
-    slug: 'jetson-hardware-commands-and-rtsp-guide',
-    title: '【实战】Jetson 硬件底座特有查询指令与 EasyDarwin RTSP 推拉流联调踩坑全景',
+    slug: 'jetson-hardware-commands-and-tuning-guide',
+    title: '【边缘底座】Jetson Orin 硬件状态透视与算力调优指南：从 L4T 断层到 MAXN 锁频',
     date: '2026-09-08',
-    tag: '边缘工程 / 流媒体实战',
-    description: '系统梳理 Jetson 原厂硬件诊断与调优指令全家桶（nv_tegra_release、tegrastats、nvpmodel、jetson_clocks），并完整复盘 Windows EasyDarwin 7.2 与 Jetson Docker 推拉流联调中 30s 超时、OpenCV 段错误、时间戳回绕断流、时钟时区与花屏等五大核心避坑总结。',
+    tag: '边缘工程 / 硬件底座 / 性能调优',
+    description: '系统梳理 Jetson 原厂专属硬件诊断与调优体系（nv_tegra_release、tegrastats、nvpmodel、jetson_clocks），深度解析统一物理内存分配、lfb 内存碎片、EMC 内存带宽与温控降频机制，给出 MAXN 满血算力释放与 DVFS 升频延迟消除方案。',
+  },
+  {
+    slug: 'rtsp-stream-opencv-troubleshooting-guide',
+    title: '【流媒体实战】工业级 Python/OpenCV RTSP 视频流断流、段错误与时钟漂移避坑实战',
+    date: '2026-09-08',
+    tag: '流媒体实战 / OpenCV / 稳定性工程',
+    description: '完整复盘跨平台 EasyDarwin 与 Python/OpenCV 多线程拉流实战中 30s 硬超时、C++ Use-After-Free 致命段错误、PTS 回绕 2 分钟断流、B 帧花屏与时钟漂移等 5 大核心故障根因，提供生产级加固代码与推拉流标准配置。',
   },
   {
     slug: 'fastad-industrial-anomaly-detection-decoupling',

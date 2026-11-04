@@ -10,7 +10,7 @@ date: "2026-08-27"
 > * **👉 系列一（本文）：[Jetson Orin 部署 Qwen-VL 踩坑实录与底层软件栈断层复盘](/blog/jetson-orin-qwenvl-deployment-deepdive)**
 > * **👉 系列二：[动静分离两阶段 VLM 架构与跨窗口时序一致性滤波实战](/blog/pantograph-vlm-twostage-algorithm)**
 > * **👉 系列三：[从 5.5s 到 1.06s：基于 vLLM 与推测并发的高性能推理优化实战](/blog/vllm-inference-acceleration-benchmark)**
-> * **👉 专题扩展：[Jetson 硬件特有指令与 EasyDarwin RTSP 推拉流联调踩坑全景](/blog/jetson-hardware-commands-and-rtsp-guide)**
+> * **👉 专题扩展：[Jetson 硬件状态透视与算力调优指南](/blog/jetson-hardware-commands-and-tuning-guide) 与 [RTSP 视频流断流与稳定性避坑实战](/blog/rtsp-stream-opencv-troubleshooting-guide)**
 
 ---
 
@@ -116,7 +116,7 @@ JetPack 并不是一个单纯的 Python 包，而是覆盖了从操作系统内�
 
 > [!TIP]
 > **如何快速确认当前工控机所处的真实 L4T 与 JetPack 版本？**
-> 执行 Jetson 独有的硬件原厂命令：`cat /etc/nv_tegra_release`。若输出形如 `# R35 (release), REVISION: 4.1...` 则为 L4T R35.4.1（对应 JetPack 5.1.2）；若为 `R36.x` 则为 JetPack 6。更多 Tegra 硬件查询、运行态能耗与统一内存监控（`tegrastats`）以及 MAXN 满血锁频（`nvpmodel` / `jetson_clocks`）指令，详见专题博文：[《Jetson 硬件底座特有查询指令与 EasyDarwin RTSP 推拉流联调踩坑全景》](/blog/jetson-hardware-commands-and-rtsp-guide)。
+> 执行 Jetson 独有的硬件原厂命令：`cat /etc/nv_tegra_release`。若输出形如 `# R35 (release), REVISION: 4.1...` 则为 L4T R35.4.1（对应 JetPack 5.1.2）；若为 `R36.x` 则为 JetPack 6。更多 Tegra 硬件查询、运行态能耗与统一内存监控（`tegrastats`）以及 MAXN 满血锁频（`nvpmodel` / `jetson_clocks`）指令，详见专题博文：[《Jetson Orin 硬件状态透视与算力调优指南》](/blog/jetson-hardware-commands-and-tuning-guide)。
 
 在实际工程交付中，开发者最常踩的坑正是 **JetPack 5** 与 **JetPack 6** 之间的软硬件断层：
 
@@ -272,7 +272,7 @@ ffmpeg -re -stream_loop -1 \
 借助该仿真基准，我们不仅解耦了硬件依赖，还能通过注入弱网丢包和突发断流，对系统进行 7×24 小时高压测试。正是在此过程中，多路拉流的深层系统级故障彻底爆发。
 
 > [!NOTE]
-> 在 Windows 与 Jetson 异机联调 EasyDarwin 仿真推流时，极易踩中 Windows 防火墙 Block 优先、网卡识别为 Public 静默丢包、OpenCV C++ 段错误、时间戳倒退断流以及 B 帧花屏等连锁深坑。关于网络层与解码层的完整 5 大避坑实录，可直接参阅专题解析：[《Jetson 硬件底座特有查询指令与 EasyDarwin RTSP 推拉流联调踩坑全景》](/blog/jetson-hardware-commands-and-rtsp-guide)。
+> 在 Windows 与 Jetson 异机联调 EasyDarwin 仿真推流时，极易踩中 Windows 防火墙 Block 优先、网卡识别为 Public 静默丢包、OpenCV C++ 段错误、时间戳倒退断流以及 B 帧花屏等连锁深坑。关于网络层与解码层的完整 5 大避坑实录，可直接参阅专题解析：[《工业级 Python/OpenCV RTSP 视频流断流、段错误与时钟漂移避坑实战》](/blog/rtsp-stream-opencv-troubleshooting-guide)。
 
 #### 2. 故障现象与进程监控分析
 
