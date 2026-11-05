@@ -72,7 +72,7 @@ date: "2026-11-04"
 
 * [1] Bento, J.; Paixão, T.; Alvarez, A.B. Performance Evaluation of YOLOv8, YOLOv9, YOLOv10, and YOLOv11 for Stamp Detection in Scanned Documents. *Applied Sciences*, 2025, 15(6), 3154. DOI: 10.3390/app15063154.
 * [2] Jocher, G.; Qiu, J. Ultralytics YOLO11, 2024. Available online: https://github.com/ultralytics/ultralytics.
-* [3] Gao, S.; Liu, X.; Gao, S.; et al. Detection and Assessment of Pantograph-Catenary Arcing Based on High-Speed Vision. *IEEE Transactions on Instrumentation and Measurement*, 2021, 70: 1-11.
+* [3] Jing, Y.; Ding, G. FastAD: A Deployable Framework for Real-Time Visual Anomaly Detection. In *Artificial Neural Networks and Machine Learning – ICANN 2026*, Lecture Notes in Computer Science; Springer Nature Switzerland: Cham, 2026; Vol. 17090, pp. 269–281. DOI: [10.1007/978-3-032-38401-0_22](https://doi.org/10.1007/978-3-032-38401-0_22).
 * [4] Zagoruyko, S.; Komodakis, N. Wide Residual Networks. In *Proceedings of the British Machine Vision Conference (BMVC)*, York, UK, 19–22 September 2016; pp. 87.1–87.12. DOI: 10.5244/C.30.87.
 * [5] Defard, T.; Setkov, A.; Loesch, A.; Audigier, R. PaDiM: A Patch Distribution Modeling Framework for Anomaly Detection and Localization. In *Pattern Recognition. ICPR International Workshops and Challenges*; Springer: Cham, Switzerland, 2021; pp. 475–489. DOI: 10.1007/978-3-030-68799-1_35.
 * [6] Sun, K.; Xiao, B.; Liu, D.; Wang, J. Deep High-Resolution Representation Learning for Human Pose Estimation. In *Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)*, Long Beach, CA, USA, 16–20 June 2019; pp. 5693–5703.
