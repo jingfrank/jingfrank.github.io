@@ -338,4 +338,15 @@ const postDate = date || frontmatter?.date;
     margin-top: -0.25rem;
     margin-bottom: 1.75rem;
   }
+  .content :global(p:has(> img):has(> em)) {
+    text-align: center;
+  }
+  .content :global(p > img + em) {
+    display: block;
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--text-light);
+    margin-top: 0.5rem;
+    margin-bottom: 1.75rem;
+  }
 </style>
