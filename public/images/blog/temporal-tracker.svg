@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif">
+  <rect x="0.5" y="0.5" width="959" height="639" rx="10" fill="#ffffff" stroke="#e5e5e5"/>
+
+  <text x="480" y="36" text-anchor="middle" font-size="16" font-weight="700" fill="#1a1a1a">TemporalConsistencyTracker：跨窗口空间-时序一致性滤波</text>
+  <text x="480" y="58" text-anchor="middle" font-size="13" fill="#666">单帧命中只是「疑似」，跨窗口复核通过才算「确诊」——同一个视频里的两条命运轨迹</text>
+
+  <!-- window headers W1..W8 -->
+  <g font-size="13" font-weight="700" fill="#666" text-anchor="middle">
+    <text x="195" y="92">W1</text><text x="295" y="92">W2</text><text x="395" y="92">W3</text>
+    <text x="495" y="92">W4</text><text x="595" y="92">W5</text><text x="695" y="92">W6</text>
+    <text x="795" y="92">W7</text><text x="895" y="92">W8</text>
+  </g>
+
+  <!-- lane A: true object -->
+  <text x="24" y="140" font-size="14" font-weight="700" fill="#16a34a">真异物</text>
+  <text x="24" y="160" font-size="12" fill="#888">持续存在</text>
+
+  <rect x="155" y="108" width="80" height="72" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="195" y="132" text-anchor="middle" font-size="12.5" font-weight="700" fill="#b45309">命中</text>
+  <text x="195" y="150" text-anchor="middle" font-size="11.5" fill="#92400e">hit = 1</text>
+  <text x="195" y="168" text-anchor="middle" font-size="11.5" fill="#92400e">SUSPECT</text>
+
+  <rect x="255" y="108" width="80" height="72" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+  <text x="295" y="132" text-anchor="middle" font-size="12.5" font-weight="700" fill="#15803d">同坐标命中</text>
+  <text x="295" y="150" text-anchor="middle" font-size="11.5" fill="#166534">hit = 2 ≥ 阈值</text>
+  <text x="295" y="168" text-anchor="middle" font-size="11.5" font-weight="700" fill="#16a34a">CONFIRMED</text>
+
+  <rect x="355" y="108" width="80" height="72" rx="8" fill="#f0fdf4" stroke="#86efac"/>
+  <text x="395" y="132" text-anchor="middle" font-size="12.5" font-weight="700" fill="#15803d">继续命中</text>
+  <text x="395" y="150" text-anchor="middle" font-size="11.5" fill="#166534">hit = 3</text>
+  <text x="395" y="168" text-anchor="middle" font-size="11.5" fill="#166534">持续告警</text>
+
+  <rect x="455" y="108" width="440" height="72" rx="8" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <text x="675" y="140" text-anchor="middle" font-size="12.5" fill="#166534">后续窗口持续命中（距离 ≤ 100 px 且 gap ≤ 2）</text>
+  <text x="675" y="162" text-anchor="middle" font-size="12.5" font-weight="600" fill="#16a34a">→ 全程确诊告警 ✅</text>
+
+  <!-- lane B: transient noise -->
+  <text x="24" y="262" font-size="14" font-weight="700" fill="#dc2626">瞬态噪点</text>
+  <text x="24" y="282" font-size="12" fill="#888">反光/拖影</text>
+
+  <rect x="155" y="228" width="340" height="72" rx="8" fill="#f6f8fa" stroke="#e5e5e5"/>
+  <text x="325" y="268" text-anchor="middle" font-size="12.5" fill="#999">无命中（正常画面）</text>
+
+  <rect x="555" y="228" width="80" height="72" rx="8" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="595" y="252" text-anchor="middle" font-size="12.5" font-weight="700" fill="#b45309">噪点误命中</text>
+  <text x="595" y="270" text-anchor="middle" font-size="11.5" fill="#92400e">hit = 1</text>
+  <text x="595" y="288" text-anchor="middle" font-size="11.5" fill="#92400e">SUSPECT</text>
+
+  <rect x="655" y="228" width="80" height="72" rx="8" fill="#f6f8fa" stroke="#d0d7de"/>
+  <text x="695" y="252" text-anchor="middle" font-size="12" fill="#666">未命中</text>
+  <text x="695" y="270" text-anchor="middle" font-size="11.5" fill="#888">gap = 1 ≤ 2</text>
+  <text x="695" y="288" text-anchor="middle" font-size="11.5" fill="#888">候选保留</text>
+
+  <rect x="755" y="228" width="80" height="72" rx="8" fill="#f6f8fa" stroke="#d0d7de"/>
+  <text x="795" y="252" text-anchor="middle" font-size="12" fill="#666">未命中</text>
+  <text x="795" y="270" text-anchor="middle" font-size="11.5" fill="#888">gap = 2 ≤ 2</text>
+  <text x="795" y="288" text-anchor="middle" font-size="11.5" fill="#888">候选保留</text>
+
+  <rect x="855" y="228" width="80" height="72" rx="8" fill="#fef2f2" stroke="#fca5a5"/>
+  <text x="895" y="252" text-anchor="middle" font-size="12" fill="#666">未命中</text>
+  <text x="895" y="270" text-anchor="middle" font-size="11.5" fill="#dc2626">gap = 3 &gt; 2</text>
+  <text x="895" y="288" text-anchor="middle" font-size="11.5" font-weight="700" fill="#dc2626">淘汰 ✕</text>
+
+  <text x="895" y="322" text-anchor="middle" font-size="12" font-weight="600" fill="#16a34a">从未触达告警 🛡</text>
+
+  <!-- rules chips -->
+  <g>
+    <rect x="20" y="352" width="296" height="104" rx="10" fill="#eff6ff" stroke="#bfdbfe"/>
+    <text x="40" y="382" font-size="13.5" font-weight="700" fill="#1e40af">① 空间一致</text>
+    <text x="40" y="408" font-size="12.5" fill="#444">候选点与历史点欧氏距离</text>
+    <text x="40" y="428" font-size="12.5" fill="#444">≤ 100 px → 视为同一实体；</text>
+    <text x="40" y="448" font-size="12.5" fill="#444">坐标跳变 → 计数器重置</text>
+
+    <rect x="332" y="352" width="296" height="104" rx="10" fill="#eff6ff" stroke="#bfdbfe"/>
+    <text x="352" y="382" font-size="13.5" font-weight="700" fill="#1e40af">② 时序连续（窗口步长）</text>
+    <text x="352" y="408" font-size="12.5" fill="#444">gap = 当前窗口号 − 上次命中号</text>
+    <text x="352" y="428" font-size="12.5" fill="#444">≤ 2 才允许累加；按序号而非</text>
+    <text x="352" y="448" font-size="12.5" fill="#444">物理时钟 → 抗 GPU 耗时抖动</text>
+
+    <rect x="644" y="352" width="296" height="104" rx="10" fill="#eff6ff" stroke="#bfdbfe"/>
+    <text x="664" y="382" font-size="13.5" font-weight="700" fill="#1e40af">③ 确诊门槛</text>
+    <text x="664" y="408" font-size="12.5" fill="#444">连续命中 ≥ 2 次</text>
+    <text x="664" y="428" font-size="12.5" fill="#444">才晋升 CONFIRMED 正式告警；</text>
+    <text x="664" y="448" font-size="12.5" fill="#444">单帧命中永远只是 SUSPECT</text>
+  </g>
+
+  <!-- result bar -->
+  <rect x="20" y="484" width="920" height="58" rx="10" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <text x="480" y="509" text-anchor="middle" font-size="13.5" font-weight="700" fill="#166534">消融效果：10 分钟典型视频，无滤波 14 次瞬时虚警 → 启用后 0 次（95%+ 瞬态噪点被过滤），真异物检出率保持 100%</text>
+  <text x="480" y="531" text-anchor="middle" font-size="12.5" fill="#16a34a">曾经踩坑：早期 TTL 用物理时钟 6 s，而推理耗时 7~9.5 s → 永不确诊；改为窗口步长后彻底解耦（见 §四）</text>
+
+  <text x="480" y="576" text-anchor="middle" font-size="12" fill="#999">状态机：SUSPECT（疑似）→ CONFIRMED（确诊告警） / CLEARED（淘汰）</text>
+  <text x="480" y="598" text-anchor="middle" font-size="12" fill="#999">参数：match_distance = 100 · confirm_hits = 2 · max_window_gap = 2</text>
+</svg>

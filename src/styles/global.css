@@ -1,0 +1,227 @@
+:root {
+  --text: #1a1a1a;
+  --text-light: #666;
+  --bg: #fafafa;
+  --bg-hover: #f0f0f0;
+  --border: #e5e5e5;
+  --accent: #0070f3;
+  --accent-rgb: 0, 112, 243;
+  --code-bg: #f6f8fa;
+
+  /* 基础间距基准标尺 (4px grid; 8px 为常用步进) */
+  --space-xs: 0.25rem;   /* 4px */
+  --space-sm: 0.5rem;    /* 8px */
+  --space-md: 0.75rem;   /* 12px */
+  --space-base: 1rem;    /* 16px */
+  --space-lg: 1.25rem;   /* 20px */
+  --space-xl: 1.5rem;    /* 24px */
+  --space-2xl: 2rem;     /* 32px */
+  --space-3xl: 2.5rem;   /* 40px */
+  --space-4xl: 3rem;     /* 48px */
+
+  /* 语义化布局基准线 (Semantic Tokens) */
+  --section-gap: var(--space-2xl);   /* 2rem */
+  --card-padding: var(--space-lg);   /* 1.25rem */
+  --card-gap: var(--space-md);       /* 0.75rem */
+  --header-gap: var(--space-md);     /* 0.75rem */
+  --element-gap: var(--space-sm);    /* 0.5rem */
+
+  /* 容器宽度 token */
+  --container-narrow: 720px;
+  --container-wide: 1024px;
+  --toc-width: 220px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text);
+  background: var(--bg);
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+  max-width: var(--container-narrow);
+  width: 100%;
+  margin: 0 auto;
+  padding: var(--section-gap) var(--card-padding);
+}
+
+main.wide-layout {
+  max-width: var(--container-wide);
+}
+
+body.wide-layout .nav-container,
+body.wide-layout .footer-container {
+  max-width: var(--container-wide);
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  scroll-margin-top: 5rem;
+}
+
+/* section 容器已承担纵向间距，内部标题不再重复 margin-top */
+.section h2 {
+  margin-top: 0;
+}
+
+h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-lg);
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-top: var(--space-xl);
+  margin-bottom: var(--space-sm);
+}
+
+h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-top: var(--space-lg);
+  margin-bottom: var(--space-sm);
+}
+
+p {
+  margin-bottom: var(--space-base);
+  color: var(--text);
+}
+
+ul, ol {
+  margin-left: var(--space-lg);
+  margin-bottom: var(--space-base);
+}
+
+li {
+  margin-bottom: var(--element-gap);
+}
+
+code {
+  font-family: 'SF Mono', 'Fira Code', 'Fira Mono', Menlo, Consolas, monospace;
+  font-size: 0.875em;
+  background: var(--code-bg);
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+
+pre {
+  background: var(--code-bg);
+  padding: 1rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+}
+
+blockquote {
+  border-left: 3px solid var(--border);
+  padding-left: 1rem;
+  color: var(--text-light);
+  margin-bottom: 1rem;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: var(--space-xl) 0;
+}
+
+img {
+  max-width: 100%;
+  border-radius: 8px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.9rem;
+  overflow-x: auto;
+  display: block;
+}
+
+th, td {
+  border: 1px solid var(--border);
+  padding: 0.6rem 0.8rem;
+  text-align: left;
+}
+
+th {
+  background: var(--code-bg);
+  font-weight: 600;
+}
+
+/* 博客列表卡片统一间距 */
+.post-card {
+  padding: var(--card-padding) 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--element-gap); /* 内部元素间距 */
+}
+
+.post-header {
+  gap: var(--header-gap);
+  align-items: flex-start; /* 让图标/标题靠上，更易读 */
+}
+
+/* 统一标题基准行高 */
+.post-card h2, .highlight-card h3 {
+  line-height: 1.3;
+  margin-bottom: var(--element-gap);
+}
+
+/* 为不同内容类型定义明确的标题基准 */
+.blog-list .post-card h2,
+.posts .post-card h2 {
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.highlight-grid .highlight-card h3 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.hero h1 {
+  font-size: 2.25rem;
+}
+
+.section h2 {
+  font-size: 1.5rem;
+}

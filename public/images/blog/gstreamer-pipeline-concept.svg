@@ -1,0 +1,218 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif">
+  <!-- Card Background -->
+  <rect x="0.5" y="0.5" width="959" height="559" rx="10" fill="#ffffff" stroke="#e5e5e5"/>
+
+  <!-- Title & Subtitle -->
+  <text x="480" y="32" text-anchor="middle" font-size="16" font-weight="700" fill="#1a1a1a">Jetson GStreamer 全链路编解码管道与硬件直通架构</text>
+  <text x="480" y="52" text-anchor="middle" font-size="12" fill="#666">端到端数据流向：RTSP 拉流（NVDEC 硬件解码）➔ OpenCV 算法推理 ➔ 磁盘切片（NVENC 硬件编码）</text>
+
+  <!-- Legend -->
+  <g transform="translate(160, 68)">
+    <rect x="0" y="0" width="12" height="12" rx="3" fill="#0070f3"/>
+    <text x="18" y="10.5" font-size="11.5" fill="#444">GStreamer 组件</text>
+
+    <rect x="145" y="0" width="12" height="12" rx="3" fill="#10b981"/>
+    <text x="163" y="10.5" font-size="11.5" fill="#444">专用硬件硅片 (NVDEC/VIC/NVENC)</text>
+
+    <rect x="375" y="0" width="12" height="12" rx="3" fill="#f59e0b"/>
+    <text x="393" y="10.5" font-size="11.5" fill="#444">硬件契约 (32位对齐 / memory:NVMM)</text>
+
+    <rect x="585" y="0" width="12" height="12" rx="3" fill="#8b5cf6"/>
+    <text x="603" y="10.5" font-size="11.5" fill="#444">OpenCV / Python 业务层</text>
+  </g>
+
+  <!-- ==================== TOP: INPUT PIPELINE ==================== -->
+  <g transform="translate(30, 96)">
+    <!-- Container Box -->
+    <rect x="0" y="0" width="900" height="185" rx="8" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.2"/>
+    <rect x="12" y="-10" width="220" height="20" rx="4" fill="#0070f3"/>
+    <text x="22" y="4" font-size="11" font-weight="700" fill="#ffffff">前端输入端：RTSP 网络拉流 ➔ NVDEC 解码</text>
+
+    <!-- Step 1: RTSP Camera -->
+    <g transform="translate(20, 28)">
+      <rect x="0" y="0" width="115" height="110" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/>
+      <text x="57" y="30" text-anchor="middle" font-size="12" font-weight="700" fill="#1e293b">网络摄像机</text>
+      <text x="57" y="52" text-anchor="middle" font-size="11" fill="#64748b">1080P@25FPS</text>
+      <rect x="12" y="70" width="91" height="24" rx="4" fill="#f1f5f9"/>
+      <text x="57" y="86" text-anchor="middle" font-size="10.5" fill="#475569">H.264 RTSP 流</text>
+    </g>
+
+    <!-- Arrow 1 -->
+    <path d="M140 83 L158 83" stroke="#94a3b8" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <!-- Step 2: Demux / Parse -->
+    <g transform="translate(162, 28)">
+      <rect x="0" y="0" width="130" height="110" rx="6" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.2"/>
+      <text x="65" y="26" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">网络解包与解析</text>
+      <rect x="10" y="38" width="110" height="26" rx="4" fill="#ffffff" stroke="#bfdbfe"/>
+      <text x="65" y="55" text-anchor="middle" font-size="10" font-family="monospace" fill="#1e40af">rtspsrc</text>
+      <rect x="10" y="72" width="110" height="26" rx="4" fill="#ffffff" stroke="#bfdbfe"/>
+      <text x="65" y="89" text-anchor="middle" font-size="9.5" font-family="monospace" fill="#1e40af">rtph264depay ! parse</text>
+      <text x="65" y="125" text-anchor="middle" font-size="10" fill="#64748b">TCP/UDP 容错与重连</text>
+    </g>
+
+    <!-- Arrow 2 -->
+    <path d="M296 83 L314 83" stroke="#94a3b8" stroke-width="2"/>
+
+    <!-- Step 3: NVDEC Decoder -->
+    <g transform="translate(318, 28)">
+      <rect x="0" y="0" width="138" height="110" rx="6" fill="#ecfdf5" stroke="#6ee7b7" stroke-width="1.5"/>
+      <rect x="10" y="10" width="118" height="20" rx="3" fill="#10b981"/>
+      <text x="69" y="24" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ffffff">NVDEC 硬件解码</text>
+      <text x="69" y="55" text-anchor="middle" font-size="10.5" font-family="monospace" font-weight="600" fill="#047857">nvv4l2decoder</text>
+      <rect x="12" y="70" width="114" height="28" rx="4" fill="#ffffff" stroke="#a7f3d0"/>
+      <text x="69" y="88" text-anchor="middle" font-size="9.5" fill="#065f46">硬解直通 释放CPU 3核</text>
+    </g>
+
+    <!-- Arrow 3 -->
+    <path d="M460 83 L478 83" stroke="#94a3b8" stroke-width="2"/>
+
+    <!-- Step 4: VIC Color Convert -->
+    <g transform="translate(482, 28)">
+      <rect x="0" y="0" width="145" height="110" rx="6" fill="#fffbeb" stroke="#fcd34d" stroke-width="1.5"/>
+      <rect x="10" y="10" width="125" height="20" rx="3" fill="#f59e0b"/>
+      <text x="72" y="24" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ffffff">VIC 硬件色彩转换</text>
+      <text x="72" y="55" text-anchor="middle" font-size="10.5" font-family="monospace" font-weight="600" fill="#b45309">nvvidconv</text>
+      <rect x="10" y="70" width="125" height="28" rx="4" fill="#ffffff" stroke="#fde68a"/>
+      <text x="72" y="88" text-anchor="middle" font-size="9.5" font-weight="600" fill="#92400e">输出 32位 BGRx 对齐</text>
+    </g>
+
+    <!-- Arrow 4 -->
+    <path d="M631 83 L649 83" stroke="#94a3b8" stroke-width="2"/>
+
+    <!-- Step 5: Adapt to BGR -->
+    <g transform="translate(653, 28)">
+      <rect x="0" y="0" width="110" height="110" rx="6" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.2"/>
+      <text x="55" y="26" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">剔除 Alpha</text>
+      <rect x="8" y="38" width="94" height="26" rx="4" fill="#ffffff" stroke="#bfdbfe"/>
+      <text x="55" y="55" text-anchor="middle" font-size="10" font-family="monospace" fill="#1e40af">videoconvert</text>
+      <rect x="8" y="72" width="94" height="26" rx="4" fill="#ffffff" stroke="#bfdbfe"/>
+      <text x="55" y="89" text-anchor="middle" font-size="10" font-family="monospace" fill="#1e40af">BGR 格式适配</text>
+    </g>
+
+    <!-- Arrow 5 -->
+    <path d="M767 83 L785 83" stroke="#94a3b8" stroke-width="2"/>
+
+    <!-- Step 6: OpenCV Sink -->
+    <g transform="translate(789, 28)">
+      <rect x="0" y="0" width="95" height="110" rx="6" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="1.2"/>
+      <text x="47" y="26" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9">交付应用</text>
+      <rect x="8" y="40" width="79" height="26" rx="4" fill="#ffffff" stroke="#ddd6fe"/>
+      <text x="47" y="57" text-anchor="middle" font-size="10" font-family="monospace" fill="#5b21b6">appsink</text>
+      <text x="47" y="88" text-anchor="middle" font-size="9" fill="#7c3aed">drop=true</text>
+      <text x="47" y="101" text-anchor="middle" font-size="9" fill="#7c3aed">max-buf=2</text>
+    </g>
+  </g>
+
+  <!-- ==================== MIDDLE: APPLICATION BUS ==================== -->
+  <g transform="translate(50, 290)">
+    <!-- Central Bridge Bar -->
+    <rect x="0" y="0" width="860" height="42" rx="6" fill="#7c3aed" opacity="0.1"/>
+    <rect x="0" y="0" width="860" height="42" rx="6" fill="none" stroke="#8b5cf6" stroke-width="1.2" stroke-dasharray="4 3"/>
+
+    <text x="430" y="20" text-anchor="middle" font-size="12" font-weight="700" fill="#6d28d9">
+      OpenCV Python 核心算法层：缺陷检测推理 · HUD 水印渲染 · 环形内存事件队列缓存
+    </text>
+    <text x="430" y="34" text-anchor="middle" font-size="10" fill="#7c3aed">
+      cv2.VideoCapture (拉流接入)  ➔ ── [ 算法逻辑处理 ] ── ➔  cv2.VideoWriter (切片落盘)
+    </text>
+
+    <!-- Connectors -->
+    <path d="M 818 -7 L 818 0" stroke="#8b5cf6" stroke-width="2"/>
+    <path d="M 42 42 L 42 49" stroke="#8b5cf6" stroke-width="2"/>
+  </g>
+
+  <!-- ==================== BOTTOM: OUTPUT PIPELINE ==================== -->
+  <g transform="translate(30, 340)">
+    <!-- Container Box -->
+    <rect x="0" y="0" width="900" height="185" rx="8" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1.2"/>
+    <rect x="12" y="-10" width="220" height="20" rx="4" fill="#10b981"/>
+    <text x="22" y="4" font-size="11" font-weight="700" fill="#ffffff">后端输出端：NVENC 硬件编码 ➔ MP4 切片落盘</text>
+
+    <!-- Step 1: Appsrc -->
+    <g transform="translate(20, 28)">
+      <rect x="0" y="0" width="115" height="110" rx="6" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="1.2"/>
+      <text x="57" y="26" text-anchor="middle" font-size="11" font-weight="700" fill="#6d28d9">注入管道</text>
+      <rect x="10" y="40" width="95" height="26" rx="4" fill="#ffffff" stroke="#ddd6fe"/>
+      <text x="57" y="57" text-anchor="middle" font-size="10" font-family="monospace" fill="#5b21b6">appsrc</text>
+      <rect x="10" y="74" width="95" height="24" rx="4" fill="#f3e8ff"/>
+      <text x="57" y="90" text-anchor="middle" font-size="9.5" fill="#6b21a8">BGR 原生帧</text>
+    </g>
+
+    <!-- Arrow 1 -->
+    <path d="M140 83 L158 83" stroke="#94a3b8" stroke-width="2"/>
+
+    <!-- Step 2: Align to BGRx -->
+    <g transform="translate(162, 28)">
+      <rect x="0" y="0" width="130" height="110" rx="6" fill="#fffbeb" stroke="#fcd34d" stroke-width="1.5"/>
+      <rect x="10" y="10" width="110" height="20" rx="3" fill="#f59e0b"/>
+      <text x="65" y="24" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ffffff">32位字节对齐</text>
+      <text x="65" y="54" text-anchor="middle" font-size="10" font-family="monospace" fill="#1e40af">videoconvert</text>
+      <rect x="10" y="68" width="110" height="30" rx="4" fill="#ffffff" stroke="#fde68a"/>
+      <text x="65" y="87" text-anchor="middle" font-size="9.5" font-weight="600" fill="#b45309">format=BGRx</text>
+      <text x="65" y="125" text-anchor="middle" font-size="10" fill="#64748b">满足 VIC DMA 约束</text>
+    </g>
+
+    <!-- Arrow 2 -->
+    <path d="M296 83 L314 83" stroke="#94a3b8" stroke-width="2"/>
+
+    <!-- Step 3: NVMM Memory Injection -->
+    <g transform="translate(318, 28)">
+      <rect x="0" y="0" width="145" height="110" rx="6" fill="#ecfdf5" stroke="#6ee7b7" stroke-width="1.5"/>
+      <rect x="8" y="10" width="129" height="20" rx="3" fill="#10b981"/>
+      <text x="72" y="24" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ffffff">显存池直通 (NVMM)</text>
+      <text x="72" y="53" text-anchor="middle" font-size="10.5" font-family="monospace" font-weight="600" fill="#047857">nvvidconv</text>
+      <rect x="8" y="68" width="129" height="30" rx="4" fill="#ffffff" stroke="#a7f3d0"/>
+      <text x="72" y="87" text-anchor="middle" font-size="9" font-family="monospace" font-weight="700" fill="#065f46">memory:NVMM (NV12)</text>
+      <text x="72" y="125" text-anchor="middle" font-size="10" fill="#047857">零拷贝直达编码器</text>
+    </g>
+
+    <!-- Arrow 3 -->
+    <path d="M467 83 L485 83" stroke="#94a3b8" stroke-width="2"/>
+
+    <!-- Step 4: NVENC Encoder -->
+    <g transform="translate(489, 28)">
+      <rect x="0" y="0" width="145" height="110" rx="6" fill="#ecfdf5" stroke="#10b981" stroke-width="2"/>
+      <rect x="10" y="10" width="125" height="20" rx="3" fill="#10b981"/>
+      <text x="72" y="24" text-anchor="middle" font-size="10.5" font-weight="700" fill="#ffffff">NVENC 硬件编码</text>
+      <text x="72" y="52" text-anchor="middle" font-size="9.5" font-family="monospace" font-weight="700" fill="#047857">nvv4l2h264enc</text>
+      <rect x="10" y="68" width="125" height="30" rx="4" fill="#ffffff" stroke="#a7f3d0"/>
+      <text x="72" y="83" text-anchor="middle" font-size="9" fill="#065f46">bitrate=4Mbps</text>
+      <text x="72" y="94" text-anchor="middle" font-size="9" fill="#065f46">maxperf-enable=1</text>
+      <text x="72" y="125" text-anchor="middle" font-size="10" font-weight="700" fill="#047857">时延从129ms➔27ms</text>
+    </g>
+
+    <!-- Arrow 4 -->
+    <path d="M638 83 L656 83" stroke="#94a3b8" stroke-width="2"/>
+
+    <!-- Step 5: Muxer -->
+    <g transform="translate(660, 28)">
+      <rect x="0" y="0" width="110" height="110" rx="6" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.2"/>
+      <text x="55" y="26" text-anchor="middle" font-size="11" font-weight="700" fill="#1d4ed8">MP4 容器封装</text>
+      <rect x="8" y="38" width="94" height="26" rx="4" fill="#ffffff" stroke="#bfdbfe"/>
+      <text x="55" y="55" text-anchor="middle" font-size="10" font-family="monospace" fill="#1e40af">h264parse</text>
+      <rect x="8" y="72" width="94" height="26" rx="4" fill="#ffffff" stroke="#bfdbfe"/>
+      <text x="55" y="89" text-anchor="middle" font-size="10" font-family="monospace" fill="#1e40af">mp4mux</text>
+    </g>
+
+    <!-- Arrow 5 -->
+    <path d="M774 83 L792 83" stroke="#94a3b8" stroke-width="2"/>
+
+    <!-- Step 6: Sink -->
+    <g transform="translate(796, 28)">
+      <rect x="0" y="0" width="90" height="110" rx="6" fill="#ffffff" stroke="#cbd5e1" stroke-width="1.2"/>
+      <text x="45" y="26" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">磁盘存储</text>
+      <rect x="8" y="40" width="74" height="26" rx="4" fill="#f1f5f9"/>
+      <text x="45" y="57" text-anchor="middle" font-size="10" font-family="monospace" fill="#334155">filesink</text>
+      <text x="45" y="88" text-anchor="middle" font-size="9" fill="#64748b">事件取证切片</text>
+      <text x="45" y="101" text-anchor="middle" font-size="9" font-weight="700" fill="#047857">.mp4 文件</text>
+    </g>
+  </g>
+
+  <!-- Arrow marker defs -->
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+</svg>

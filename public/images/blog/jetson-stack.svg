@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 580" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif">
+  <rect x="0.5" y="0.5" width="959" height="579" rx="10" fill="#ffffff" stroke="#e5e5e5"/>
+
+  <text x="480" y="34" text-anchor="middle" font-size="16" font-weight="700" fill="#1a1a1a">Jetson Orin 软件栈：一条「容器内 CUDA ↔ 宿主机 L4T」的 ABI 生命线</text>
+
+  <!-- L1 app layer -->
+  <rect x="120" y="56" width="560" height="84" rx="10" fill="#eff6ff" stroke="#0070f3" stroke-width="1.5"/>
+  <text x="148" y="86" font-size="15" font-weight="700" fill="#1a1a1a">Docker 容器应用层</text>
+  <text x="148" y="112" font-size="13" fill="#444">Python 解释器 · PyTorch 框架 · Transformers 库 · 业务算法</text>
+
+  <!-- L2 runtime split -->
+  <rect x="120" y="156" width="272" height="84" rx="10" fill="#f6f8fa" stroke="#d0d7de" stroke-width="1.5"/>
+  <text x="148" y="186" font-size="14" font-weight="700" fill="#1a1a1a">CUDA Runtime（容器内）</text>
+  <text x="148" y="212" font-size="12.5" fill="#666">用户态算子库 / 驱动桥接</text>
+
+  <rect x="408" y="156" width="272" height="84" rx="10" fill="#f6f8fa" stroke="#d0d7de" stroke-width="1.5"/>
+  <text x="436" y="186" font-size="14" font-weight="700" fill="#1a1a1a">Tegra 统一内存分配接口</text>
+  <text x="436" y="212" font-size="12.5" fill="#666">CPU / GPU 共享物理内存</text>
+
+  <!-- ABI constraint band between L2 and L3 -->
+  <rect x="100" y="256" width="600" height="44" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="400" y="276" text-anchor="middle" font-size="13.5" font-weight="700" fill="#dc2626">🔒 ABI 必须兼容（JetPack 绑定 L4T BSP 版本）</text>
+  <text x="400" y="294" text-anchor="middle" font-size="12" fill="#b91c1c">不兼容 → GPU 算力直接瘫痪（坑点 4 / 5 的根源）</text>
+
+  <!-- L3 L4T BSP -->
+  <rect x="120" y="316" width="560" height="84" rx="10" fill="#f6f8fa" stroke="#9ca3af" stroke-width="1.5"/>
+  <text x="148" y="346" font-size="15" font-weight="700" fill="#1a1a1a">宿主机 L4T BSP 内核驱动</text>
+  <text x="148" y="372" font-size="13" fill="#444">Linux 5.10 / 5.15 Kernel Driver · JetPack 5 ↔ L4T R35.x ｜ JetPack 6 ↔ L4T R36.x</text>
+
+  <!-- L4 hardware -->
+  <rect x="120" y="416" width="560" height="84" rx="10" fill="#1a1a1a"/>
+  <text x="148" y="446" font-size="15" font-weight="700" fill="#ffffff">Jetson Orin AGX 硬件（Tegra SoC）</text>
+  <text x="148" y="472" font-size="13" fill="#d1d5db">Ampere GPU · 275 TOPS · 64 GB 统一内存（CPU / GPU 共享，非 PCIe 独立显卡）</text>
+
+  <!-- right annotation -->
+  <rect x="716" y="156" width="228" height="344" rx="10" fill="#fffbeb" stroke="#fde68a"/>
+  <text x="740" y="188" font-size="13.5" font-weight="700" fill="#92400e">vs x86 云端服务器</text>
+  <text x="740" y="218" font-size="12.5" fill="#444">x86：PCIe 接独立显卡，</text>
+  <text x="740" y="238" font-size="12.5" fill="#444">驱动随容器/云镜像走，</text>
+  <text x="740" y="258" font-size="12.5" fill="#444">一行 pip install 即通。</text>
+  <text x="740" y="292" font-size="12.5" fill="#444">Jetson：Tegra SoC 统一内存，</text>
+  <text x="740" y="312" font-size="12.5" fill="#444">容器 CUDA 运行时必须匹配</text>
+  <text x="740" y="332" font-size="12.5" fill="#444">宿主机 L4T BSP，否则报</text>
+  <text x="740" y="352" font-size="12.5" fill="#444">CUDA available: False。</text>
+  <text x="740" y="386" font-size="12.5" font-weight="600" fill="#92400e">新模型（Qwen2.5/3-VL）绑定</text>
+  <text x="740" y="406" font-size="12.5" font-weight="600" fill="#92400e">PyTorch 2.3+ / Py3.10+，</text>
+  <text x="740" y="426" font-size="12.5" font-weight="600" fill="#92400e">与 JetPack 5 时代工控机</text>
+  <text x="740" y="446" font-size="12.5" font-weight="600" fill="#92400e">形成「生态代沟」。</text>
+
+  <!-- arrows top-down through stack -->
+  <g stroke="#666" stroke-width="1.5">
+    <line x1="180" y1="140" x2="180" y2="152"/>
+    <line x1="180" y1="252" x2="180" y2="254"/>
+    <line x1="180" y1="304" x2="180" y2="312"/>
+    <line x1="180" y1="404" x2="180" y2="412"/>
+  </g>
+
+  <text x="480" y="538" text-anchor="middle" font-size="12.5" fill="#666">一句话：容器隔离不了内核 ABI——升级模型前，先核对 JetPack / L4T 版本（见上文兼容性矩阵）</text>
+  <text x="480" y="560" text-anchor="middle" font-size="12" fill="#999">自上而下：应用层自由，运行时受缚，硬件层定生死</text>
+</svg>

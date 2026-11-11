@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 490" font-family="Segoe UI, Arial, Helvetica, sans-serif">
+
+  <defs>
+    <marker id="ag" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8z" fill="#999"/>
+    </marker>
+    <marker id="ad" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8z" fill="#999"/>
+    </marker>
+    <marker id="al" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8z" fill="#bbb"/>
+    </marker>
+    <marker id="ag-green" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8z" fill="#76b900"/>
+    </marker>
+  </defs>
+
+  <!-- White background -->
+  <rect width="840" height="490" fill="#fff"/>
+
+  <!-- Title -->
+  <text x="420" y="28" text-anchor="middle" fill="#333" font-size="18" font-weight="bold">TensorRT Conversion &amp; Deployment Pathways</text>
+
+  <!-- Column headers -->
+  <text x="118" y="64" text-anchor="middle" fill="#333" font-size="13" font-weight="bold">Source Model</text>
+  <text x="400" y="64" text-anchor="middle" fill="#333" font-size="13" font-weight="bold">Conversion Options</text>
+  <text x="710" y="64" text-anchor="middle" fill="#333" font-size="13" font-weight="bold">Deployment Targets</text>
+
+  <!-- SOURCE MODEL (flat left, pointed right) -->
+  <rect x="42" y="220" width="146" height="50" rx="5" fill="#ddd" stroke="#bbb" stroke-width="1"/>
+  <text x="108" y="241" text-anchor="middle" fill="#333" font-size="13" font-weight="bold">Trained Model</text>
+  <text x="108" y="256" text-anchor="middle" fill="#555" font-size="11">(PyTorch, TensorFlow, etc.)</text>
+
+  <!-- Single line from Trained Model to vertical spine -->
+  <line x1="188" y1="245" x2="220" y2="245" stroke="#999" stroke-width="1.5"/>
+
+  <!-- Vertical spine -->
+  <line x1="220" y1="110" x2="220" y2="388" stroke="#999" stroke-width="1.5"/>
+
+  <!-- Elbow connectors: horizontal from spine to each box with arrowheads -->
+  <line x1="220" y1="110" x2="284" y2="110" stroke="#999" stroke-width="1.5" marker-end="url(#ag)"/>
+  <line x1="220" y1="202" x2="284" y2="202" stroke="#999" stroke-width="1.5" marker-end="url(#ag)"/>
+  <line x1="220" y1="295" x2="284" y2="295" stroke="#999" stroke-width="1.5" marker-end="url(#ag)"/>
+  <line x1="220" y1="388" x2="284" y2="388" stroke="#999" stroke-width="1.5" marker-end="url(#ag)"/>
+
+  <!-- Path labels (positioned above each horizontal elbow, right-aligned before the box) -->
+  <text x="285" y="100" text-anchor="end" fill="#888" font-size="10" font-style="italic">PyTorch Integration</text>
+  <text x="285" y="192" text-anchor="end" fill="#888" font-size="10" font-style="italic">Framework-agnostic</text>
+  <text x="285" y="285" text-anchor="end" fill="#888" font-size="10" font-style="italic">GUI-based Tool</text>
+  <text x="285" y="378" text-anchor="end" fill="#888" font-size="10" font-style="italic">C++ or Python</text>
+
+  <!-- PATH A: Torch-TensorRT (light green rounded rect) -->
+  <rect x="290" y="80" width="230" height="60" rx="5" fill="#b8e07a" stroke="#76b900" stroke-width="1"/>
+  <text x="405" y="105" text-anchor="middle" fill="#333" font-size="13" font-weight="bold">Torch-TensorRT</text>
+  <text x="405" y="125" text-anchor="middle" fill="#555" font-size="11">Fallback to PyTorch for unsupported ops</text>
+
+  <!-- PATH B: ONNX Export + TensorRT Parser (light blue rounded rect) -->
+  <rect x="290" y="168" width="230" height="68" rx="5" fill="#a8d4f0" stroke="#2874a6" stroke-width="1"/>
+  <text x="405" y="197" text-anchor="middle" fill="#333" font-size="13" font-weight="bold">ONNX Export + TensorRT Parser</text>
+  <text x="405" y="215" text-anchor="middle" fill="#555" font-size="11">Requires full operator coverage</text>
+
+  <!-- PATH C: Nsight DL Designer (light purple rounded rect) -->
+  <rect x="290" y="268" width="230" height="55" rx="5" fill="#d9b3e6" stroke="#7b2d8e" stroke-width="1"/>
+  <text x="405" y="293" text-anchor="middle" fill="#333" font-size="13" font-weight="bold">Nsight DL Designer</text>
+  <text x="405" y="311" text-anchor="middle" fill="#555" font-size="11">Visual editing &amp; profiling</text>
+
+  <!-- PATH D: TensorRT Network API (light orange rounded rect) -->
+  <rect x="290" y="360" width="230" height="55" rx="5" fill="#f0c9a0" stroke="#d96b1a" stroke-width="1"/>
+  <text x="405" y="385" text-anchor="middle" fill="#333" font-size="13" font-weight="bold">TensorRT Network API</text>
+  <text x="405" y="403" text-anchor="middle" fill="#555" font-size="11">Maximum control &amp; performance</text>
+
+  <!-- DEPLOYMENT: PyTorch Runtime -->
+  <rect x="618" y="85" width="185" height="48" rx="5" fill="#e8e8e8" stroke="#999" stroke-width="1"/>
+  <text x="710" y="114" text-anchor="middle" fill="#333" font-size="13" font-weight="bold">PyTorch Runtime</text>
+
+  <!-- DEPLOYMENT: TensorRT Runtime API -->
+  <rect x="618" y="177" width="185" height="50" rx="5" fill="#b8e07a" stroke="#76b900" stroke-width="1"/>
+  <text x="710" y="197" text-anchor="middle" fill="#333" font-size="13" font-weight="bold">TensorRT Runtime API</text>
+  <text x="710" y="215" text-anchor="middle" fill="#555" font-size="11">(Default / Lean / Dispatch)</text>
+
+  <!-- DEPLOYMENT: NVIDIA Triton Inference Server -->
+  <rect x="618" y="348" width="185" height="60" rx="5" fill="#a8d4f0" stroke="#2874a6" stroke-width="1"/>
+  <text x="710" y="372" text-anchor="middle" fill="#333" font-size="12" font-weight="bold">NVIDIA Triton Inference Server</text>
+  <text x="710" y="388" text-anchor="middle" fill="#555" font-size="11">HTTP/gRPC serving</text>
+
+  <!-- SOLID ARROWS -->
+
+  <!-- 1. Path A to PyTorch Runtime: thin gray arrow -->
+  <line x1="520" y1="110" x2="612" y2="110" stroke="#999" stroke-width="1.5" marker-end="url(#ag)"/>
+
+  <!-- 2. Path B to TensorRT Runtime API: green elbow connector with "Most Common" -->
+  <text x="568" y="192" text-anchor="middle" fill="#76b900" font-size="10">Most Common</text>
+  <line x1="520" y1="202" x2="612" y2="202" stroke="#76b900" stroke-width="1.5" marker-end="url(#ag-green)"/>
+
+  <!-- DASHED ARROWS -->
+
+  <!-- 3. Path C (Nsight DL Designer) to TensorRT Runtime API: elbow connector -->
+  <path d="M520,295 L568,295 L568,217 L612,217" fill="none" stroke="#999" stroke-width="1.5" marker-end="url(#ag)"/>
+
+  <!-- 2b. Path B (ONNX Export) to Triton Inference Server: dashed diagonal -->
+  <line x1="520" y1="215" x2="612" y2="365" stroke="#bbb" stroke-width="1.2" stroke-dasharray="6,4" marker-end="url(#al)"/>
+
+  <!-- 3b. Path C (Nsight DL Designer) to Triton Inference Server: dashed diagonal -->
+  <line x1="520" y1="310" x2="612" y2="378" stroke="#bbb" stroke-width="1.2" stroke-dasharray="6,4" marker-end="url(#al)"/>
+
+  <!-- 4. Path D (Network API) to Triton Inference Server: dashed diagonal -->
+  <line x1="520" y1="388" x2="612" y2="385" stroke="#bbb" stroke-width="1.2" stroke-dasharray="6,4" marker-end="url(#al)"/>
+
+  <!-- Legend -->
+  <rect x="220" y="432" width="400" height="34" rx="6" fill="#f5f5f5" stroke="#ddd" stroke-width="1"/>
+  <line x1="240" y1="449" x2="275" y2="449" stroke="#999" stroke-width="2"/>
+  <text x="283" y="453" fill="#333" font-size="12">Direct deployment</text>
+  <line x1="420" y1="449" x2="455" y2="449" stroke="#bbb" stroke-width="2" stroke-dasharray="6,4"/>
+  <text x="463" y="453" fill="#333" font-size="12">Alternative deployment</text>
+
+</svg>

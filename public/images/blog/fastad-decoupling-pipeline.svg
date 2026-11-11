@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 760" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#666"/>
+    </marker>
+    <linearGradient id="grad-ad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#eff6ff" />
+      <stop offset="100%" stop-color="#f0fdf4" />
+    </linearGradient>
+  </defs>
+
+  <!-- background -->
+  <rect x="0.5" y="0.5" width="959" height="759" rx="10" fill="#ffffff" stroke="#e5e5e5"/>
+
+  <!-- source -->
+  <rect x="260" y="20" width="440" height="44" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="480" y="47" text-anchor="middle" font-size="15" font-weight="600" fill="#0f172a">受电弓 4K/1080P 车载监控视频流 (20~25 FPS)</text>
+
+  <!-- arrow 1 -->
+  <line x1="480" y1="64" x2="480" y2="100" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="496" y="86" font-size="12" fill="#64748b">1 FPS 采样 / 逐帧送检 (256×256 分辨率)</text>
+
+  <!-- Part 1: FastAD Core -->
+  <rect x="100" y="104" width="760" height="150" rx="10" fill="url(#grad-ad)" stroke="#3b82f6" stroke-width="1.5"/>
+  <rect x="124" y="120" width="160" height="26" rx="13" fill="#2563eb"/>
+  <text x="204" y="138" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">Step 1: FastAD 异常检测</text>
+  <text x="298" y="138" font-size="14" font-weight="600" fill="#1e3a8a">单类无监督统计建模 · 单帧 45ms 极速推理</text>
+
+  <rect x="124" y="156" width="220" height="80" rx="6" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="136" y="178" font-size="13" font-weight="600" fill="#1e40af">1. 浅层几何特征抽取</text>
+  <text x="136" y="200" font-size="12" fill="#475569">WideResNet-50-2 (Layer 2)</text>
+  <text x="136" y="220" font-size="12" fill="#475569">对滑板与导线几何边缘敏锐</text>
+
+  <rect x="370" y="156" width="220" height="80" rx="6" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="382" y="178" font-size="13" font-weight="600" fill="#1e40af">2. 协方差与自适应门限</text>
+  <text x="382" y="200" font-size="12" fill="#475569">Ledoit-Wolf 收缩多元高斯</text>
+  <text x="382" y="220" font-size="12" fill="#475569">分位数 CDF 拟合标定门限</text>
+
+  <rect x="616" y="156" width="220" height="80" rx="6" fill="#ffffff" stroke="#bfdbfe"/>
+  <text x="628" y="178" font-size="13" font-weight="600" fill="#1e40af">3. 无监督统计输出</text>
+  <text x="628" y="200" font-size="12" fill="#dc2626">连续热力图 (Anomaly Map)</text>
+  <text x="628" y="220" font-size="12" fill="#dc2626">全图异常分 (Scalar Score)</text>
+
+  <!-- arrow 2 (The Gap) -->
+  <line x1="480" y1="254" x2="480" y2="316" stroke="#dc2626" stroke-width="2" marker-end="url(#arr)"/>
+  <rect x="330" y="268" width="300" height="32" rx="6" fill="#fef2f2" stroke="#f87171"/>
+  <text x="480" y="289" text-anchor="middle" font-size="12" font-weight="700" fill="#b91c1c">⚠️ 语义鸿沟：只知“有异常”，不知“是什么”且易交叉耦合</text>
+
+  <!-- Part 2: Fault Classifier -->
+  <rect x="100" y="322" width="760" height="310" rx="10" fill="#fffdfa" stroke="#d97706" stroke-width="1.5"/>
+  <rect x="124" y="338" width="220" height="26" rx="13" fill="#d97706"/>
+  <text x="234" y="356" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">Step 2: 空间-时序解耦状态机</text>
+  <text x="358" y="356" font-size="14" font-weight="600" fill="#78350f">PantographFaultClassifier · 消除虚警与确定性归因</text>
+
+  <!-- Sub-block 1: Spatial ROI -->
+  <rect x="124" y="378" width="340" height="106" rx="6" fill="#ffffff" stroke="#fed7aa"/>
+  <text x="136" y="400" font-size="13" font-weight="700" fill="#9a3412">① 空间 ROI 切片解耦 (Spatial Isolation)</text>
+  <text x="136" y="422" font-size="12" fill="#431407">• 滑板接触区 (slide_roi)：专攻大火花电弧</text>
+  <text x="136" y="442" font-size="12" fill="#431407">• 接触网悬挂区 (catenary_roi)：专攻开集外来异物</text>
+  <text x="136" y="462" font-size="12" fill="#431407">• 弓身几何框架区 (panto_roi)：专攻机械形变损伤</text>
+
+  <!-- Sub-block 2: Spark Co-occurrence -->
+  <rect x="496" y="378" width="340" height="106" rx="6" fill="#ffffff" stroke="#fed7aa"/>
+  <text x="508" y="400" font-size="13" font-weight="700" fill="#9a3412">② 大火花多物理特征熔断 (Physical Fusion)</text>
+  <text x="508" y="422" font-size="12" fill="#431407">• 饱和白炽像素 (≥30000) ∩ 滑板灰度 (≥165)</text>
+  <text x="508" y="442" font-size="12" fill="#431407">• 饱和区异常均值 (≥1.8/2.5) ∩ 全图高异常分</text>
+  <text x="508" y="462" font-size="12" fill="#b91c1c">• 最小饱和像素门限 (≥10000)：屏蔽油污光斑误判</text>
+
+  <!-- Sub-block 3: Dirt Temporal Grid & Pending -->
+  <rect x="124" y="496" width="340" height="118" rx="6" fill="#ffffff" stroke="#fed7aa"/>
+  <text x="136" y="518" font-size="13" font-weight="700" fill="#9a3412">③ 64×64 相机系时序网格 + dirt_pending 观察态</text>
+  <text x="136" y="538" font-size="12" fill="#431407">• 相机系静止 vs 接触网 350km/h 飞速后退解耦</text>
+  <text x="136" y="558" font-size="12" fill="#431407">• IIR 时序平滑：0.85×历史 + 0.15×当前 (持续4帧确诊)</text>
+  <text x="136" y="578" font-size="12" fill="#b91c1c">• 核心创新 dirt_pending：前1~3帧冷启动就地冻结</text>
+  <text x="136" y="598" font-size="12" fill="#15803d">  阻断异常分向下穿透，根除结构异常误报！</text>
+
+  <!-- Sub-block 4: Decision Tree & Fallback -->
+  <rect x="496" y="496" width="340" height="118" rx="6" fill="#ffffff" stroke="#fed7aa"/>
+  <text x="508" y="518" font-size="13" font-weight="700" fill="#9a3412">④ 站台桁架抑制与置信兜底 (Fallback)</text>
+  <text x="508" y="538" font-size="12" fill="#431407">• 站台雨棚抑制：连通域碎片 &gt;12 时熔断异物误报</text>
+  <text x="508" y="558" font-size="12" fill="#431407">• 严格优先级：大火花 &gt; 画面脏污/观察态 &gt; 结构 &gt; 异物</text>
+  <text x="508" y="578" font-size="12" fill="#b91c1c">• 火花污染擦除：滑板区在脏污前强制清零</text>
+  <text x="508" y="598" font-size="12" fill="#15803d">• 置信兜底：无具体几何确证时，坚决回落到“正常”</text>
+
+  <!-- arrow 3 -->
+  <line x1="480" y1="632" x2="480" y2="668" stroke="#16a34a" stroke-width="2" marker-end="url(#arr)"/>
+
+  <!-- Output block -->
+  <rect x="180" y="672" width="600" height="50" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="480" y="703" text-anchor="middle" font-size="15" font-weight="700" fill="#166534">确定性工业诊断结论：大火花 / 画面脏污 / 悬挂异物 / 结构异常 / 正常 ✅</text>
+
+  <text x="480" y="742" text-anchor="middle" font-size="12" fill="#64748b">FastAD 负责“毫秒级感知异动”，FaultClassifier 负责“高可靠物理归因与虚警熔断”</text>
+</svg>

@@ -1,0 +1,366 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="关于我 - Frank">
+  <div class="about-container">
+    <header class="about-header">
+      <h1>关于我</h1>
+      <p class="lead">
+        嗨，我是 <strong>Frank</strong>，一名专注于<strong>计算机视觉、工业异常检测与边缘端实时部署</strong>的算法工程师与研究者。
+      </p>
+      <p>
+        我的核心工作集中在<strong>无监督视觉异常检测、小样本/开集缺陷识别，以及高吞吐低延迟的边缘端深度学习工程化落地</strong>。擅长将前沿算法（如轻量检测模型、工业特征嵌入与多模态大模型）打造成稳定高效的工业级落地系统。
+      </p>
+    </header>
+
+    <section class="section">
+      <h2>🎓 教育与学术</h2>
+      <div class="edu-list">
+        <div class="edu-item">
+          <div class="edu-header">
+            <span class="school-name">上海大学</span>
+            <span class="timeline-date">2023.09 — 2026.06</span>
+          </div>
+          <p class="edu-line">
+            软件工程 · 硕士
+            <span class="edu-research">（研究方向：计算机视觉、目标检测、工业异常检测）</span>
+          </p>
+        </div>
+        <div class="edu-item">
+          <div class="edu-header">
+            <span class="school-name">苏州大学</span>
+            <span class="timeline-date">2017.09 — 2021.06</span>
+          </div>
+          <p class="edu-line">应用化学 · 学士</p>
+        </div>
+      </div>
+
+      <div class="paper-card">
+        <h3 class="paper-title">FastAD: A Deployable Framework for Real Time Visual Anomaly Detection</h3>
+        <p class="paper-meta">
+          <strong>Yuebin Jing (Frank)</strong>, Guangtai Ding · <span>ICANN 2026 (Published)</span>
+        </p>
+        <div class="paper-link">
+          <a href="https://doi.org/10.1007/978-3-032-38401-0_22" target="_blank" rel="noopener noreferrer">
+            DOI: 10.1007/978-3-032-38401-0_22 ↗
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>🛠 专业技能</h2>
+      <ul class="skill-list">
+        <li class="skill-item">
+          <strong>深度学习与视觉算法</strong>：熟练使用 <strong>Python</strong> 与 <strong>PyTorch</strong> 进行模型设计、迁移学习及调优；精通 <strong>OpenCV</strong> 图像处理，熟悉 <strong>Detectron2</strong>、<strong>SAM (Segment Anything)</strong> 等主流视觉与分割模型。
+        </li>
+        <li class="skill-item">
+          <strong>工业视觉与异常检测</strong>：深入掌握无监督与少样本异常检测方法（<strong>FastAD</strong>、<strong>PatchCore</strong>、<strong>EfficientAD</strong>、<strong>SubspaceAD</strong> 等），具备工业开集复杂背景下的误报归因与策略优化能力。
+        </li>
+        <li class="skill-item">
+          <strong>模型推理与边缘加速</strong>：熟悉 <strong>TensorRT</strong>、<strong>ONNX Runtime</strong> 推理优化与 <strong>FP16 / INT8</strong> 量化；具备 <strong>NVIDIA Jetson</strong> 边缘计算平台部署、<strong>vLLM</strong> 大模型端侧微调与轻量化落地经验。
+        </li>
+        <li class="skill-item">
+          <strong>工程化与多媒体流</strong>：熟练使用 <strong>Linux</strong>、<strong>CUDA</strong>、<strong>Docker</strong>、<strong>Git</strong> 及 <strong>FastAPI</strong>；具备 <strong>RTSP</strong> 视频流处理、多路 <strong>FFmpeg</strong> 与 <strong>GStreamer</strong> 硬件编解码全链路性能分析与稳定性治理经验。
+        </li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>💼 核心研发与落地经历</h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-head">
+            <h3>轨道交通受电弓实时监测：灵眸 & 智眸系统</h3>
+            <span class="timeline-date">2026.07 — 2026.11</span>
+          </div>
+          <!-- 公司与职位信息不对外披露 -->
+          <p class="timeline-text">
+            轨道交通弓网<strong>实时摄像头视频流监控</strong>，独立负责受电弓故障监测系统的算法研发与工程落地，覆盖数据集整理、标注规范制定、模型训练、参数调优、算法融合、<strong>边缘部署</strong>及测试评估。处理大火花、结构异常、画面脏污、异物悬挂、受电弓倾斜和异常飘弓等 <strong>6 类故障</strong>的<strong>目标检测、异常检测和实时视频处理</strong>。
+          </p>
+          <ul class="timeline-highlights">
+            <li>
+              <strong>数据构建与模型训练</strong>：独立完成项目视觉数据集整理、故障类别与标注规范制定、训练及测试数据组织；针对不同故障的视觉特征和检测需求，设计差异化算法方案，完成模型训练、参数调优及效果验证。
+            </li>
+            <li>
+              <strong>灵眸系统</strong>：针对 6 类受电弓故障视觉形态各异、目标尺度跨度大的难题，设计<strong>多算法融合</strong>系统方案，融合 <strong>YOLO 目标检测、FastAD 异常检测</strong>和 <strong>HRNet 姿态评估</strong>，系统灵敏度高、响应快。
+            </li>
+            <li>
+              <strong>智眸系统</strong>：接入多模态<strong>大模型 Qwen3-VL 4B（基于 vLLM 部署）</strong>，对灵眸输出的候选异常进行二次智能研判，显著降低假警报。
+            </li>
+            <li>
+              <strong>算法评测与误报抑制</strong>：基于现场客户 <strong>469 条多工况实测误报视频</strong>（覆盖 10 类复杂干扰场景），灵眸系统的<strong>误报抑制率为 77%</strong>，智眸系统的<strong>误报抑制率为 96%</strong>。
+            </li>
+            <li>
+              <strong>边缘端高效部署</strong>：在 <strong>NVIDIA Jetson AGX Orin</strong> 平台上，灵眸经 <strong>TensorRT</strong> 优化后单帧处理延迟仅 <strong>96 ms</strong>，端到端系统<strong>吞吐量达 10 FPS</strong>；智眸 <strong>vLLM</strong>（Qwen3-VL 4B）单帧推理研判延迟稳定在 <strong>4 s</strong>。
+            </li>
+          </ul>
+        </div>
+
+        <div class="timeline-item" id="wafer-aoi">
+          <div class="timeline-head">
+            <h3>晶圆芯片微观缺陷无监督检测系统 (AOI)</h3>
+            <span class="timeline-date">2025.04 — 2026.02</span>
+          </div>
+          <!-- 公司与职位信息不对外披露 -->
+          <p class="timeline-text">
+            面向<strong>半导体封测环节晶圆晶粒（Die）显微图像质检</strong>，攻克不同工艺层的微小缺陷识别难题（气泡、划痕、金属/光刻胶残留、凸点偏移），基于正常样本特征嵌入实现<strong>无监督异常检测</strong>，以良品晶圆纹理冷启动。
+          </p>
+          <ul class="timeline-highlights">
+            <li>
+              <strong>痛点突破与系统研发</strong>：针对半导体封测环节传统人工目视质检漏检率高、正负样本极度不平衡，以及现有基于特征记忆库的方法推理延迟高、显存开销大的行业瓶颈，研发了一套支持快速训练、实时推理与可解释性定位的无监督晶圆缺陷检测算法与原型系统。
+            </li>
+            <li>
+              <strong>超低延迟推理加速</strong>：在 <strong>RTX 3090</strong> 平台上实现核心模型<strong>推理延迟仅 8.0 ms</strong>，端到端系统延迟稳定在 <strong>38.5 ms（吞吐量 >25 FPS）</strong>，满足产线在线检测与即时反馈要求。
+            </li>
+            <li>
+              <strong>可解释性与数据闭环</strong>：实现<strong>高精度异常热力图渲染</strong>，提供缺陷区域定位用于误报/漏检归因；设计<strong>人工复核反馈机制</strong>，支持质检员标记修正并持久化留存，复核结果用于<strong>闭环参数微调</strong>。
+            </li>
+          </ul>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-head">
+            <h3>数字化病理显微智能分析系统</h3>
+            <span class="timeline-date">2024.09 — 2025.03</span>
+          </div>
+          <!-- 公司与职位信息不对外披露 -->
+          <p class="timeline-text">
+            参与自研<strong>数字化病理扫描仪与显微镜检智能分析系统</strong>的核心算法研发，主导<strong>真菌病理切片</strong>（孢子、短菌丝、长菌丝）<strong>微小目标</strong>与<strong>复杂粘连形态</strong>的自动化检测研究。
+          </p>
+          <ul class="timeline-highlights">
+            <li>
+              <strong>分割大模型半自动掩码标注</strong>：引入 <strong>Meta Segment Anything (SAM ViT-H)</strong> 大模型，基于 <strong>Box Prompt</strong> 进行<strong>零样本分割与掩码生成</strong>，经人工二次审查后完成 <strong>700+ 样本的高质量实例分割数据集</strong>构建。
+            </li>
+            <li>
+              <strong>目标检测与实例分割算法</strong>：基于 <strong>Detectron2</strong> 构建 <strong>Faster R-CNN</strong> 与 <strong>Mask R-CNN</strong>（ResNet-101-FPN）网络架构。
+            </li>
+            <li>
+              <strong>模型优化与全面评测</strong>：使用 <strong>COCOEvaluator</strong> 进行全面量化评测，<strong>Bbox mAP50 从 Faster R-CNN 的 50.5% 大幅提升至 63.1%</strong>；其中<strong>短菌丝检测 AP 达 73.8%，孢子检测 AP 达 73.2%，长菌丝检测 AP 由 23.0% 跃升至 42.5%</strong>。
+            </li>
+            <li>
+              <strong>快速镜检实时推理</strong>：在单张高清切片图像上的平均推理时间仅 <strong>72.4 ms（约 14 FPS）</strong>，充分满足实际镜检快速筛查需求。
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>📫 找到我</h2>
+      <ul class="contact-list">
+        <li>GitHub: <a href="https://github.com/jingfrank" target="_blank" rel="noopener noreferrer">@jingfrank</a></li>
+        <li>Blog: <a href="/blog">阅读我的技术博客</a></li>
+        <li>Email: <a href="mailto:1150634497@qq.com">1150634497@qq.com</a>（商务与技术交流）</li>
+      </ul>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .about-container {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+
+  .lead {
+    font-size: 1.15rem;
+    line-height: 1.8;
+    color: var(--text);
+    margin-bottom: var(--card-gap);
+  }
+
+  .section {
+    margin-top: var(--section-gap);
+  }
+
+  /* 教育经历 */
+  .edu-list {
+    border-top: 1px solid var(--border);
+    margin-bottom: var(--space-lg);
+  }
+
+  .edu-item {
+    padding: var(--space-md) 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .edu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-base);
+    font-weight: 600;
+  }
+
+  .school-name {
+    font-size: 1rem;
+    color: var(--text);
+  }
+
+  .edu-line {
+    font-size: 0.9rem;
+    color: var(--text);
+    margin: var(--space-xs) 0 0;
+    line-height: 1.5;
+  }
+
+  .edu-research {
+    color: var(--text-light);
+    font-size: 0.85rem;
+    margin-left: 0.25rem;
+  }
+
+  @media (max-width: 640px) {
+    .edu-research {
+      display: block;
+      margin-left: 0;
+      margin-top: 0.15rem;
+    }
+  }
+
+  /* 学术论文 */
+  .paper-card {
+    background: var(--code-bg);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: var(--space-md) var(--space-lg);
+    border-top: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin-top: var(--space-lg);
+  }
+
+  .paper-title {
+    font-size: 1.05rem;
+    margin-top: 0;
+    margin-bottom: var(--element-gap);
+    line-height: 1.4;
+  }
+
+  .paper-meta {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin-bottom: var(--element-gap);
+  }
+
+  .paper-link a {
+    font-size: 0.88rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+
+  /* 专业技能列表 */
+  .skill-list {
+    list-style: none;
+    margin-left: 0;
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--header-gap);
+  }
+
+  .skill-item {
+    position: relative;
+    padding-left: 1.25rem;
+    font-size: 0.93rem;
+    line-height: 1.7;
+    color: var(--text-light);
+    margin-bottom: 0;
+  }
+
+  .skill-item::before {
+    content: '•';
+    position: absolute;
+    left: 0.2rem;
+    top: 0;
+    color: var(--accent);
+    font-size: 1.2rem;
+    line-height: 1.7;
+  }
+
+  .skill-item strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  /* 经历时间轴 */
+  .timeline {
+    position: relative;
+    padding-left: var(--card-gap);
+    border-left: 2px solid var(--border);
+    margin-top: var(--card-gap);
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: var(--space-xl);
+    scroll-margin-top: 5rem;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -1.6rem;
+    top: 0.35rem;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+  }
+
+  .timeline-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--element-gap);
+  }
+
+  .timeline-head h3 {
+    font-size: 1.08rem;
+    margin: 0;
+    color: var(--text);
+  }
+
+  .timeline-date {
+    font-size: 0.85rem;
+    color: var(--text-light);
+  }
+
+  .timeline-role {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--accent);
+    margin-top: var(--space-xs);
+    margin-bottom: var(--element-gap);
+  }
+
+  .timeline-text {
+    font-size: 0.93rem;
+    line-height: 1.6;
+    margin-bottom: var(--element-gap);
+  }
+
+  .timeline-highlights {
+    margin-left: var(--card-gap);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .timeline-highlights li {
+    margin-bottom: var(--space-xs);
+  }
+
+  /* 联系方式 */
+  .contact-list {
+    list-style: none;
+    margin-left: 0;
+  }
+
+  .contact-list li {
+    padding: var(--space-xs) 0;
+    font-size: 0.95rem;
+  }
+</style>

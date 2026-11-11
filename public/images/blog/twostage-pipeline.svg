@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 700" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#666"/>
+    </marker>
+  </defs>
+
+  <!-- background -->
+  <rect x="0.5" y="0.5" width="959" height="699" rx="10" fill="#ffffff" stroke="#e5e5e5"/>
+
+  <!-- source -->
+  <rect x="290" y="22" width="380" height="46" rx="8" fill="#f6f8fa" stroke="#d0d7de"/>
+  <text x="480" y="51" text-anchor="middle" font-size="15" font-weight="600" fill="#1a1a1a">4K 工业相机 · RTSP 视频流（25 FPS）</text>
+
+  <!-- arrow 1 -->
+  <line x1="480" y1="68" x2="480" y2="112" stroke="#666" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="496" y="88" font-size="13" fill="#666">1 FPS 采样 · 滑动窗口累计 4 帧（≈ 4 s 时序）</text>
+
+  <!-- Stage 1 -->
+  <rect x="140" y="118" width="680" height="118" rx="10" fill="#eff6ff" stroke="#0070f3" stroke-width="1.5"/>
+  <rect x="164" y="136" width="76" height="24" rx="12" fill="#0070f3"/>
+  <text x="202" y="153" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">Stage 1</text>
+  <text x="252" y="153" font-size="16" font-weight="700" fill="#1a1a1a">动态时序视频流全局分类</text>
+  <text x="164" y="184" font-size="13" fill="#444">输入：640P × 4 帧连续图像</text>
+  <text x="164" y="206" font-size="13" fill="#444">任务：判定【大火花放电】或【镜头起雾脏污】等时序动态故障</text>
+  <text x="164" y="228" font-size="13" fill="#16a34a">优势：图像缩放降低 75% Token，同时保留 4 秒动态过程</text>
+
+  <!-- arrow 2 -->
+  <line x1="480" y1="236" x2="480" y2="280" stroke="#666" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="496" y="256" font-size="13" fill="#666">仅在「画面正常且清晰」工况下触发（99% 场景）</text>
+
+  <!-- Stage 2 -->
+  <rect x="140" y="286" width="680" height="118" rx="10" fill="#eff6ff" stroke="#0070f3" stroke-width="1.5"/>
+  <rect x="164" y="304" width="76" height="24" rx="12" fill="#0070f3"/>
+  <text x="202" y="321" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">Stage 2</text>
+  <text x="252" y="321" font-size="16" font-weight="700" fill="#1a1a1a">静态原图高保真单帧定位</text>
+  <text x="164" y="352" font-size="13" fill="#444">输入：960P 窗口最后一帧原图</text>
+  <text x="164" y="374" font-size="13" fill="#444">任务：像素级定位滑板悬挂异物中心点 <tspan font-family="Menlo,Consolas,monospace" fill="#0070f3">&lt;point&gt;x, y&lt;/point&gt;</tspan></text>
+  <text x="164" y="396" font-size="13" fill="#16a34a">优势：避免多帧插值造成的微小羽毛 / 细线模糊</text>
+
+  <!-- arrow 3 -->
+  <line x1="480" y1="404" x2="480" y2="448" stroke="#666" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="496" y="424" font-size="13" fill="#666">坐标候选送入抗虚警网关</text>
+
+  <!-- tracker -->
+  <rect x="140" y="454" width="680" height="96" rx="10" fill="#fffbeb" stroke="#d97706" stroke-width="1.5"/>
+  <rect x="164" y="472" width="200" height="24" rx="12" fill="#d97706"/>
+  <text x="264" y="489" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">抗虚警网关 Temporal Tracker</text>
+  <text x="164" y="520" font-size="13" fill="#444">跨窗口空间-时序一致性追踪：连续 2 个窗口在同一空间坐标命中，才确诊告警</text>
+  <text x="164" y="540" font-size="13" fill="#d97706">过滤 95%+ 单帧瞬态误报（反光斑、灯光拖影等静态幻觉）</text>
+
+  <!-- arrow 4 -->
+  <line x1="480" y1="550" x2="480" y2="594" stroke="#666" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- output -->
+  <rect x="290" y="600" width="380" height="46" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="480" y="629" text-anchor="middle" font-size="15" font-weight="700" fill="#16a34a">确诊告警 ✅ 误报率 → 0</text>
+
+  <text x="480" y="678" text-anchor="middle" font-size="12" fill="#999">动静分离：Stage 1 看「动态过程」，Stage 2 看「静态细节」，时序追踪器守住「告警门槛」</text>
+</svg>

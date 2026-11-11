@@ -1,0 +1,54 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="footer-container">
+    <p>© {year} Frank. All rights reserved.</p>
+    <div class="footer-links">
+      <a href="https://github.com/jingfrank" target="_blank" rel="noopener">GitHub</a>
+      <a href="mailto:1150634497@qq.com">Email</a>
+      <a href="/about">About</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--border);
+    margin-top: var(--section-gap);
+  }
+
+  .footer-container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: var(--card-padding);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--element-gap);
+  }
+
+  .footer-container p {
+    font-size: 0.875rem;
+    color: var(--text-light);
+    margin: 0;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: var(--card-gap);
+  }
+
+  .footer-links a {
+    font-size: 0.875rem;
+    color: var(--text-light);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .footer-links a:hover {
+    color: var(--text);
+  }
+</style>
