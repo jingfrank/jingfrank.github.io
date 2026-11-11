@@ -1,0 +1,360 @@
+---
+import Base from '../../layouts/Base.astro';
+---
+
+<Base title="About - Frank">
+  <div class="about-container">
+    <header class="about-header">
+      <h1>About Me</h1>
+      <p class="lead">
+        Hi, I'm <strong>Frank</strong>, an algorithm engineer and researcher focusing on <strong>computer vision, industrial anomaly detection, and real-time edge deployment</strong>.
+      </p>
+      <p>
+        My core work focuses on <strong>unsupervised visual anomaly detection, few-shot / open-set defect identification, and high-throughput, low-latency deep learning deployment on edge devices</strong>. I focus on developing lightweight detection models, industrial feature embeddings, and multimodal models into stable, efficient production systems.
+      </p>
+    </header>
+
+    <section class="section">
+      <h2>🎓 Education & Research</h2>
+      <div class="edu-list">
+        <div class="edu-item">
+          <div class="edu-header">
+            <span class="school-name">Shanghai University</span>
+            <span class="timeline-date">2023.09 — 2026.06</span>
+          </div>
+          <p class="edu-line">
+            M.S. in Software Engineering
+            <span class="edu-research">(Research: Computer Vision, Object Detection, Industrial Anomaly Detection)</span>
+          </p>
+        </div>
+        <div class="edu-item">
+          <div class="edu-header">
+            <span class="school-name">Soochow University</span>
+            <span class="timeline-date">2017.09 — 2021.06</span>
+          </div>
+          <p class="edu-line">B.S. in Applied Chemistry</p>
+        </div>
+      </div>
+
+      <div class="paper-card">
+        <h3 class="paper-title">FastAD: A Deployable Framework for Real Time Visual Anomaly Detection</h3>
+        <p class="paper-meta">
+          <strong>Yuebin Jing (Frank)</strong>, Guangtai Ding · <span>ICANN 2026 (Published)</span>
+        </p>
+        <div class="paper-link">
+          <a href="https://doi.org/10.1007/978-3-032-38401-0_22" target="_blank" rel="noopener noreferrer">
+            DOI: 10.1007/978-3-032-38401-0_22 ↗
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>🛠 Technical Skills</h2>
+      <ul class="skill-list">
+        <li class="skill-item">
+          <strong>Deep Learning & Computer Vision</strong>: Proficient with <strong>Python</strong> and <strong>PyTorch</strong> for model design, transfer learning, and fine-tuning; proficient with <strong>OpenCV</strong>; experienced with <strong>Detectron2</strong> and <strong>SAM (Segment Anything)</strong>.
+        </li>
+        <li class="skill-item">
+          <strong>Industrial Vision & Anomaly Detection</strong>: In-depth experience with unsupervised and few-shot anomaly detection methods (<strong>FastAD</strong>, <strong>PatchCore</strong>, <strong>EfficientAD</strong>, <strong>SubspaceAD</strong>, etc.); experienced with false-alarm attribution and optimization in complex open-set industrial backgrounds.
+        </li>
+        <li class="skill-item">
+          <strong>Model Inference & Edge Acceleration</strong>: Experienced with <strong>TensorRT</strong>, <strong>ONNX Runtime</strong> inference optimization, and <strong>FP16 / INT8</strong> quantization; hands-on deployment experience on <strong>NVIDIA Jetson</strong> platforms and lightweight on-device deployment with <strong>vLLM</strong>.
+        </li>
+        <li class="skill-item">
+          <strong>Engineering & Multimedia Streaming</strong>: Proficient with <strong>Linux</strong>, <strong>CUDA</strong>, <strong>Docker</strong>, <strong>Git</strong>, and <strong>FastAPI</strong>; experienced with <strong>RTSP</strong> video streaming, multi-channel <strong>FFmpeg</strong>, and <strong>GStreamer</strong> hardware decoding performance profiling and stability engineering.
+        </li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>💼 Engineering & Research Experience</h2>
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-head">
+            <h3>Rail Transit Pantograph Real-Time Monitoring: Lingmou & Zhimou Systems</h3>
+            <span class="timeline-date">2026.07 — 2026.11</span>
+          </div>
+          <!-- Internal company and title details withheld -->
+          <p class="timeline-text">
+            <strong>Real-time camera video stream monitoring</strong> for rail transit pantograph-catenary systems. Independently responsible for algorithm development and edge deployment, covering dataset organization, annotation specification, model training, parameter tuning, algorithm fusion, <strong>edge deployment</strong>, and testing. Addressed <strong>object detection, anomaly detection, and real-time video processing</strong> for <strong>6 types of faults</strong>: large sparks, structural anomalies, camera dirt/occlusion, foreign objects, pantograph tilt, and abnormal floating.
+          </p>
+          <ul class="timeline-highlights">
+            <li>
+              <strong>Dataset Construction & Training</strong>: Organized visual datasets, established fault categories and labeling standards, and prepared training/test splits. Designed targeted algorithm pipelines based on visual characteristics and detection requirements, completing model training, parameter tuning, and validation.
+            </li>
+            <li>
+              <strong>Lingmou System</strong>: Addressed the wide variance in visual patterns and object scales across the 6 fault types by designing a <strong>multi-algorithm fusion</strong> architecture integrating <strong>YOLO object detection, FastAD anomaly detection</strong>, and <strong>HRNet pose estimation</strong>, achieving high sensitivity and fast response.
+            </li>
+            <li>
+              <strong>Zhimou System</strong>: Integrated multimodal model <strong>Qwen3-VL 4B (deployed with vLLM)</strong> to conduct secondary semantic verification on candidate anomalies from Lingmou, significantly reducing false alarms.
+            </li>
+            <li>
+              <strong>Evaluation & False-Alarm Suppression</strong>: Evaluated on <strong>469 real-world false-alarm videos</strong> from customer field operations covering 10 interference scenarios. The false-alarm suppression rate reached <strong>77% for Lingmou</strong> and <strong>96% for Zhimou</strong>.
+            </li>
+            <li>
+              <strong>Edge Deployment</strong>: On <strong>NVIDIA Jetson AGX Orin</strong>, TensorRT-optimized Lingmou reached <strong>96 ms</strong> single-frame latency and <strong>10 FPS</strong> end-to-end throughput. Zhimou with vLLM (Qwen3-VL 4B) achieved a single-frame inference latency of <strong>4 s</strong>.
+            </li>
+          </ul>
+        </div>
+
+        <div class="timeline-item" id="wafer-aoi">
+          <div class="timeline-head">
+            <h3>Wafer Die Micro-Defect Unsupervised Detection System (AOI)</h3>
+            <span class="timeline-date">2025.04 — 2026.02</span>
+          </div>
+          <!-- Internal company and title details withheld -->
+          <p class="timeline-text">
+            Microscopic inspection for <strong>semiconductor packaging wafer dies</strong>. Targeted micro-defects across process layers (voids, scratches, metal/photoresist residue, bump shift) using feature-embedding-based <strong>unsupervised anomaly detection</strong> cold-started on normal wafer patterns.
+          </p>
+          <ul class="timeline-highlights">
+            <li>
+              <strong>Problem Formulation & System Development</strong>: Addressed traditional manual inspection limitations (high miss rates, severe class imbalance) and existing memory-bank methods (high latency, large memory footprint) by building an unsupervised wafer defect detection algorithm and prototype supporting fast training, real-time inference, and interpretable localization.
+            </li>
+            <li>
+              <strong>Inference Acceleration</strong>: On an <strong>RTX 3090</strong>, achieved <strong>8.0 ms model inference latency</strong> and <strong>38.5 ms end-to-end system latency (>25 FPS)</strong>, meeting real-time production requirements.
+            </li>
+            <li>
+              <strong>Interpretability & Data Loop</strong>: Implemented <strong>anomaly heatmap rendering</strong> to localize defect regions for false-positive/negative attribution. Designed a <strong>manual review feedback mechanism</strong> allowing inspectors to correct annotations and store feedback for <strong>closed-loop parameter tuning</strong>.
+            </li>
+          </ul>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-head">
+            <h3>Digital Pathology Microscopic Intelligent Analysis System</h3>
+            <span class="timeline-date">2024.09 — 2025.03</span>
+          </div>
+          <!-- Internal company and title details withheld -->
+          <p class="timeline-text">
+            Contributed to core algorithm development for an in-house <strong>digital pathology scanner and microscopic analysis system</strong>, focusing on automated detection of <strong>micro-targets and complex clustered morphology</strong> in fungal pathology slides (spores, short hyphae, long hyphae).
+          </p>
+          <ul class="timeline-highlights">
+            <li>
+              <strong>Semi-Automated Mask Annotation with Foundation Models</strong>: Introduced <strong>Meta Segment Anything (SAM ViT-H)</strong> to generate zero-shot segmentation masks based on <strong>Box Prompts</strong>. After human review, built a high-quality instance segmentation dataset with <strong>700+ samples</strong>.
+            </li>
+            <li>
+              <strong>Detection & Segmentation Pipeline</strong>: Implemented <strong>Faster R-CNN</strong> and <strong>Mask R-CNN</strong> (ResNet-101-FPN) using <strong>Detectron2</strong>.
+            </li>
+            <li>
+              <strong>Model Optimization & Benchmark</strong>: Conducted quantitative evaluations using <strong>COCOEvaluator</strong>. Bbox mAP50 improved from 50.5% (Faster R-CNN) to <strong>63.1%</strong>, with AP reaching <strong>73.8% for short hyphae</strong>, <strong>73.2% for spores</strong>, and increasing from 23.0% to <strong>42.5% for long hyphae</strong>.
+            </li>
+            <li>
+              <strong>Real-Time Inference</strong>: Average inference latency on single high-resolution slide images was <strong>72.4 ms (~14 FPS)</strong>, meeting fast clinical screening requirements.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>📫 Find Me</h2>
+      <ul class="contact-list">
+        <li>GitHub: <a href="https://github.com/jingfrank" target="_blank" rel="noopener noreferrer">@jingfrank</a></li>
+        <li>Blog: <a href="/en/blog">Read technical blog</a></li>
+        <li>Email: <a href="mailto:1150634497@qq.com">1150634497@qq.com</a></li>
+      </ul>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .about-container {
+    max-width: var(--container-narrow);
+    margin: 0 auto;
+  }
+
+  .lead {
+    font-size: 1.15rem;
+    line-height: 1.8;
+    color: var(--text);
+    margin-bottom: var(--card-gap);
+  }
+
+  .section {
+    margin-top: var(--section-gap);
+  }
+
+  /* 教育与学术 */
+  .edu-list {
+    margin-bottom: var(--space-base);
+  }
+
+  .edu-item {
+    padding: var(--space-sm) 0;
+    border-bottom: 1px dashed var(--border);
+  }
+
+  .edu-item:last-child {
+    border-bottom: none;
+  }
+
+  .edu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-weight: 600;
+  }
+
+  .school-name {
+    font-size: 1.02rem;
+    color: var(--text);
+  }
+
+  .timeline-date {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    font-variant-numeric: tabular-nums;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+
+  .edu-line {
+    font-size: 0.92rem;
+    color: var(--text);
+    margin-top: 0.15rem;
+    margin-bottom: 0;
+  }
+
+  .edu-research {
+    color: var(--text-light);
+    font-size: 0.86rem;
+  }
+
+  /* 学术论文 */
+  .paper-card {
+    background: var(--code-bg);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 8px 8px 0;
+    padding: var(--card-gap) var(--card-padding);
+    border-top: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .paper-title {
+    font-size: 1.05rem;
+    margin-top: 0;
+    margin-bottom: var(--element-gap);
+    line-height: 1.4;
+  }
+
+  .paper-meta {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin-bottom: var(--element-gap);
+  }
+
+  .paper-link a {
+    font-size: 0.88rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+
+  /* 专业技能列表 */
+  .skill-list {
+    list-style: none;
+    margin-left: 0;
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--header-gap);
+  }
+
+  .skill-item {
+    position: relative;
+    padding-left: 1.25rem;
+    font-size: 0.93rem;
+    line-height: 1.7;
+    color: var(--text-light);
+    margin-bottom: 0;
+  }
+
+  .skill-item::before {
+    content: '•';
+    position: absolute;
+    left: 0.2rem;
+    top: 0;
+    color: var(--accent);
+    font-size: 1.2rem;
+    line-height: 1.7;
+  }
+
+  .skill-item strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  /* 经历时间轴 */
+  .timeline {
+    position: relative;
+    padding-left: var(--card-gap);
+    border-left: 2px solid var(--border);
+    margin-top: var(--card-gap);
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: var(--space-xl);
+    scroll-margin-top: 5rem;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -1.6rem;
+    top: 0.35rem;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+  }
+
+  .timeline-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--element-gap);
+  }
+
+  .timeline-head h3 {
+    font-size: 1.08rem;
+    margin: 0;
+    color: var(--text);
+  }
+
+  .timeline-role {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--accent);
+    margin-top: var(--space-xs);
+    margin-bottom: var(--element-gap);
+  }
+
+  .timeline-text {
+    font-size: 0.93rem;
+    line-height: 1.6;
+    margin-bottom: var(--element-gap);
+  }
+
+  .timeline-highlights {
+    margin-left: var(--card-gap);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .timeline-highlights li {
+    margin-bottom: var(--space-xs);
+  }
+
+  /* 联系方式 */
+  .contact-list {
+    list-style: none;
+    margin-left: 0;
+  }
+
+  .contact-list li {
+    padding: var(--space-xs) 0;
+    font-size: 0.95rem;
+  }
+</style>
