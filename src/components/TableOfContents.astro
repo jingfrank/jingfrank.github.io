@@ -11,15 +11,22 @@ interface Props {
 }
 
 const { headings = [], type = 'desktop' } = Astro.props;
+const { pathname } = Astro.url;
+const isEn = pathname.startsWith('/en');
 
 // 过滤掉原有的 "目录" 标题以及过深的层级（仅展示 h2 和 h3，保证目录清晰专注）
 const tocItems = headings.filter(
-  (h) => h.slug !== '目录' && h.text !== '目录' && (h.depth === 2 || h.depth === 3)
+  (h) =>
+    h.slug !== '目录' &&
+    h.text !== '目录' &&
+    h.slug !== 'table-of-contents' &&
+    h.text.toLowerCase() !== 'table of contents' &&
+    (h.depth === 2 || h.depth === 3)
 );
 ---
 
 {type === 'mobile' ? (
-  <nav class="mobile-toc-container" id="mobile-toc-container" aria-label="移动端文章目录">
+  <nav class="mobile-toc-container" id="mobile-toc-container" aria-label={isEn ? "Table of Contents" : "移动端文章目录"}>
     <details class="mobile-toc-details">
       <summary class="mobile-toc-summary">
         <span class="mobile-toc-title">
@@ -31,7 +38,7 @@ const tocItems = headings.filter(
             <line x1="3" y1="12" x2="3.01" y2="12"></line>
             <line x1="3" y1="18" x2="3.01" y2="18"></line>
           </svg>
-          <span>文章目录</span>
+          <span>{isEn ? "Table of Contents" : "文章目录"}</span>
         </span>
         <span class="mobile-toc-arrow">▸</span>
       </summary>
@@ -45,7 +52,7 @@ const tocItems = headings.filter(
     </details>
   </nav>
 ) : (
-  <aside class="desktop-toc-aside" id="desktop-toc-aside" aria-label="文章目录侧边栏">
+  <aside class="desktop-toc-aside" id="desktop-toc-aside" aria-label={isEn ? "Table of Contents" : "文章目录侧边栏"}>
     <div class="desktop-toc-wrapper">
       <div class="desktop-toc-header">
         <svg class="toc-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -56,7 +63,7 @@ const tocItems = headings.filter(
           <line x1="3" y1="12" x2="3.01" y2="12"></line>
           <line x1="3" y1="18" x2="3.01" y2="18"></line>
         </svg>
-        <span>本页目录</span>
+        <span>{isEn ? "On this page" : "本页目录"}</span>
       </div>
 
       <nav class="desktop-toc-nav" id="desktop-toc-nav">
@@ -72,11 +79,11 @@ const tocItems = headings.filter(
       </nav>
 
       <div class="desktop-toc-footer">
-        <button type="button" class="back-to-top-btn" id="toc-back-to-top" title="回到文章顶部">
+        <button type="button" class="back-to-top-btn" id="toc-back-to-top" title={isEn ? "Back to top" : "回到文章顶部"}>
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="18 15 12 9 6 15"></polyline>
           </svg>
-          <span>回到顶部</span>
+          <span>{isEn ? "Back to top" : "回到顶部"}</span>
         </button>
       </div>
     </div>

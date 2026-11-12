@@ -5,6 +5,8 @@ import TableOfContents from '../components/TableOfContents.astro';
 const { title, date, frontmatter, headings } = Astro.props;
 const postTitle = title || frontmatter?.title;
 const postDate = date || frontmatter?.date;
+const { pathname } = Astro.url;
+const isEn = pathname.startsWith('/en');
 ---
 
 <Base title={postTitle} wide={true}>
@@ -32,7 +34,7 @@ const postDate = date || frontmatter?.date;
       </div>
 
       <hr />
-      <a href="/blog">← 返回博客</a>
+      <a href={isEn ? '/en/blog' : '/blog'}>{isEn ? '← Back to Blog' : '← 返回博客'}</a>
     </article>
 
     <!-- 桌面端在此处吸顶侧边悬浮展示 (屏幕 >= 1080px) -->
@@ -44,7 +46,7 @@ const postDate = date || frontmatter?.date;
     // ---------------- 1. 目录交互与滚动监听控制器 ----------------
     function initTableOfContents() {
       // (1) 清理正文中的历史内联目录（彻底消除正文内占用空间）
-      const inlineToc = document.getElementById('目录');
+      const inlineToc = document.getElementById('目录') || document.getElementById('table-of-contents');
       if (inlineToc) {
         const prev = inlineToc.previousElementSibling;
         if (prev && prev.tagName === 'HR') prev.remove();
@@ -60,7 +62,13 @@ const postDate = date || frontmatter?.date;
       // (2) 收集正文所有有效标题
       const contentHeadings = Array.from(
         document.querySelectorAll('.content h2, .content h3')
-      ).filter((h) => h.id !== '目录' && h.textContent.trim() !== '目录');
+      ).filter(
+        (h) =>
+          h.id !== '目录' &&
+          h.textContent.trim() !== '目录' &&
+          h.id !== 'table-of-contents' &&
+          h.textContent.trim().toLowerCase() !== 'table of contents'
+      );
 
       const desktopAside = document.getElementById('desktop-toc-aside');
       const mobileContainer = document.getElementById('mobile-toc-container');
@@ -319,7 +327,11 @@ const postDate = date || frontmatter?.date;
   .content :global(h2#目录),
   .content :global(h2#目录 + ul),
   .content :global(h2#目录 + ul + hr),
-  .content :global(hr:has(+ h2#目录)) {
+  .content :global(hr:has(+ h2#目录)),
+  .content :global(h2#table-of-contents),
+  .content :global(h2#table-of-contents + ul),
+  .content :global(h2#table-of-contents + ul + hr),
+  .content :global(hr:has(+ h2#table-of-contents)) {
     display: none !important;
   }
 
